@@ -1,0 +1,340 @@
+---
+title: Point of Sale (TPV)
+description: Full-featured POS terminal for processing sales of products, services, packs, and bonuses with multiple payment methods
+---
+
+## Overview
+
+The Point of Sale (Terminal de Venta / TPV) is Beils Dashboard's comprehensive checkout interface designed specifically for beauty centers. It provides a split-screen POS experience with catalog browsing on the left and shopping cart on the right, supporting sales of products, services, packs, and bonuses with flexible payment options.
+
+## Interface Layout
+
+### Left Panel: Catalog Browser
+
+**Category Tabs**
+- **Servicios**: Browse available services with prices and codes
+- **Productos**: View product inventory with SKU and stock
+- **Packs**: See bundle offerings with item counts
+- **Bonos**: Display session packages with pricing
+
+**Catalog Display**
+- Grid layout with cards for each item
+- Item name prominently displayed
+- SKU/code shown for reference
+- Price in large, bold text
+- Quick-add button with hover effect
+- Real-time search across current category
+- Visual feedback on hover and click
+
+### Right Panel: Shopping Cart
+
+**Client Selection**
+- Search bar for finding clients by:
+  - Name (first or last)
+  - Phone number
+  - Document number
+- Autocomplete dropdown with matching results
+- Client avatar with initials when selected
+- Quick remove button to clear selection
+
+**Cart Items**
+- List of added items with:
+  - Item name
+  - Quantity controls (+/-)
+  - Unit price
+  - Line total (quantity × price)
+  - Remove button
+- Empty state message when cart is empty
+- Scrollable list for multiple items
+
+**Totals Section**
+- Subtotal calculation
+- Discount/coupon field (manual entry)
+- Final total in large text
+- Tax calculations included in prices
+
+**Payment Methods** (4 options)
+- **Tarjeta** (Card): Card payment
+- **Efectivo** (Cash): Cash payment
+- **Mixto** (Mixed): Combination of payment types
+- **Deuda** (Debt): Record as account receivable (requires client)
+
+**Checkout Button**
+- Processes the sale
+- Creates cart record
+- Updates inventory (for products)
+- Creates debt record (if payment method is "Deuda")
+- Disabled when cart is empty
+
+## User Workflows
+
+### Processing a Standard Sale
+
+1. **Start at TPV Page**
+   - Navigate to **TPV** from main menu
+   - Interface loads with empty cart
+
+2. **Select Client** (Optional but recommended)
+   - Type client name, phone, or document in search box
+   - Select client from autocomplete dropdown
+   - Client info appears with avatar and name
+
+3. **Add Items to Cart**
+   - Click appropriate category tab (Servicios/Productos/Packs/Bonos)
+   - Browse or search for items
+   - Click item card to add to cart
+   - Item appears in cart with quantity 1
+   - Click same item again to increase quantity
+   - Or use +/- buttons in cart to adjust quantities
+
+4. **Review Cart**
+   - Verify all items and quantities are correct
+   - Check subtotal calculation
+   - Remove items if needed using trash icon
+
+5. **Apply Discount** (Optional)
+   - Enter discount amount in euros in the discount field
+   - Subtotal minus discount equals total
+   - Cannot exceed subtotal amount
+
+6. **Select Payment Method**
+   - Click one of the four payment method buttons:
+     - **Tarjeta**: For card payments (default selection)
+     - **Efectivo**: For cash payments
+     - **Mixto**: When combining payment types
+     - **Deuda**: To record unpaid balance (requires client)
+
+7. **Process Payment**
+   - Click large **Procesar Cobro** button at bottom
+   - System validates cart is not empty
+   - If payment method is "Deuda", validates client is selected
+   - Success toast notification appears
+   - Cart clears automatically
+   - Ready for next transaction
+
+### Selling Products
+
+1. Click **Productos** tab
+2. Use search to filter by name or SKU
+3. Click product card to add to cart
+4. Adjust quantity as needed
+5. **Important**: Product stock automatically decreases when sale is processed
+6. Complete checkout as normal
+
+### Selling Services
+
+1. Click **Servicios** tab
+2. Browse available services or search by name/code
+3. Click service card to add to cart
+4. Services have no inventory impact
+5. Useful for walk-in service sales without prior appointment
+6. Complete checkout as normal
+
+### Selling Packs
+
+1. Click **Packs** tab
+2. View available bundle packages
+3. Click pack card to add to cart
+4. Pack is added as single cart item at pack price
+5. **Note**: Pack contents don't separately affect inventory (manage separately if needed)
+6. Complete checkout as normal
+
+### Selling Session Bonuses
+
+1. Click **Bonos** tab
+2. View multi-session packages
+3. Select bonus to add to cart
+4. Client purchases X sessions at bundled price
+5. Sold bonuses create `ClientBonus` records for later tracking
+6. Complete checkout as normal
+
+<Tip>
+  Session bonuses are perfect for encouraging prepayment and client commitment. Offer a discount when clients buy multiple sessions upfront.
+</Tip>
+
+### Recording Debt Payments
+
+When a client wants to pay later or cannot pay in full:
+
+1. **Add items to cart** as normal
+2. **Select the client** (required for debt tracking)
+3. **Select payment method: Deuda** (red 0€ button)
+4. Click **Procesar Cobro**
+5. System creates:
+   - A cart record with status "pending"
+   - A debt record linked to the client
+   - Debt amount equals cart total
+   - Debt status set to "pending"
+6. View debt in **Finanzas > Deudas** section later
+7. When client pays, mark debt as "paid"
+
+<Warning>
+  Debt payments require a client to be selected. The system will show an error if you attempt to process a debt payment without selecting a client first.
+</Warning>
+
+### Mixed Payment Example
+
+For combination payments (part cash, part card):
+
+1. Add items to cart
+2. Select **Mixto** payment method
+3. Process the sale
+4. **Manual step**: Outside system, collect payments:
+   - Accept partial cash payment
+   - Process remainder on card terminal
+5. Cart record saves "mixed" as payment method for reporting
+
+### Applying Manual Discounts
+
+1. Build cart with desired items
+2. Note the subtotal amount
+3. In the discount field, enter discount amount:
+   - Enter euros to deduct (e.g., 10 for €10 off)
+   - Or calculate percentage manually (e.g., 20% of €50 = €10)
+4. Total updates automatically (subtotal - discount)
+5. Discount cannot exceed subtotal
+6. Process payment as normal
+7. Discount is recorded in cart for reporting
+
+<Note>
+  The discount field is for manual price reductions. For automated coupon codes, use the Marketing > Cupones system (coupon validation is separate from TPV).
+</Note>
+
+### Removing Cart Items
+
+**Method 1: Trash Icon**
+- Hover over cart item
+- Click trash icon that appears
+- Item removed immediately
+
+**Method 2: Quantity to Zero**
+- Click minus (-) button repeatedly
+- When quantity reaches 1, next click removes item
+
+**Method 3: Clear Cart**
+- Process or cancel current transaction
+- Cart clears automatically after checkout
+
+### Starting a New Transaction
+
+After completing a sale:
+1. Cart automatically clears
+2. Client selection resets
+3. Discount resets to 0
+4. Payment method resets to "Tarjeta" (card)
+5. Ready for next customer immediately
+
+## Payment Method Details
+
+### Card (Tarjeta)
+- Default selection
+- Most common payment method
+- Cart status: "completed"
+- No debt record created
+- Use for credit/debit card payments
+
+### Cash (Efectivo)
+- Select for cash transactions
+- Cart status: "completed"
+- No change calculation in system (handle manually)
+- Good practice: record cash sales separately for cash drawer reconciliation
+
+### Mixed (Mixto)
+- Part card, part cash
+- Part cash, part store credit
+- Any combination of payment types
+- Cart status: "completed"
+- System doesn't track split amounts (handle calculation manually)
+
+### Debt (Deuda)
+- **Requires client selection**
+- Cart status: "pending"
+- Creates debt record in system
+- Debt amount = cart total
+- Debt remains "pending" until marked paid
+- View/manage in Finanzas section
+
+## Data & Reporting
+
+### Cart Records
+
+Every sale creates a `Cart` record storing:
+- User (client) if selected
+- Status (completed or pending)
+- Subtotal before discount
+- Discount amount
+- Final total
+- Payment method
+- Cart items array with:
+  - Item type (product/service/pack/bonus)
+  - Item ID reference
+  - Name snapshot at time of sale
+  - Quantity
+  - Unit price
+  - Tax rate
+  - Line subtotal and total
+- Created timestamp
+
+### Debt Records
+
+Debt payments create `Debt` records with:
+- User (client) reference
+- Cart reference (link to original sale)
+- Full debt amount
+- Remaining amount (starts equal to full amount)
+- Status (pending/partial/paid)
+- Optional due date
+- Notes field
+
+### Inventory Impact
+
+**Products**:
+- Stock automatically decreases by quantity sold
+- Tracked via product_id in cart items
+- Low stock warnings update in product catalog
+
+**Services, Packs, Bonuses**:
+- No inventory impact (non-physical items)
+- Sales tracked via cart items for reporting
+
+## Business Benefits
+
+### Operational Efficiency
+
+- Fast checkout process reduces client wait time
+- Visual product browsing is intuitive for staff
+- Real-time search finds items quickly
+- One-click add to cart minimizes errors
+- Automatic calculations prevent math mistakes
+
+### Revenue Tracking
+
+- Every sale recorded with timestamp
+- Payment method tracking for reconciliation
+- Client linking enables purchase history analysis
+- Discount tracking shows promotional impact
+- Cart totals feed into financial reports
+
+### Inventory Management
+
+- Automatic stock deduction prevents overselling
+- Real-time inventory updates across system
+- Product sales data informs reordering decisions
+
+### Financial Control
+
+- Debt tracking prevents lost revenue
+- Payment method reporting aids daily reconciliation
+- Client account balances monitored
+- Historical cart records for audit trail
+
+### Client Relationship
+
+- Linked purchases build client profiles
+- Purchase history informs future recommendations
+- Debt management maintains client trust
+- Professional checkout experience
+
+<Note>
+  The TPV uses the `Cart` and `CartItem` models. Each cart can have multiple items of different types (products, services, packs, bonuses) stored with `item_type` and `item_id` fields for polymorphic relationships.
+</Note>

@@ -1,0 +1,230 @@
+---
+title: Appointments & Agenda
+description: Visual calendar system for scheduling and managing client appointments with staff assignment and status tracking
+---
+
+## Overview
+
+The Appointments & Agenda module provides a comprehensive booking system for managing your beauty center's schedule. It offers a visual calendar interface with day and week views, real-time booking management, staff assignment, and complete status tracking for all appointments.
+
+## Key Features
+
+### Calendar Interface
+
+**View Modes**
+- **Day View**: Focused timeline showing all appointments for a single day
+- **Week View**: Extended view displaying appointments across 7 days
+- **Easy Navigation**: Quick jump to today, or navigate forward/backward by day or week
+- **Date Display**: Clear formatting showing weekday, date, and month in Spanish locale
+
+**Visual Timeline**
+- Time-based layout with start and end times prominently displayed
+- Color-coded appointment cards based on status
+- Hover effects for better visual feedback
+- Responsive design adapting to all screen sizes
+
+### Appointment Management
+
+**Core Booking Information**
+- Client assignment (required)
+- Staff member assignment (optional)
+- Service or Pack selection
+- Date and time scheduling
+- Duration in minutes
+- Optional notes field
+
+**Status Workflow**
+- **Pending**: Initial state when booking is created (yellow/warning styling)
+- **Confirmed**: Appointment verified and confirmed (blue/info styling)
+- **Completed**: Service successfully delivered (green/success styling)
+- **Cancelled**: Appointment cancelled by client or center (red/error styling)
+- **No Show**: Client failed to attend scheduled appointment (gray/muted styling)
+
+### Search & Filtering
+
+- Real-time search across all bookings in current view
+- Filter by client name or surname
+- Filter by assigned staff member name
+- Instant results as you type
+- Search persists across view changes
+
+### Quick Actions
+
+Each appointment card provides dropdown menu access to:
+- **Confirm**: Change status to confirmed
+- **Complete**: Mark service as delivered
+- **Cancel**: Set status to cancelled
+- **Edit**: Modify booking details
+- **Delete**: Permanently remove from schedule
+
+## User Workflows
+
+### Creating a New Appointment
+
+1. Navigate to **Agenda** from the main menu
+2. Select the desired date using:
+   - Calendar navigation buttons (previous/next)
+   - "Hoy" (Today) button to return to current date
+   - The selected date determines the default booking date
+3. Click **Nueva Cita** button in the top toolbar
+4. Fill in the booking form:
+   - **Client**: Search and select from your client database (required)
+   - **Staff**: Assign a staff member to the appointment (optional)
+   - **Service/Pack**: Choose what service is being booked
+   - **Date**: Defaults to selected calendar date (can be changed)
+   - **Start Time**: Select appointment start (HH:mm format)
+   - **Duration**: Enter service duration in minutes
+   - **Notes**: Add any special instructions or client requests
+5. Click **Save** to create the booking
+6. The new appointment appears on the calendar timeline immediately
+
+### Viewing Appointment Details
+
+Each appointment card displays:
+- **Time Column** (left border):
+  - Large start time (e.g., "10:00")
+  - Small end time (e.g., "11:30")
+  - Day of week abbreviation
+- **Main Card Content**:
+  - Status badge with current state
+  - Assigned staff member name (if any)
+  - Client full name in bold
+  - Service/Pack ID reference
+  - Duration indicator with clock icon
+  - Notes preview (if added)
+
+### Changing Appointment Status
+
+**Method 1: Quick Status Update**
+1. Locate the appointment on the calendar
+2. Click the three-dot menu icon on the appointment card
+3. In the dropdown, select the desired status action:
+   - **Confirmar**: Mark as confirmed
+   - **Finalizar**: Mark as completed
+   - **Cancelar**: Mark as cancelled
+4. Status updates immediately with color change
+
+**Method 2: Full Edit**
+1. Open the appointment dropdown menu
+2. Click **Editar**
+3. Modify any booking details including status
+4. Save changes to update the appointment
+
+### Editing an Appointment
+
+1. From the calendar view, click the three-dot menu on any appointment
+2. Select **Editar** from the dropdown
+3. The booking form opens with current values pre-filled
+4. Modify any fields:
+   - Change client or staff assignment
+   - Adjust date and time
+   - Update duration
+   - Edit notes
+   - Change status
+5. Click **Save** to apply changes
+6. Calendar updates to reflect the modifications
+
+### Rescheduling Appointments
+
+1. Open the appointment for editing
+2. Change the **Booking Date** to the new desired date
+3. Update **Start Time** if needed
+4. Adjust **Duration** if the service time has changed
+5. Add a note explaining the reschedule reason (optional)
+6. Save the appointment
+7. The booking moves to the new date on the calendar
+
+### Managing No-Shows
+
+1. When a client fails to attend their appointment:
+2. Open the appointment dropdown menu
+3. Select status update to **No Show** (from the dropdown or edit form)
+4. Optionally add a note about attempted contact or circumstances
+5. The appointment remains on the calendar for record-keeping with muted styling
+
+### Deleting Appointments
+
+1. Click the three-dot menu on the appointment
+2. Select **Eliminar** from the dropdown
+3. Confirm deletion in the warning dialog
+4. The appointment is permanently removed from the system
+5. **Note**: This action cannot be undone
+
+<Warning>
+  Consider using the "Cancelled" status instead of deleting appointments to maintain a complete historical record for reporting and analytics.
+</Warning>
+
+### Searching for Specific Bookings
+
+1. Use the search box in the top toolbar
+2. Type any part of:
+   - Client first name
+   - Client surname  
+   - Staff member name
+3. The calendar filters in real-time to show only matching appointments
+4. Clear the search box to show all bookings again
+
+### Switching Between Views
+
+**Day View** (recommended for detailed daily management)
+1. Click the **DÍA** tab in the view selector
+2. See all appointments for the selected date in a linear timeline
+3. Navigate between days using arrow buttons
+
+**Week View** (recommended for planning ahead)
+1. Click the **SEMANA** tab in the view selector
+2. See appointments across 7 consecutive days
+3. Navigate between weeks using arrow buttons
+4. Useful for capacity planning and staff scheduling
+
+## Business Benefits
+
+### Optimized Scheduling
+
+- Visual timeline prevents double-booking
+- See staff availability at a glance
+- Balance workload across team members
+- Identify scheduling gaps for optimal utilization
+
+### Improved Client Experience
+
+- Quickly confirm availability during phone calls
+- Send appointment confirmations with accurate details
+- Track client attendance patterns
+- Professional booking management increases trust
+
+### Staff Coordination
+
+- Assign specific staff to appointments
+- Track staff schedules and workload
+- Plan breaks and coverage
+- See who is booked when
+
+### Operational Efficiency
+
+- Reduce paper appointment books
+- Instant search across all bookings
+- Quick status updates from any device
+- Eliminate scheduling conflicts
+
+### Business Insights
+
+- Track appointment volume by day/week
+- Monitor no-show rates
+- Analyze booking patterns for staffing decisions
+- Measure completion rates vs cancellations
+
+### Revenue Management
+
+- See daily/weekly booking value
+- Identify prime booking times
+- Optimize pricing based on demand
+- Track service popularity through bookings
+
+<Note>
+  Appointments are stored in the `Booking` model and linked to both clients and staff through the `User` model relations. The `item_type` field indicates whether a service or pack is being booked, with `item_id` storing the reference.
+</Note>
+
+<Tip>
+  Use the search function to quickly locate a specific client's upcoming appointments when they call to reschedule or verify their booking.
+</Tip>

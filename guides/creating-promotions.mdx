@@ -1,0 +1,674 @@
+---
+title: Creating Promotions
+description: Learn to create and manage marketing promotions including coupons, bonuses, and gift cards
+---
+
+The Marketing modules enable you to create promotional campaigns that drive sales and client loyalty. Beils Dashboard offers three types of promotions: Coupons (discount codes), Bonuses (multi-session packages), and Gift Cards.
+
+## Types of Promotions
+
+### Cupones (Coupons)
+Discount codes that reduce purchase prices. Ideal for:
+- Seasonal promotions
+- First-time client discounts
+- Loyalty rewards
+- Limited-time offers
+
+### Bonos (Bonuses)
+Pre-paid multi-session packages. Perfect for:
+- Session bundles (e.g., "Buy 5, Get 1 Free")
+- Treatment courses
+- Membership programs
+- Advance bookings
+
+### Giftcards (Gift Cards)
+Purchasable vouchers with stored value. Great for:
+- Holiday gifts
+- Special occasions
+- Client referral rewards
+- Corporate gifting programs
+
+## Creating Coupons
+
+Access the coupon manager at **Marketing > Cupones**.
+
+<Steps>
+  <Step title="Open Coupon Form">
+    Click **"+ Nuevo Cupón"** in the top-right corner.
+  </Step>
+  
+  <Step title="Set Coupon Code">
+    Create a unique, memorable code:
+    
+    **Good Examples:**
+    - `WELCOME20` - Clear purpose, includes value
+    - `SUMMER25` - Seasonal, easy to communicate
+    - `VIP15` - Targets specific customer segment
+    
+    **Avoid:**
+    - Random codes like `X7K9PQ` (hard to remember)
+    - Offensive or confusing terms
+    - Too-long codes (keep under 15 characters)
+    
+    <Tip>
+      Use uppercase for codes - they're easier to read and look more professional.
+    </Tip>
+  </Step>
+  
+  <Step title="Configure Discount Type">
+    Choose how the discount applies:
+    
+    **Percentage Discount:**
+    - Select "Porcentaje" (Percentage)
+    - Enter value (e.g., 20 for 20% off)
+    - Best for: Flexible discounts that scale with purchase size
+    
+    **Fixed Amount:**
+    - Select "Cantidad Fija" (Fixed Amount)
+    - Enter euro amount (e.g., 10 for €10 off)
+    - Best for: Specific value promotions, easier to budget
+  </Step>
+  
+  <Step title="Set Discount Value">
+    Enter the numerical value:
+    - For percentage: 10, 15, 20, 25, etc.
+    - For fixed amount: 5.00, 10.00, 20.00, etc.
+  </Step>
+  
+  <Step title="Add Description">
+    Write a clear description visible to staff:
+    - What the promotion is for
+    - Any special conditions
+    - Internal notes
+    
+    Example: "Summer promotion for new clients - 20% off first visit"
+  </Step>
+  
+  <Step title="Configure Usage Limits">
+    Control coupon availability:
+    
+    **Max Uses (Optional):**
+    - Leave empty for unlimited uses
+    - Set a number (e.g., 100) to cap total redemptions
+    
+    **Minimum Purchase (Optional):**
+    - Require minimum spending to use coupon
+    - Example: €50 minimum for €10 off coupon
+    - Prevents loss-making small purchases
+  </Step>
+  
+  <Step title="Set Validity Period">
+    **Valid Until (Optional):**
+    - Leave empty for no expiration
+    - Select end date for time-limited promotions
+    - Expiration happens at end of the selected day
+    
+    <Tip>
+      For seasonal campaigns, set clear end dates (e.g., "September 30"). For ongoing loyalty programs, leave validity open.
+    </Tip>
+  </Step>
+  
+  <Step title="Set Status">
+    Toggle **Activo** / **Inactivo**:
+    - **Activo**: Coupon can be used immediately
+    - **Inactivo**: Saved but not yet active (for future campaigns)
+  </Step>
+  
+  <Step title="Save Coupon">
+    Click **"Crear Cupón"** to activate the promotion.
+  </Step>
+</Steps>
+
+### Coupon Strategy Examples
+
+**New Client Welcome:**
+```
+Code: WELCOME15
+Type: Percentage
+Value: 15%
+Min Purchase: €30
+Max Uses: Unlimited
+Valid Until: (empty - ongoing)
+```
+
+**Flash Weekend Sale:**
+```
+Code: WEEKEND25
+Type: Percentage  
+Value: 25%
+Min Purchase: (empty)
+Max Uses: 50
+Valid Until: Sunday end date
+```
+
+**Loyalty Reward:**
+```
+Code: THANKYOU10
+Type: Fixed Amount
+Value: €10
+Min Purchase: €50
+Max Uses: 100
+Valid Until: End of quarter
+```
+
+## Creating Bonuses (Multi-Session Packages)
+
+Access bonus management at **Marketing > Bonos**.
+
+<Steps>
+  <Step title="Open Bonus Form">
+    Click **"+ Nuevo Bono"** in the top-right corner.
+  </Step>
+  
+  <Step title="Name the Bonus">
+    Create a clear, descriptive name:
+    
+    **Good Names:**
+    - "10-Session Facial Package"
+    - "Monthly Massage Membership"
+    - "Quarterly Treatment Bundle"
+    
+    Include the number of sessions so clients immediately understand the offer.
+  </Step>
+  
+  <Step title="Add Description">
+    Explain what's included:
+    - Service type covered
+    - Validity period
+    - Usage restrictions
+    - Benefits vs. individual sessions
+    
+    Example: "Package of 10 facial treatments. Use within 6 months. Save €50 vs. individual pricing!"
+  </Step>
+  
+  <Step title="Link to Service (Optional)">
+    **Service Vinculado:**
+    - Select a specific service if the bonus applies to one treatment type
+    - Leave empty if valid for multiple services
+    
+    <Note>
+      Linking a service helps with:
+      - Automatic pricing calculations
+      - Booking restrictions
+      - Usage tracking
+      
+      Leave unlinked for flexible "credit" style bonuses.
+    </Note>
+  </Step>
+  
+  <Step title="Set Total Sessions">
+    **Total Sessions:**
+    Enter the number of sessions included in the package.
+    
+    Common values:
+    - 5 sessions (starter package)
+    - 10 sessions (popular choice)
+    - 12 sessions (monthly for a year)
+    - 20 sessions (intensive programs)
+  </Step>
+  
+  <Step title="Set Package Price">
+    **Price:**
+    Enter the total price for all sessions.
+    
+    Pricing strategy:
+    ```
+    Individual Session Price: €60
+    10 Sessions at Full Price: €600
+    Package Price: €500 (€100 savings, 16.7% discount)
+    Per-Session Cost: €50
+    ```
+    
+    <Tip>
+      Offer 15-20% discount vs. individual sessions to incentivize package purchases while maintaining profitability.
+    </Tip>
+  </Step>
+  
+  <Step title="Set Status">
+    Toggle **Activo** / **Inactivo**:
+    - **Activo**: Available for purchase in TPV
+    - **Inactivo**: Hidden but retained in system
+  </Step>
+  
+  <Step title="Save Bonus">
+    Click **"Crear Bono"** to make it available.
+  </Step>
+</Steps>
+
+### Bonus Card Display
+
+Once created, each bonus shows:
+- Status badge (Activo/Inactivo)
+- Bonus name
+- "X Sesiones" count badge
+- Description text
+- Linked service (or "Válido para múltiples servicios")
+- Total price
+- Per-session calculated price in parentheses
+
+### Bonus Strategy Examples
+
+**Introductory Package:**
+```
+Name: "5-Session Starter Package"
+Service: (Any service)
+Total Sessions: 5
+Price: €225 (normally €250)
+Status: Activo
+```
+
+**Specialized Treatment Course:**
+```
+Name: "Professional Facial Course - 10 Sessions"
+Service: Professional Facial
+Total Sessions: 10
+Price: €500 (normally €600)
+Status: Activo
+```
+
+**Membership Program:**
+```
+Name: "Monthly Massage Membership"
+Service: Therapeutic Massage
+Total Sessions: 12
+Price: €600 (normally €720)
+Status: Activo
+```
+
+## Managing Gift Cards
+
+Access gift card management at **Marketing > Giftcards**.
+
+<Note>
+  Gift card functionality follows similar patterns to bonuses but focuses on monetary value rather than session counts. Configuration details depend on your system version.
+</Note>
+
+### Gift Card Best Practices
+
+<Tip>
+  **Effective Gift Card Programs:**
+  
+  1. **Standard Denominations**: Offer €25, €50, €100, €150 options
+  2. **Clear Expiration**: 12 months is standard, 24 months for higher values
+  3. **Custom Amounts**: Allow custom values for personalization
+  4. **Attractive Packaging**: Physical cards increase perceived value
+  5. **Easy Redemption**: Train all staff on redemption process
+  6. **No Fees**: Avoid maintenance or inactivity fees
+</Tip>
+
+## Using Promotions in Practice
+
+### Applying Coupons at Checkout
+
+<Steps>
+  <Step title="Verify Coupon Validity">
+    When a client provides a coupon code:
+    1. Go to **Marketing > Cupones**
+    2. Search for the code
+    3. Verify:
+       - Status is "Activo"
+       - Not expired (check Valid Until date)
+       - Under max uses limit
+       - Cart total meets minimum purchase
+  </Step>
+  
+  <Step title="Calculate Discount">
+    **For Percentage Coupons:**
+    ```
+    Cart Subtotal: €100
+    Coupon: 20%
+    Discount Amount: €100 × 0.20 = €20
+    ```
+    
+    **For Fixed Amount Coupons:**
+    ```
+    Cart Subtotal: €75
+    Coupon: €10
+    Discount Amount: €10
+    ```
+  </Step>
+  
+  <Step title="Apply in TPV">
+    1. Open TPV and build cart normally
+    2. In the "Descuento / Cupón" field, enter the calculated discount amount
+    3. Total updates automatically
+    4. Process payment
+  </Step>
+  
+  <Step title="Update Coupon Usage">
+    After sale, the system automatically:
+    - Increments "current_uses" counter
+    - Disables coupon if max uses reached
+  </Step>
+</Steps>
+
+### Selling Bonuses
+
+<Steps>
+  <Step title="Client Inquiry">
+    When a client asks about package deals:
+    1. Show them available bonuses in **Marketing > Bonos**
+    2. Explain sessions included, total price, and savings
+    3. Note any service restrictions
+  </Step>
+  
+  <Step title="Process Purchase in TPV">
+    1. Open TPV
+    2. Select the client first (required for bonuses)
+    3. Switch to **Bonos** tab
+    4. Add the bonus to cart
+    5. Process full payment
+  </Step>
+  
+  <Step title="Confirm with Client">
+    Explain:
+    - "You now have 10 sessions available"
+    - "Valid for 6 months from today"
+    - "Book online or call us anytime"
+    - "We'll track your remaining sessions"
+  </Step>
+  
+  <Step title="Track Usage">
+    As client books and completes sessions:
+    - System decrements remaining sessions
+    - View balance in client profile
+    - Notify client when sessions are running low
+  </Step>
+</Steps>
+
+### Redeeming Gift Cards
+
+<Steps>
+  <Step title="Verify Gift Card">
+    When client presents gift card:
+    1. Check **Marketing > Giftcards** for card code
+    2. Verify:
+       - Card is active
+       - Not expired
+       - Has remaining balance
+  </Step>
+  
+  <Step title="Apply Balance">
+    In TPV:
+    1. Build cart normally
+    2. Apply gift card balance as discount
+    3. If balance exceeds cart total, note remaining amount
+    4. If cart exceeds balance, collect difference via normal payment
+  </Step>
+  
+  <Step title="Update Card Balance">
+    After redemption:
+    - Deduct used amount from gift card balance
+    - Provide receipt showing remaining balance
+    - Deactivate card if balance reaches zero
+  </Step>
+</Steps>
+
+## Campaign Planning
+
+### Seasonal Promotion Calendar
+
+<Tip>
+  **Annual Campaign Ideas:**
+  
+  **Q1 (Jan-Mar):**
+  - New Year wellness packages (bonuses)
+  - Valentine's Day couple's treatments (gift cards)
+  - Spring refresh discounts (coupons)
+  
+  **Q2 (Apr-Jun):**
+  - Mother's Day gift cards
+  - Summer prep packages (bonuses for body treatments)
+  - Wedding season specials (coupons for bridal services)
+  
+  **Q3 (Jul-Sep):**
+  - Summer flash sales (short-duration coupons)
+  - Back-to-school self-care packages
+  - Vacation prep bonuses
+  
+  **Q4 (Oct-Dec):**
+  - Holiday gift card promotions
+  - Black Friday/Cyber Monday coupons
+  - Year-end membership packages (bonuses)
+  - New Year advance bookings
+</Tip>
+
+### Creating a Campaign
+
+<Steps>
+  <Step title="Define Campaign Goal">
+    Identify what you want to achieve:
+    - Increase new client acquisition
+    - Boost revenue in slow periods
+    - Encourage advance bookings
+    - Increase average transaction value
+    - Promote specific services
+  </Step>
+  
+  <Step title="Choose Promotion Type">
+    Match type to goal:
+    - **Coupons**: New client acquisition, seasonal sales
+    - **Bonuses**: Client retention, revenue stability
+    - **Gift Cards**: Gifting occasions, cash flow
+  </Step>
+  
+  <Step title="Set Strategic Pricing">
+    Calculate financially sound discounts:
+    ```
+    Break-Even Analysis:
+    Service Cost: €30 (product + labor)
+    Regular Price: €60
+    Margin: €30 (50%)
+    
+    Safe Discount Range: 15-25% (€51-45 final price)
+    Minimum Discount Price: €35 (to maintain positive margin)
+    ```
+  </Step>
+  
+  <Step title="Create Promotion">
+    Build the offer in the appropriate module:
+    - Use clear, action-oriented naming
+    - Set appropriate limits (uses, dates, minimums)
+    - Write compelling descriptions
+  </Step>
+  
+  <Step title="Promote to Clients">
+    Communicate the offer through:
+    - Email campaigns
+    - Social media posts
+    - In-center posters
+    - Staff training (so they mention it)
+    - Website banners
+    - SMS to client list
+  </Step>
+  
+  <Step title="Track Performance">
+    Monitor:
+    - Redemption count (check "current_uses")
+    - Revenue generated
+    - New vs. returning client split
+    - Average cart value change
+  </Step>
+  
+  <Step title="Optimize">
+    After campaign:
+    - Analyze what worked
+    - Adjust discount levels for next time
+    - Identify most popular offers
+    - Refine targeting
+  </Step>
+</Steps>
+
+## Editing and Managing Promotions
+
+### Editing a Coupon
+
+<Steps>
+  <Step title="Locate Coupon">
+    In **Marketing > Cupones**, find the coupon by searching or browsing.
+  </Step>
+  
+  <Step title="Open Edit Form">
+    Click the **three-dot menu (⋮)** and select **Editar**.
+  </Step>
+  
+  <Step title="Modify Fields">
+    Update any settings:
+    - Extend expiration date
+    - Increase max uses
+    - Change discount value
+    - Adjust minimum purchase
+    - Update description
+  </Step>
+  
+  <Step title="Save Changes">
+    Click **"Guardar"** to update the coupon.
+  </Step>
+</Steps>
+
+<Warning>
+  Changing discount values on active coupons may confuse clients who already have the code. Consider:
+  - Creating a new coupon code instead
+  - Honoring the original terms for existing holders
+  - Clear communication about changes
+</Warning>
+
+### Deactivating Promotions
+
+To end a promotion without deleting:
+
+<Steps>
+  <Step title="Edit the Promotion">
+    Open the promotion in edit mode.
+  </Step>
+  
+  <Step title="Change Status">
+    Toggle status to **Inactivo**.
+  </Step>
+  
+  <Step title="Save">
+    The promotion remains in the system but can't be used.
+  </Step>
+</Steps>
+
+<Tip>
+  Deactivating is better than deleting because:
+  - Historical data is preserved
+  - You can reactivate if needed
+  - Reporting remains accurate
+  - You can reference past campaigns
+</Tip>
+
+### Deleting Promotions
+
+<Warning>
+  Deletion is permanent. Only delete if:
+  - Promotion was created in error
+  - Never actually used
+  - Duplicate of another promotion
+  
+  Otherwise, deactivate instead.
+</Warning>
+
+## Best Practices
+
+### Financial Protection
+
+<Tip>
+  **Prevent Loss-Making Promotions:**
+  
+  1. **Set Minimum Purchase Requirements**: Especially for percentage discounts
+  2. **Cap Maximum Discount**: Even on percentage coupons (e.g., max €50 off)
+  3. **Limit Total Uses**: Prevents budget overruns
+  4. **Set Clear Expiration**: Limits liability
+  5. **Track Redemption Rates**: Watch for abuse patterns
+  6. **One Coupon Per Transaction**: Prevent stacking unless intentional
+</Tip>
+
+### Client Communication
+
+<Tip>
+  **Clear Promotion Terms:**
+  
+  Always communicate:
+  - Exact discount amount or percentage
+  - Minimum purchase requirements
+  - Expiration date
+  - Applicable services (inclusions/exclusions)
+  - Maximum uses per customer (if limited)
+  - Non-transferable policy (if applicable)
+  
+  Example:
+  "Get 20% off your first visit! Use code WELCOME20 at checkout. Valid on services €50 or more. Expires December 31, 2025. One use per customer."
+</Tip>
+
+### Staff Training
+
+<Steps>
+  <Step title="Regular Updates">
+    Weekly team meetings should cover:
+    - New promotions launched
+    - Expiring promotions
+    - Redemption procedures
+    - Common questions and answers
+  </Step>
+  
+  <Step title="Reference Materials">
+    Provide staff with:
+    - Printed list of active coupons and terms
+    - Step-by-step TPV discount application guide
+    - Contact person for promotion questions
+  </Step>
+  
+  <Step title="Empowerment">
+    Allow staff to:
+    - Proactively mention promotions
+    - Apply manager-approved exceptions
+    - Suggest new promotion ideas
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Coupon Not Appearing in System
+
+Check:
+1. Status is set to "Activo"
+2. Valid Until date hasn't passed
+3. Max Uses hasn't been reached
+4. Search spelling is correct
+
+### Client Says Discount Isn't Working
+
+Verify:
+1. Coupon code entered correctly (case-sensitive?)
+2. Cart total meets minimum purchase
+3. Coupon hasn't expired
+4. Items in cart are eligible (not all products may qualify)
+5. Coupon hasn't reached its use limit
+
+### Bonus Purchase Not Associated with Client
+
+Ensure:
+1. Client was selected in TPV **before** adding bonus
+2. Sale completed successfully (check sales history)
+3. Correct client profile (not a duplicate)
+
+If issue persists, contact system administrator to manually associate the bonus.
+
+### Gift Card Balance Incorrect
+
+Steps to resolve:
+1. Check gift card transaction history
+2. Verify all redemptions were recorded
+3. Look for partial redemptions
+4. Manual adjustment may be needed - document reason
+
+## Quick Reference: Promotion Types
+
+| Type | Best For | Key Settings | Duration |
+|------|----------|--------------|----------|
+| **Percentage Coupon** | Scaling discounts | %, min purchase, max uses | Short-term |
+| **Fixed Amount Coupon** | Specific value-off | €, min purchase, max uses | Short-term |
+| **Session Bonus** | Loyalty, advance sales | Sessions, price, service | Long-term |
+| **Gift Card** | Gifting, stored value | Amount, expiration | Medium-term |

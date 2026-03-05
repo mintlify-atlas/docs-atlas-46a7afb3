@@ -1,0 +1,166 @@
+---
+title: Client Management
+description: Complete CRM system for managing your beauty center clients with detailed profiles, documents, and appointment history
+---
+
+## Overview
+
+The Client Management module is Beils Dashboard's comprehensive CRM (Customer Relationship Management) system designed specifically for beauty centers. It provides a centralized location to manage all client information, track their service history, store legal documents, and maintain detailed health questionnaires.
+
+## Key Features
+
+### Client Database
+
+- **Complete Client Profiles**: Store comprehensive information including personal details, contact information, address, birth date, gender, and government-issued ID documents (DNI, Passport, or NIE)
+- **Smart Search**: Quickly find clients by name, email, phone number, or document number
+- **Status Management**: Track client status (Active/Inactive) to manage your active customer base
+- **Client Activity Metrics**: View at-a-glance statistics showing number of appointments booked and consent documents signed
+
+### Document Management
+
+**Consent Documents**
+Maintain legal compliance by storing signed consent forms:
+- Upload and associate consent documents with client profiles
+- Track signature dates and document status (active/inactive)
+- Store document URLs for easy retrieval
+- Add custom notes to each consent record
+- View complete consent history for audit purposes
+
+**Health & Beauty Questionnaires**
+Store structured health and aesthetic assessment data:
+- Create custom questionnaire forms with flexible JSON schema
+- Track when questionnaires were completed
+- Store responses for reference during service delivery
+- Maintain historical records of client preferences and conditions
+
+### Client Profile Details
+
+Each client profile is organized into four main sections accessible via tabs:
+
+#### Personal Information
+- Complete demographic data (name, birth date, gender)
+- Full address details (street, city, postal code, country)
+- Contact information (phone, email)
+- Document verification (type and number)
+- Registration date tracking
+
+#### Consents
+A dedicated view showing:
+- All signed consent documents
+- Document names and download links
+- Signature dates and current status
+- Quick access to view or download PDFs
+
+#### Questionnaires
+Healthcare and beauty assessments including:
+- Questionnaire titles and completion dates
+- Structured response data
+- Ability to view detailed answers
+- Historical tracking of client responses
+
+#### Appointment History
+Complete booking records showing:
+- Past and upcoming appointment dates and times
+- Service or pack details for each booking
+- Appointment status (pending, confirmed, completed, cancelled, no_show)
+- Duration and assigned staff member
+
+## User Workflows
+
+### Adding a New Client
+
+1. Navigate to **Clientes** from the main menu
+2. Click the **Nuevo Cliente** button in the top-right corner
+3. Fill in the client form with required information:
+   - Personal details (name, surname, email, phone)
+   - Address information (street, city, postal code, country)
+   - Document details (type: DNI/Passport/NIE and number)
+   - Birth date and gender
+   - Optional: Profile avatar
+4. Click **Save** to create the client record
+5. The new client appears immediately in the client list
+
+### Editing Client Information
+
+1. From the client list, locate the client you want to edit
+2. Click the **Edit** icon (pencil) in the Actions column
+3. Update any fields in the client form
+4. Click **Save** to apply changes
+5. The updated information is immediately reflected in the profile
+
+### Viewing Client Details
+
+1. From the client list, click on the client's name or the **Ver Perfil** (View Profile) icon
+2. The detailed profile page opens showing:
+   - Client header with name, status badge, and initials avatar
+   - Contact information summary (email, phone, document)
+   - Tabbed interface for different information sections
+3. Switch between tabs to view:
+   - **Información Personal**: Location and demographic data
+   - **Consentimientos**: All signed legal documents
+   - **Cuestionarios**: Health and beauty assessments
+   - **Historial de Citas**: Complete appointment history
+
+### Managing Client Status
+
+1. Edit a client's profile
+2. Change the **Status** field between:
+   - **ON** (Active): Client appears in searches and can book appointments
+   - **OFF** (Inactive): Client is archived but data is preserved
+3. Save changes
+4. Status is reflected with color-coded badges (green for active, red for inactive)
+
+### Deleting a Client
+
+1. From the client list, click the **Delete** icon (trash) for the client
+2. Confirm the deletion in the warning dialog
+3. **Note**: This action permanently removes:
+   - Client profile and personal information
+   - Associated consent documents
+   - Linked questionnaires
+   - Cannot be undone
+
+## Business Benefits
+
+### Regulatory Compliance
+
+- Store and manage legal consent documents required for beauty treatments
+- Maintain audit trails with signature dates and document status
+- Keep organized records for inspections and compliance reviews
+- Track document history for legal protection
+
+### Improved Customer Service
+
+- Access complete client history instantly during appointments
+- Reference past questionnaires to provide personalized service
+- Track client preferences and treatment history
+- View appointment patterns and booking frequency
+
+### Operational Efficiency
+
+- Quickly find client information with powerful search
+- Reduce administrative time with centralized data management
+- Eliminate paper forms with digital questionnaires
+- Streamline check-in process with rapid client lookup
+
+### Business Intelligence
+
+- Track total active clients in your database
+- Monitor client engagement through booking statistics
+- Identify inactive clients for re-engagement campaigns
+- Analyze client demographics for marketing insights
+
+### Data Security & Privacy
+
+- Secure storage of sensitive personal information
+- Document-based consent management for GDPR compliance
+- Controlled access to client data
+- Status management for handling client revocations
+
+<Note>
+  The Client Management system uses the `User` model with `role: USER` to distinguish clients from staff members. All client records are linked via `user_id` to enable tracking across appointments, carts, debts, and documents.
+</Note>
+
+<Warning>
+  Deleting a client is permanent and will cascade delete all associated consents, questionnaires, and potentially affect historical appointment records. Consider setting the status to "OFF" instead to archive clients while preserving data.
+</Warning>

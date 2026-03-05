@@ -1,0 +1,164 @@
+---
+title: Introduction
+description: Welcome to Beils Dashboard - A comprehensive management platform for beauty centers
+---
+
+## What is Beils Dashboard?
+
+Beils Dashboard (Beils Belleza Honesta Plataforma) is a full-featured SaaS platform designed specifically for managing beauty centers and aesthetic clinics. Built with modern web technologies, it provides a complete solution for client management, appointment scheduling, product catalog, sales, and marketing operations.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Client Management (CRM)" icon="users">
+    Comprehensive client profiles with consent forms, questionnaires, treatment history, and GDPR-compliant data management.
+  </Card>
+  <Card title="Appointment Scheduling" icon="calendar">
+    Advanced booking system with staff assignment, service scheduling, and real-time availability tracking.
+  </Card>
+  <Card title="Product Catalog" icon="box">
+    Complete inventory management with categories, subcategories, brands, tags, SKU/barcode tracking, and stock alerts.
+  </Card>
+  <Card title="Point of Sale (TPV)" icon="credit-card">
+    Full-featured POS system with cart management, multiple payment methods, debt tracking, and sales history.
+  </Card>
+  <Card title="Services & Packs" icon="sparkles">
+    Flexible service management with customizable packs, duration tracking, and pricing configurations.
+  </Card>
+  <Card title="Marketing & Loyalty" icon="gift">
+    Customer loyalty programs with bonuses, coupons, gift cards, and promotional campaigns.
+  </Card>
+</CardGroup>
+
+## Target Users
+
+Beils Dashboard is designed for:
+
+- **Beauty Center Owners**: Manage all aspects of your business from a single platform
+- **Clinic Administrators**: Oversee staff, clients, inventory, and financial operations
+- **Staff Members**: Access appointment schedules, client information, and service details
+- **Receptionists**: Handle bookings, check-ins, and point-of-sale transactions
+
+## Technology Stack
+
+Beils Dashboard is built with cutting-edge technologies for performance, reliability, and developer experience:
+
+<CardGroup cols={2}>
+  <Card title="Frontend" icon="code">
+    - **Nuxt 4**: Vue.js framework with SSR/SSG capabilities
+    - **Vue 3**: Modern reactive JavaScript framework
+    - **TypeScript**: Type-safe development
+    - **Tailwind CSS 4**: Utility-first styling with DaisyUI components
+  </Card>
+  <Card title="Backend" icon="server">
+    - **Nuxt Server API**: Full-stack capabilities with server routes
+    - **Prisma ORM**: Type-safe database access
+    - **MariaDB**: Robust relational database
+    - **JWT Authentication**: Secure token-based auth
+  </Card>
+</CardGroup>
+
+### Core Dependencies
+
+```json
+{
+  "@prisma/client": "7.4.1",
+  "@prisma/adapter-mariadb": "7.4.1",
+  "mariadb": "^3.5.1",
+  "nuxt": "4.3.1",
+  "vue": "3.5.28",
+  "@tailwindcss/vite": "4.1.18",
+  "@tanstack/vue-query": "5.92.9",
+  "bcryptjs": "^3.0.3",
+  "jsonwebtoken": "^9.0.3",
+  "zod": "4.3.6"
+}
+```
+
+## Architecture Overview
+
+Beils Dashboard follows a modern full-stack architecture:
+
+### Database Schema
+
+The platform uses a comprehensive database schema organized into logical phases:
+
+1. **Phase 1: Clients (CRM)** - User management, consents, questionnaires, revocation tracking
+2. **Phase 2: Catalog** - Products, brands, categories, subcategories, and tags
+3. **Phase 3: Services & Packs** - Service definitions and bundled offerings
+4. **Phase 4: Marketing & Loyalty** - Coupons, bonuses, gift cards, and loyalty programs
+5. **Phase 5: Sales/TPV** - Cart management, checkout, debt tracking
+6. **Phase 6: Agenda** - Appointment booking and staff scheduling
+
+### Application Structure
+
+```
+app/
+├── assets/          # Styles and static assets
+├── components/      # Reusable Vue components
+├── layouts/         # Page layouts (auth, default)
+├── pages/           # Route pages
+│   ├── agenda/      # Appointment scheduling
+│   ├── catalogo/    # Product catalog
+│   ├── clientes/    # Client management
+│   ├── marketing/   # Marketing tools
+│   ├── servicios/   # Service management
+│   ├── tpv/         # Point of sale
+│   └── index.vue    # Login page
+├── plugins/         # Vue plugins
+└── stores/          # Pinia state management
+
+server/
+├── api/             # API routes
+│   ├── auth/        # Authentication endpoints
+│   ├── clients/     # Client CRUD operations
+│   ├── catalog/     # Product management
+│   ├── agenda/      # Booking endpoints
+│   └── ...
+├── middleware/      # Server middleware
+└── utils/           # Server utilities
+    ├── prisma.ts    # Database client
+    └── jwt.ts       # JWT utilities
+```
+
+## Security Features
+
+<Note>
+  Beils Dashboard implements enterprise-grade security measures:
+</Note>
+
+- **JWT Authentication**: Token-based authentication with refresh tokens
+- **Password Hashing**: bcrypt encryption for password storage
+- **Role-Based Access Control**: ADMIN and USER roles with different permissions
+- **User Status Management**: Enable/disable user accounts
+- **GDPR Compliance**: Consent management and data revocation tracking
+- **Input Validation**: Zod schema validation on all API endpoints
+
+## Data Management
+
+The platform provides comprehensive data management capabilities:
+
+- **Client Profiles**: Complete demographic and contact information
+- **Document Management**: Support for DNI, Passport, and NIE document types
+- **Consent Tracking**: Digital consent forms with status and signed dates
+- **Questionnaires**: Flexible JSON-based form data for client assessments
+- **Audit Trails**: Automatic created_at and updated_at timestamps on all records
+
+## Multi-Language Support
+
+Beils Dashboard includes internationalization (i18n) support with Vue I18n, allowing the interface to be displayed in multiple languages to serve diverse user bases.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Get up and running in minutes with our quickstart guide
+  </Card>
+  <Card title="Installation" icon="download" href="/installation">
+    Detailed installation instructions for development and production
+  </Card>
+</CardGroup>
+
+<Tip>
+  New to Nuxt or Vue? Check out the official [Nuxt documentation](https://nuxt.com/docs) and [Vue documentation](https://vuejs.org/guide/) to learn the fundamentals.
+</Tip>

@@ -1,0 +1,454 @@
+---
+title: 'Packs'
+description: 'Create and manage service and product bundles with special pricing'
+---
+
+## Overview
+
+The Packs API allows you to create bundles that combine multiple products and/or services into a single package with special pricing. Packs are ideal for creating treatment packages, promotional bundles, or comprehensive service offerings.
+
+## The Pack Object
+
+<ResponseField name="pack_id" type="string" required>
+  Unique identifier for the pack (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Pack name (max 150 characters)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Detailed pack description
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  Unique pack code for internal reference (max 50 characters)
+</ResponseField>
+
+<ResponseField name="price" type="number" required>
+  Final combined price for the entire pack
+</ResponseField>
+
+<ResponseField name="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Pack status: `activo` or `inactivo` (default: `activo`)
+</ResponseField>
+
+<ResponseField name="image_url" type="string">
+  URL to pack image (max 255 characters)
+</ResponseField>
+
+<ResponseField name="products" type="array">
+  Array of product items included in the pack, each with `quantity` and `product` details
+</ResponseField>
+
+<ResponseField name="services" type="array">
+  Array of service items included in the pack, each with `quantity` and `service` details
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime">
+  Pack creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime">
+  Last update timestamp
+</ResponseField>
+
+## List Packs
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/packs" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```bash Search Packs
+curl -X GET "https://api.beils.com/api/catalog/packs?search=beauty" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a list of all packs with their included products and services.
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search packs by name, description, or code (partial match)
+</ParamField>
+
+### Response
+
+Returns an array of pack objects with populated product and service details, ordered by creation date (newest first).
+
+```json
+[
+  {
+    "pack_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Complete Beauty Treatment",
+    "description": "Full day spa package with facial, massage, and premium products",
+    "code": "PACK-BEAUTY-001",
+    "price": 199.99,
+    "tax_rate": 21.0,
+    "status": "activo",
+    "image_url": "https://cdn.beils.com/packs/beauty-treatment.jpg",
+    "products": [
+      {
+        "pack_id": "550e8400-e29b-41d4-a716-446655440000",
+        "product_id": "660e8400-e29b-41d4-a716-446655440001",
+        "quantity": 1,
+        "product": {
+          "name": "Premium Face Cream 50ml",
+          "price": 45.00
+        }
+      },
+      {
+        "pack_id": "550e8400-e29b-41d4-a716-446655440000",
+        "product_id": "660e8400-e29b-41d4-a716-446655440002",
+        "quantity": 2,
+        "product": {
+          "name": "Relaxing Bath Oil 100ml",
+          "price": 25.00
+        }
+      }
+    ],
+    "services": [
+      {
+        "pack_id": "550e8400-e29b-41d4-a716-446655440000",
+        "service_id": "770e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1,
+        "service": {
+          "name": "Deep Cleansing Facial",
+          "price": 65.00
+        }
+      },
+      {
+        "pack_id": "550e8400-e29b-41d4-a716-446655440000",
+        "service_id": "770e8400-e29b-41d4-a716-446655440004",
+        "quantity": 1,
+        "service": {
+          "name": "Relaxing Massage 90min",
+          "price": 80.00
+        }
+      }
+    ],
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  }
+]
+```
+
+## Create Pack
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api.beils.com/api/catalog/packs" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Complete Beauty Treatment",
+    "description": "Full day spa package with facial, massage, and premium products",
+    "code": "PACK-BEAUTY-001",
+    "price": 199.99,
+    "tax_rate": 21.0,
+    "status": "activo",
+    "image_url": "https://cdn.beils.com/packs/beauty-treatment.jpg",
+    "products": [
+      {
+        "product_id": "660e8400-e29b-41d4-a716-446655440001",
+        "quantity": 1
+      },
+      {
+        "product_id": "660e8400-e29b-41d4-a716-446655440002",
+        "quantity": 2
+      }
+    ],
+    "services": [
+      {
+        "service_id": "770e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1
+      },
+      {
+        "service_id": "770e8400-e29b-41d4-a716-446655440004",
+        "quantity": 1
+      }
+    ]
+  }'
+```
+</CodeGroup>
+
+Creates a new pack with associated products and services. The operation is performed in a transaction to ensure all items are created together.
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Pack name (max 150 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Pack description
+</ParamField>
+
+<ParamField body="code" type="string">
+  Unique pack code (max 50 characters)
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Final pack price (typically discounted from individual item prices)
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ParamField>
+
+<ParamField body="status" type="string">
+  Pack status: `activo` or `inactivo` (default: `activo`)
+</ParamField>
+
+<ParamField body="image_url" type="string">
+  URL to pack promotional image
+</ParamField>
+
+<ParamField body="products" type="array">
+  Array of product items to include in the pack. Each item must have:
+  - `product_id` (string): The product UUID
+  - `quantity` (integer): Quantity of this product in the pack
+</ParamField>
+
+<ParamField body="services" type="array">
+  Array of service items to include in the pack. Each item must have:
+  - `service_id` (string): The service UUID
+  - `quantity` (integer): Number of service sessions in the pack
+</ParamField>
+
+### Response
+
+Returns the created pack object with full product and service details.
+
+## Get Pack
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/packs/{pack_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a specific pack by ID with all included products and services.
+
+### Path Parameters
+
+<ParamField path="pack_id" type="string" required>
+  The unique pack identifier
+</ParamField>
+
+### Response
+
+Returns the pack object with complete product and service information.
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  Pack ID is required
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Pack not found
+</ResponseField>
+
+## Update Pack
+
+<CodeGroup>
+```bash cURL
+curl -X PUT "https://api.beils.com/api/catalog/packs/{pack_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Complete Beauty Treatment - Premium",
+    "price": 219.99,
+    "products": [
+      {
+        "product_id": "660e8400-e29b-41d4-a716-446655440001",
+        "quantity": 2
+      }
+    ],
+    "services": [
+      {
+        "service_id": "770e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1
+      },
+      {
+        "service_id": "770e8400-e29b-41d4-a716-446655440004",
+        "quantity": 2
+      }
+    ]
+  }'
+```
+</CodeGroup>
+
+Updates an existing pack. When updating products or services, all existing items are removed and replaced with the new set provided. This ensures clean and predictable pack composition.
+
+### Path Parameters
+
+<ParamField path="pack_id" type="string" required>
+  The unique pack identifier
+</ParamField>
+
+### Body Parameters
+
+All fields are optional. Only include the fields you want to update.
+
+<ParamField body="name" type="string">
+  Pack name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Pack description
+</ParamField>
+
+<ParamField body="code" type="string">
+  Pack code
+</ParamField>
+
+<ParamField body="price" type="number">
+  Pack price
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage
+</ParamField>
+
+<ParamField body="status" type="string">
+  Pack status
+</ParamField>
+
+<ParamField body="image_url" type="string">
+  Pack image URL
+</ParamField>
+
+<ParamField body="products" type="array">
+  Complete array of products to include in the pack. All existing products will be replaced.
+</ParamField>
+
+<ParamField body="services" type="array">
+  Complete array of services to include in the pack. All existing services will be replaced.
+</ParamField>
+
+<Note>
+  When updating products or services, provide the complete list of items you want in the pack. The system performs a clean replacement:
+  1. Deletes all existing pack items
+  2. Creates new pack items from the provided arrays
+  
+  To remove all products/services, pass an empty array `[]`.
+</Note>
+
+### Response
+
+Returns the updated pack object with populated product and service names.
+
+## Delete Pack
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE "https://api.beils.com/api/catalog/packs/{pack_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Deletes a pack and all its associated product and service items.
+
+### Path Parameters
+
+<ParamField path="pack_id" type="string" required>
+  The unique pack identifier
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+<Warning>
+  Deleting a pack will remove all product and service associations but will not delete the actual products or services themselves.
+</Warning>
+
+## Use Cases
+
+### Treatment Packages
+
+Create comprehensive treatment packages that combine multiple services:
+
+```json
+{
+  "name": "Bridal Beauty Package",
+  "description": "Complete bridal preparation with 3 facials, manicure, and pedicure",
+  "price": 299.99,
+  "services": [
+    { "service_id": "facial_deep_cleansing", "quantity": 3 },
+    { "service_id": "manicure_gel", "quantity": 1 },
+    { "service_id": "pedicure_spa", "quantity": 1 }
+  ]
+}
+```
+
+### Product Bundles
+
+Create product bundles with promotional pricing:
+
+```json
+{
+  "name": "Complete Hair Care Kit",
+  "description": "Everything you need for healthy hair",
+  "price": 89.99,
+  "products": [
+    { "product_id": "shampoo_professional", "quantity": 1 },
+    { "product_id": "conditioner_professional", "quantity": 1 },
+    { "product_id": "hair_mask_repair", "quantity": 1 },
+    { "product_id": "serum_shine", "quantity": 1 }
+  ]
+}
+```
+
+### Mixed Packages
+
+Combine products and services for complete experiences:
+
+```json
+{
+  "name": "Home Care + Spa Day",
+  "description": "Professional spa treatment with take-home products",
+  "price": 159.99,
+  "services": [
+    { "service_id": "facial_hydration", "quantity": 1 },
+    { "service_id": "massage_60min", "quantity": 1 }
+  ],
+  "products": [
+    { "product_id": "face_cream_premium", "quantity": 1 },
+    { "product_id": "body_lotion_luxury", "quantity": 1 }
+  ]
+}
+```
+
+## Pricing Strategy
+
+The `price` field represents the final pack price, which is typically set lower than the sum of individual item prices to provide value:
+
+```javascript
+// Individual prices
+const facial = 65.00;
+const massage = 80.00;
+const cream = 45.00;
+const total = facial + massage + cream; // 190.00
+
+// Pack price (15% discount)
+const packPrice = 161.50; // Saves customer 28.50
+```
+
+## Transaction Safety
+
+All pack creation and update operations use database transactions to ensure data consistency. If any part of the operation fails (e.g., invalid product_id), the entire operation is rolled back, preventing partial pack creation.

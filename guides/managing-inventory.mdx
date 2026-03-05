@@ -1,0 +1,419 @@
+---
+title: Managing Inventory
+description: Track and manage your product inventory, stock levels, and catalog organization
+---
+
+The Catálogo de Productos (Product Catalog) is your inventory management system. It allows you to add products, track stock levels, organize items by categories, and manage pricing.
+
+## Accessing Product Management
+
+Navigate to **Catálogo > Productos** from the main menu. You'll see your complete product inventory with stock levels, prices, and organization details.
+
+## Understanding the Product View
+
+The products table displays:
+
+- **Producto**: Product name with image thumbnail, plus SKU and barcode (EAN)
+- **Categoría / Marca**: Category (and subcategory) with brand name
+- **Stock / Precio**: Current stock quantity with price, including low-stock alerts
+- **Estado**: Active (Activo) or Inactive (Inactivo) status
+- **Actions Menu**: Edit and delete options
+
+### Low Stock Alerts
+
+<Note>
+  Products at or below their minimum stock level display a **red alert icon** next to the stock count. This visual indicator helps you identify products that need reordering.
+</Note>
+
+## Adding a New Product
+
+<Steps>
+  <Step title="Open Product Form">
+    Click **"+ Nuevo Producto"** in the top-right corner.
+  </Step>
+  
+  <Step title="Enter General Information">
+    In the left column, complete:
+    
+    **Required Fields:**
+    - **Nombre del Producto**: Full product name
+    - **PVP** (Price): Selling price in euros
+    - **Impuesto (%)**: Tax rate (default: 21%)
+    - **Stock Actual**: Current quantity in inventory
+    
+    **Optional Fields:**
+    - **SKU**: Internal product code (e.g., "PRD-001")
+    - **EAN / Código**: Barcode number
+    - **Descripción**: Detailed product description
+    - **URL de Imagen**: Direct link to product image
+  </Step>
+  
+  <Step title="Set Publication Status">
+    Use the **Publicado** toggle at the top:
+    - **ON** (Green): Product is "Activo" and available for sale
+    - **OFF** (Gray): Product is "Inactivo" and hidden from sales channels
+  </Step>
+  
+  <Step title="Organize the Product">
+    In the right column under "Organización":
+    
+    - **Marca**: Select brand (create brands in **Catálogo > Marcas**)
+    - **Categoría**: Choose primary category
+    - **Subcategoría**: Select subcategory (appears after choosing category)
+    - **Etiquetas**: Click tags to associate them (multi-select enabled)
+  </Step>
+  
+  <Step title="Set Inventory Parameters">
+    Configure stock management:
+    
+    - **Stock Actual**: Current inventory count
+    - **Stock Mínimo (Alerta)**: Threshold for low-stock warnings
+    
+    When stock falls to or below the minimum, the system displays an alert.
+  </Step>
+  
+  <Step title="Save the Product">
+    Click **"Crear Producto"** to add the item to your catalog.
+  </Step>
+</Steps>
+
+<Tip>
+  **Using SKU Codes**: Establish a consistent SKU format for your inventory:
+  - PRD-001, PRD-002 for general products
+  - SHP-001 for shampoos
+  - TRT-001 for treatments
+  
+  Consistent codes make inventory tracking and ordering much easier.
+</Tip>
+
+## Filtering and Searching Products
+
+### Search Bar
+
+The search field finds products by:
+- Product name
+- SKU code
+- Barcode/EAN number
+
+Search results update in real-time as you type.
+
+### Category Filter
+
+Use the **"Todas las Categorías"** dropdown to:
+- View only products in a specific category
+- Narrow down product lists for faster navigation
+- Organize inventory by department
+
+### Brand Filter
+
+Use the **"Todas las Marcas"** dropdown to:
+- Show products from a single brand
+- Analyze brand representation in your inventory
+- Facilitate vendor-specific inventory counts
+
+### Clearing Filters
+
+Click **"Limpiar"** to reset all filters and return to the full product list.
+
+## Editing Products
+
+<Steps>
+  <Step title="Locate the Product">
+    Use search or filters to find the product you want to edit.
+  </Step>
+  
+  <Step title="Open Edit Mode">
+    Click the **three-dot menu (⋮)** and select **Editar**.
+  </Step>
+  
+  <Step title="Modify Information">
+    The product form opens with all current data pre-filled. The modal title shows "Editar Producto".
+    
+    Update any fields as needed.
+  </Step>
+  
+  <Step title="Save Changes">
+    Click **"Guardar"** to update the product.
+  </Step>
+</Steps>
+
+### Common Edits
+
+**Adjusting Stock After Receiving Inventory:**
+1. Edit the product
+2. Update **Stock Actual** to the new total
+3. Save changes
+
+**Updating Prices:**
+1. Edit the product
+2. Change the **PVP** field
+3. Optionally adjust **Impuesto (%)** if tax rates changed
+4. Save
+
+**Deactivating Discontinued Products:**
+1. Edit the product
+2. Turn off the **Publicado** toggle (status becomes "Inactivo")
+3. Save
+
+<Note>
+  Inactive products remain in your database but won't appear in the TPV (point of sale) for new sales. This preserves historical sales data.
+</Note>
+
+## Understanding Categories and Organization
+
+### Category Hierarchy
+
+Products organize into a three-level structure:
+
+1. **Categoría** (Category): Top-level grouping (e.g., "Hair Care")
+2. **Subcategoría** (Subcategory): Nested under categories (e.g., "Shampoo")
+3. **Etiquetas** (Tags): Cross-category labels (e.g., "Organic", "Professional")
+
+### When to Use Each Level
+
+**Categories**: Major product divisions
+- Hair Products
+- Skin Care
+- Equipment
+- Retail Items
+
+**Subcategories**: Specific product types
+- Shampoos (under Hair Products)
+- Conditioners (under Hair Products)
+- Moisturizers (under Skin Care)
+- Cleansers (under Skin Care)
+
+**Tags**: Cross-cutting attributes
+- Vegan
+- Organic
+- Luxury
+- Professional Use
+- Retail Sale
+
+<Tip>
+  A single product can have one category, one subcategory, and **multiple tags**. This enables flexible searching and reporting.
+</Tip>
+
+## Stock Management Best Practices
+
+### Setting Minimum Stock Levels
+
+<Steps>
+  <Step title="Analyze Usage Patterns">
+    Review how quickly each product sells:
+    - High-turnover items: Set higher minimum stock
+    - Slow-moving items: Set lower minimum stock
+  </Step>
+  
+  <Step title="Consider Lead Times">
+    Factor in supplier delivery times:
+    - 1-day delivery: Lower minimum is safe
+    - 2-week delivery: Higher minimum prevents stockouts
+  </Step>
+  
+  <Step title="Set the Threshold">
+    Edit the product and set **Stock Mínimo** to your calculated level.
+  </Step>
+  
+  <Step title="Monitor Alerts">
+    Regularly check the product list for red alert icons indicating low stock.
+  </Step>
+</Steps>
+
+### Conducting Stock Counts
+
+<Tip>
+  **Physical Inventory Process**:
+  
+  1. **Schedule Regular Counts**: Monthly or quarterly
+  2. **Count by Category**: Use category filters to work through sections
+  3. **Update Each Product**: Edit and adjust "Stock Actual" based on physical count
+  4. **Investigate Discrepancies**: Large differences may indicate:
+     - Theft or loss
+     - Unreported damage
+     - Sales not properly recorded
+     - Data entry errors
+</Tip>
+
+### Handling Stock Adjustments
+
+**Receiving New Inventory:**
+```
+Current Stock: 15
++ New Units Received: 24
+= New Stock Actual: 39
+```
+
+**After Sales (Automatic):**
+When products sell through the TPV, stock decreases automatically.
+
+**Damaged/Expired Stock:**
+```
+Current Stock: 30
+- Damaged Units: 3
+= New Stock Actual: 27
+```
+
+## Managing Product Images
+
+Product images help with visual identification in the catalog and TPV.
+
+### Adding Images
+
+<Steps>
+  <Step title="Upload Image to Hosting">
+    Use an image hosting service or your server to upload the product photo.
+  </Step>
+  
+  <Step title="Copy Image URL">
+    Get the direct link to the image file (must end in .jpg, .png, etc.).
+  </Step>
+  
+  <Step title="Add to Product">
+    Edit the product and paste the URL into the **URL de Imagen** field.
+  </Step>
+  
+  <Step title="Verify Display">
+    Save and check that the image appears in the product list.
+  </Step>
+</Steps>
+
+<Tip>
+  **Image Best Practices**:
+  - Use square images (500x500px recommended)
+  - Ensure good lighting and clear focus
+  - Use white or neutral backgrounds
+  - Keep file sizes under 200KB for fast loading
+  - Use consistent styling across all product photos
+</Tip>
+
+## Working with Brands and Categories
+
+Before organizing products, ensure your brands and categories exist:
+
+### Creating Brands
+
+1. Go to **Catálogo > Marcas**
+2. Click **"+ Nueva Marca"**
+3. Enter brand name and optional logo URL
+4. Save
+
+### Creating Categories
+
+1. Go to **Catálogo > Categorías**
+2. Click **"+ Nueva Categoría"**
+3. Enter category name and description
+4. Save
+
+### Creating Subcategories
+
+1. Go to **Catálogo > Subcategorías**
+2. Click **"+ Nueva Subcategoría"**
+3. Select parent category
+4. Enter subcategory name
+5. Save
+
+### Creating Tags
+
+1. Go to **Catálogo > Etiquetas**
+2. Click **"+ Nueva Etiqueta"**
+3. Enter tag name
+4. Save
+
+## Deleting Products
+
+<Warning>
+  Deleting a product permanently removes it from the system. This action cannot be undone.
+  
+  **Important**: If the product has sales history, deletion may fail or cause reporting issues.
+  
+  **Recommended**: Use the **Inactivo** status instead of deleting to preserve data integrity.
+</Warning>
+
+<Steps>
+  <Step title="Open Actions Menu">
+    Click the **three-dot menu (⋮)** for the product.
+  </Step>
+  
+  <Step title="Select Delete">
+    Click **Eliminar** (red option).
+  </Step>
+  
+  <Step title="Confirm Deletion">
+    Confirm in the browser prompt.
+  </Step>
+</Steps>
+
+## Reporting and Analysis
+
+Use product data for business insights:
+
+### Stock Value
+
+Calculate total inventory value:
+```
+Product Price × Current Stock = Product Value
+Sum of all Product Values = Total Inventory Value
+```
+
+### Low Stock Report
+
+1. Scan the product list for red alert icons
+2. Click each to see exact stock levels
+3. Create a reorder list based on minimum stock thresholds
+
+### Category Performance
+
+1. Filter by category
+2. Note number of products and stock levels
+3. Compare across categories to identify:
+   - Overstock situations
+   - Underrepresented categories
+   - Opportunities for expansion
+
+## Troubleshooting
+
+### Subcategory Dropdown is Empty
+
+Subcategories only appear after selecting a category. Ensure:
+1. A category is selected first
+2. Subcategories exist for that category in **Catálogo > Subcategorías**
+
+### Product Not Showing in TPV
+
+If a product doesn't appear in the point of sale:
+1. Check the status - must be "Activo" (Publicado toggle ON)
+2. Ensure stock is above zero
+3. Refresh the TPV page
+
+### Price Shows Incorrectly
+
+Verify:
+- Price is entered as a decimal number (e.g., 29.99, not 29,99)
+- Tax rate is correct (typically 21%)
+- No extra spaces or characters in the price field
+
+### Cannot Find Product in Search
+
+Search looks in:
+- Product name
+- SKU code
+- Barcode
+
+Check for:
+- Spelling mistakes
+- Incomplete search terms (try partial words)
+- Wrong field (searching for SKU in product name)
+
+## Quick Reference: Field Validation
+
+| Field | Required | Format | Example |
+|-------|----------|--------|----------|
+| Nombre del Producto | Yes | Text | "Champú Hidratante Professional" |
+| SKU | No | Alphanumeric | "SHP-001" |
+| EAN / Código | No | Numeric | "5901234123457" |
+| PVP | Yes | Number | 29.99 |
+| Impuesto (%) | Yes | Number | 21 |
+| Stock Actual | Yes | Integer | 45 |
+| Stock Mínimo | No | Integer | 10 |
+| URL de Imagen | No | URL | "https://example.com/img.jpg" |

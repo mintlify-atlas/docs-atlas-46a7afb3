@@ -1,0 +1,589 @@
+---
+title: 'Carts'
+description: 'Manage shopping carts for point-of-sale transactions'
+---
+
+## Overview
+
+The Carts API allows you to create and manage shopping carts for point-of-sale transactions. Carts track items being purchased, calculate totals, apply discounts, and record payment information. Each cart can be associated with a user (client) or remain anonymous for walk-in customers.
+
+### Cart Lifecycle
+
+Carts progress through the following statuses:
+
+- **pending** - Cart is active and items can be added/modified
+- **completed** - Transaction has been finalized and payment received
+- **cancelled** - Cart was abandoned or transaction cancelled
+
+## Endpoints
+
+### List Carts
+
+Retrieve all carts with optional filtering by status.
+
+```bash
+GET /api/sales/carts
+```
+
+#### Query Parameters
+
+<ParamField query="status" type="string" optional>
+  Filter carts by status: `pending`, `completed`, or `cancelled`
+</ParamField>
+
+#### Response
+
+Returns an array of cart objects ordered by creation date (newest first).
+
+<ResponseField name="cart_id" type="string" required>
+  Unique identifier for the cart (UUID)
+</ResponseField>
+
+<ResponseField name="user_id" type="string">
+  ID of the associated user/client. Null for anonymous carts
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  User information if cart is associated with a client
+  <Expandable title="properties">
+    <ResponseField name="name" type="string">
+      Client's first name
+    </ResponseField>
+    <ResponseField name="surname" type="string">
+      Client's last name
+    </ResponseField>
+    <ResponseField name="email" type="string">
+      Client's email address
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Current cart status: `pending`, `completed`, or `cancelled`
+</ResponseField>
+
+<ResponseField name="subtotal" type="number" required>
+  Sum of all item prices before discounts
+</ResponseField>
+
+<ResponseField name="discount" type="number" required>
+  Total discount amount applied to the cart
+</ResponseField>
+
+<ResponseField name="total" type="number" required>
+  Final amount after discounts (subtotal - discount)
+</ResponseField>
+
+<ResponseField name="payment_method" type="string">
+  Payment method used: `cash`, `card`, `transfer`, or `mixed`
+</ResponseField>
+
+<ResponseField name="notes" type="string">
+  Additional notes or comments about the transaction
+</ResponseField>
+
+<ResponseField name="applied_coupon" type="string">
+  Coupon code applied during checkout
+</ResponseField>
+
+<ResponseField name="applied_giftcard" type="string">
+  Gift card code used for payment
+</ResponseField>
+
+<ResponseField name="items" type="array" required>
+  Array of cart items (see CartItem schema)
+</ResponseField>
+
+<ResponseField name="debts" type="array">
+  Associated debt records if payment is incomplete
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  ISO 8601 timestamp when cart was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  ISO 8601 timestamp when cart was last updated
+</ResponseField>
+
+#### Example Request
+
+```bash
+curl -X GET 'https://api.beils.com/api/sales/carts?status=pending' \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+#### Example Response
+
+```json
+[
+  {
+    "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "user": {
+      "name": "Maria",
+      "surname": "Garcia",
+      "email": "maria.garcia@example.com"
+    },
+    "status": "pending",
+    "subtotal": 150.00,
+    "discount": 15.00,
+    "total": 135.00,
+    "payment_method": "card",
+    "notes": null,
+    "applied_coupon": "SUMMER10",
+    "applied_giftcard": null,
+    "items": [
+      {
+        "cart_item_id": "660e8400-e29b-41d4-a716-446655440001",
+        "item_type": "service",
+        "item_id": "770e8400-e29b-41d4-a716-446655440002",
+        "name": "Facial Treatment",
+        "quantity": 1,
+        "unit_price": 80.00,
+        "tax_rate": 21.0,
+        "subtotal": 80.00,
+        "total": 80.00
+      },
+      {
+        "cart_item_id": "660e8400-e29b-41d4-a716-446655440003",
+        "item_type": "product",
+        "item_id": "770e8400-e29b-41d4-a716-446655440004",
+        "name": "Moisturizing Cream",
+        "quantity": 1,
+        "unit_price": 70.00,
+        "tax_rate": 21.0,
+        "subtotal": 70.00,
+        "total": 70.00
+      }
+    ],
+    "debts": [],
+    "created_at": "2026-03-05T10:30:00Z",
+    "updated_at": "2026-03-05T10:30:00Z"
+  }
+]
+```
+
+---
+
+### Create Cart
+
+Create a new shopping cart with items.
+
+```bash
+POST /api/sales/carts
+```
+
+#### Request Body
+
+<ParamField body="user_id" type="string" optional>
+  ID of the client. Omit for anonymous walk-in customers
+</ParamField>
+
+<ParamField body="status" type="string" default="pending">
+  Initial cart status: `pending`, `completed`, or `cancelled`
+</ParamField>
+
+<ParamField body="payment_method" type="string" default="cash">
+  Payment method: `cash`, `card`, `transfer`, or `mixed`
+</ParamField>
+
+<ParamField body="discount" type="number" default="0">
+  Manual discount amount to apply
+</ParamField>
+
+<ParamField body="notes" type="string" optional>
+  Additional notes about the transaction
+</ParamField>
+
+<ParamField body="applied_coupon" type="string" optional>
+  Coupon code to apply (stores code for history)
+</ParamField>
+
+<ParamField body="applied_giftcard" type="string" optional>
+  Gift card code used (stores code for history)
+</ParamField>
+
+<ParamField body="items" type="array" required>
+  Array of items to add to the cart
+  <Expandable title="Item properties">
+    <ParamField body="item_type" type="string" required>
+      Type of item: `product`, `service`, `pack`, `bonus`, or `giftcard`
+    </ParamField>
+    <ParamField body="item_id" type="string" required>
+      ID of the item being sold
+    </ParamField>
+    <ParamField body="name" type="string" required>
+      Name of the item (snapshot at time of sale)
+    </ParamField>
+    <ParamField body="quantity" type="number" required>
+      Quantity purchased
+    </ParamField>
+    <ParamField body="unit_price" type="number" required>
+      Price per unit
+    </ParamField>
+    <ParamField body="tax_rate" type="number" default="21.0">
+      Tax rate percentage
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<Note>
+  **Transaction Safety**: Cart creation uses database transactions to ensure data consistency. The subtotal and total are automatically calculated from items to prevent client-side tampering.
+</Note>
+
+#### Example Request
+
+```bash
+curl -X POST 'https://api.beils.com/api/sales/carts' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "user_id": "123e4567-e89b-12d3-a456-426614174000",
+    "status": "pending",
+    "payment_method": "card",
+    "discount": 10.00,
+    "applied_coupon": "WELCOME10",
+    "items": [
+      {
+        "item_type": "service",
+        "item_id": "770e8400-e29b-41d4-a716-446655440002",
+        "name": "Manicure",
+        "quantity": 1,
+        "unit_price": 35.00,
+        "tax_rate": 21.0
+      },
+      {
+        "item_type": "product",
+        "item_id": "770e8400-e29b-41d4-a716-446655440005",
+        "name": "Nail Polish",
+        "quantity": 2,
+        "unit_price": 12.00,
+        "tax_rate": 21.0
+      }
+    ]
+  }'
+```
+
+#### Example Response
+
+```json
+{
+  "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "pending",
+  "subtotal": 59.00,
+  "discount": 10.00,
+  "total": 49.00,
+  "payment_method": "card",
+  "notes": null,
+  "applied_coupon": "WELCOME10",
+  "applied_giftcard": null,
+  "items": [
+    {
+      "cart_item_id": "660e8400-e29b-41d4-a716-446655440001",
+      "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+      "item_type": "service",
+      "item_id": "770e8400-e29b-41d4-a716-446655440002",
+      "name": "Manicure",
+      "quantity": 1,
+      "unit_price": 35.00,
+      "tax_rate": 21.0,
+      "subtotal": 35.00,
+      "total": 35.00,
+      "created_at": "2026-03-05T11:00:00Z",
+      "updated_at": "2026-03-05T11:00:00Z"
+    },
+    {
+      "cart_item_id": "660e8400-e29b-41d4-a716-446655440003",
+      "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+      "item_type": "product",
+      "item_id": "770e8400-e29b-41d4-a716-446655440005",
+      "name": "Nail Polish",
+      "quantity": 2,
+      "unit_price": 12.00,
+      "tax_rate": 21.0,
+      "subtotal": 24.00,
+      "total": 24.00,
+      "created_at": "2026-03-05T11:00:00Z",
+      "updated_at": "2026-03-05T11:00:00Z"
+    }
+  ],
+  "user": {
+    "name": "Maria",
+    "surname": "Garcia"
+  },
+  "created_at": "2026-03-05T11:00:00Z",
+  "updated_at": "2026-03-05T11:00:00Z"
+}
+```
+
+---
+
+### Get Cart
+
+Retrieve a specific cart by ID with full details.
+
+```bash
+GET /api/sales/carts/{cart_id}
+```
+
+#### Path Parameters
+
+<ParamField path="cart_id" type="string" required>
+  The unique identifier of the cart
+</ParamField>
+
+#### Response
+
+Returns a cart object with complete user and item information.
+
+#### Example Request
+
+```bash
+curl -X GET 'https://api.beils.com/api/sales/carts/550e8400-e29b-41d4-a716-446655440000' \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+#### Example Response
+
+```json
+{
+  "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "user": {
+    "name": "Maria",
+    "surname": "Garcia",
+    "email": "maria.garcia@example.com",
+    "phone": "+34612345678"
+  },
+  "status": "completed",
+  "subtotal": 120.00,
+  "discount": 12.00,
+  "total": 108.00,
+  "payment_method": "card",
+  "notes": "Client requested receipt",
+  "applied_coupon": "LOYAL10",
+  "applied_giftcard": null,
+  "items": [
+    {
+      "cart_item_id": "660e8400-e29b-41d4-a716-446655440001",
+      "item_type": "service",
+      "item_id": "770e8400-e29b-41d4-a716-446655440002",
+      "name": "Hair Cut",
+      "quantity": 1,
+      "unit_price": 45.00,
+      "tax_rate": 21.0,
+      "subtotal": 45.00,
+      "total": 45.00
+    },
+    {
+      "cart_item_id": "660e8400-e29b-41d4-a716-446655440002",
+      "item_type": "service",
+      "item_id": "770e8400-e29b-41d4-a716-446655440003",
+      "name": "Hair Coloring",
+      "quantity": 1,
+      "unit_price": 75.00,
+      "tax_rate": 21.0,
+      "subtotal": 75.00,
+      "total": 75.00
+    }
+  ],
+  "debts": [],
+  "created_at": "2026-03-05T09:00:00Z",
+  "updated_at": "2026-03-05T11:30:00Z"
+}
+```
+
+---
+
+### Update Cart
+
+Update cart status, payment method, or notes. The cart itself is immutable after creation, but these metadata fields can be updated.
+
+```bash
+PUT /api/sales/carts/{cart_id}
+```
+
+#### Path Parameters
+
+<ParamField path="cart_id" type="string" required>
+  The unique identifier of the cart
+</ParamField>
+
+#### Request Body
+
+<ParamField body="status" type="string" optional>
+  Update cart status: `pending`, `completed`, or `cancelled`
+</ParamField>
+
+<ParamField body="payment_method" type="string" optional>
+  Update payment method: `cash`, `card`, `transfer`, or `mixed`
+</ParamField>
+
+<ParamField body="notes" type="string" optional>
+  Update or add notes
+</ParamField>
+
+<Warning>
+  Once a cart is created, items cannot be modified through this endpoint. To change items, create a new cart. This ensures transaction integrity.
+</Warning>
+
+#### Example Request
+
+```bash
+curl -X PUT 'https://api.beils.com/api/sales/carts/550e8400-e29b-41d4-a716-446655440000' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "status": "completed",
+    "payment_method": "card",
+    "notes": "Payment confirmed"
+  }'
+```
+
+#### Example Response
+
+```json
+{
+  "cart_id": "550e8400-e29b-41d4-a716-446655440000",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "completed",
+  "subtotal": 120.00,
+  "discount": 12.00,
+  "total": 108.00,
+  "payment_method": "card",
+  "notes": "Payment confirmed",
+  "applied_coupon": "LOYAL10",
+  "applied_giftcard": null,
+  "created_at": "2026-03-05T09:00:00Z",
+  "updated_at": "2026-03-05T11:35:00Z"
+}
+```
+
+---
+
+### Delete Cart
+
+Delete a cart permanently. This will cascade delete all cart items.
+
+```bash
+DELETE /api/sales/carts/{cart_id}
+```
+
+#### Path Parameters
+
+<ParamField path="cart_id" type="string" required>
+  The unique identifier of the cart
+</ParamField>
+
+<Warning>
+  Deleting a cart removes all associated cart items due to cascade delete. Associated debts will have their cart reference set to null rather than being deleted.
+</Warning>
+
+#### Example Request
+
+```bash
+curl -X DELETE 'https://api.beils.com/api/sales/carts/550e8400-e29b-41d4-a716-446655440000' \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+#### Example Response
+
+```json
+{
+  "success": true
+}
+```
+
+---
+
+## Common Use Cases
+
+### Processing a Walk-in Sale
+
+For customers without an account:
+
+```bash
+curl -X POST 'https://api.beils.com/api/sales/carts' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "status": "completed",
+    "payment_method": "cash",
+    "items": [
+      {
+        "item_type": "product",
+        "item_id": "prod-123",
+        "name": "Shampoo",
+        "quantity": 1,
+        "unit_price": 15.00,
+        "tax_rate": 21.0
+      }
+    ]
+  }'
+```
+
+### Applying Multiple Discounts
+
+Combine coupon codes and manual discounts:
+
+```bash
+curl -X POST 'https://api.beils.com/api/sales/carts' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "user_id": "user-123",
+    "discount": 25.00,
+    "applied_coupon": "VIP20",
+    "applied_giftcard": "GIFT50",
+    "payment_method": "mixed",
+    "items": [...]
+  }'
+```
+
+### Tracking Daily Sales
+
+Filter completed carts for reporting:
+
+```bash
+curl -X GET 'https://api.beils.com/api/sales/carts?status=completed' \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+## Error Responses
+
+### Cart Not Found
+
+```json
+{
+  "statusCode": 404,
+  "statusMessage": "Cart not found"
+}
+```
+
+### Missing Cart ID
+
+```json
+{
+  "statusCode": 400,
+  "statusMessage": "Cart ID is required"
+}
+```
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Cart Items" icon="list" href="/api/sales/cart-items">
+    Manage individual items within carts
+  </Card>
+  <Card title="Payments" icon="credit-card" href="/api/sales/payments">
+    Process payments and manage debts
+  </Card>
+  <Card title="Coupons" icon="tag" href="/api/marketing/coupons">
+    Create and manage discount coupons
+  </Card>
+  <Card title="Gift Cards" icon="gift" href="/api/marketing/giftcards">
+    Issue and redeem gift cards
+  </Card>
+</CardGroup>

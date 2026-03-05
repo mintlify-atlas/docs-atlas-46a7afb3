@@ -1,0 +1,209 @@
+---
+title: Managing Clients
+description: Learn how to add, edit, and manage client profiles in your beauty center CRM
+---
+
+The Clients module is your central CRM hub for managing customer information, tracking their activity, and maintaining relationships with your beauty center's clientele.
+
+## Accessing the Clients Module
+
+Navigate to **Clientes** from the main navigation menu. You'll see a comprehensive list of all registered clients with their contact information and activity metrics.
+
+## Adding a New Client
+
+<Steps>
+  <Step title="Open the Client Form">
+    Click the **"+ Nuevo Cliente"** button in the top-right corner of the Clients page.
+  </Step>
+  
+  <Step title="Fill in Personal Information">
+    Complete the required fields:
+    - **Nombre** (First name) - Required
+    - **Apellidos** (Surname) - Required
+    - **Correo Electrónico** (Email) - Must be a valid email address
+    - **Teléfono** (Phone) - Required, format: +34 600...
+  </Step>
+  
+  <Step title="Add Identification Details">
+    Provide document information:
+    - Select **Tipo Documento** (DNI, NIE, or Passport)
+    - Enter the **Nº Documento** (Document number)
+  </Step>
+  
+  <Step title="Save the Client">
+    Click **"Nuevo Cliente"** to create the client profile. The client will be added with an "Activo" (Active) status by default.
+  </Step>
+</Steps>
+
+<Tip>
+  The phone number and email are critical for client communication. Make sure these are accurate as they'll be used for appointment confirmations and marketing campaigns.
+</Tip>
+
+## Viewing Client Information
+
+The clients table displays key information at a glance:
+
+- **Cliente**: Name with initials in a colored badge, plus email address
+- **Contacto**: Phone number and document type/number
+- **Actividad**: Count of bookings (with calendar icon) and signed consents (with document icon)
+- **Estado**: Active or Inactive status badge
+- **Acciones**: Quick action buttons for view, edit, and delete
+
+### Search and Filter Clients
+
+Use the search bar at the top-right to find clients by:
+- Name (first or last)
+- Email address
+
+The search is real-time and filters results as you type.
+
+## Editing Client Information
+
+<Steps>
+  <Step title="Locate the Client">
+    Find the client in the list using search or scrolling.
+  </Step>
+  
+  <Step title="Open Edit Mode">
+    Click the **Edit** icon (pencil) in the Actions column.
+  </Step>
+  
+  <Step title="Update Information">
+    Modify any fields as needed. All the same validation rules apply:
+    - Email must be valid format
+    - Phone must be at least 6 characters
+    - Document number must be at least 3 characters
+  </Step>
+  
+  <Step title="Save Changes">
+    Click **"Guardar"** (Save) to update the client profile.
+  </Step>
+</Steps>
+
+<Note>
+  When editing a client, the form will show "Editar Cliente" in the header instead of "Nuevo Cliente". All previously entered data will be pre-populated.
+</Note>
+
+## Viewing Client Details
+
+Click on a client's name or the **View Profile** icon (user circle) to access their detailed profile page at `/clientes/[id]`. This page includes:
+
+- Complete contact information
+- Booking history with all scheduled appointments
+- Signed consent forms and questionnaires
+- Purchase history and loyalty metrics
+
+## Deactivating or Deleting Clients
+
+### Deactivating a Client
+
+Instead of deleting, you can change a client's status to "Inactivo" (Inactive) by editing their profile. This preserves their history while marking them as no longer active.
+
+### Deleting a Client
+
+<Warning>
+  Deleting a client is **permanent** and will remove:
+  - Their profile information
+  - All associated consent forms
+  - All questionnaire responses
+  
+  However, their booking history is preserved for audit purposes.
+</Warning>
+
+<Steps>
+  <Step title="Click Delete Icon">
+    Click the **Trash** icon in the Actions column for the client.
+  </Step>
+  
+  <Step title="Confirm Deletion">
+    A confirmation modal will appear with the warning message. Read it carefully.
+  </Step>
+  
+  <Step title="Complete Deletion">
+    Click **"Confirmar"** to permanently delete the client.
+  </Step>
+</Steps>
+
+## Understanding Activity Metrics
+
+Each client row displays two important metrics:
+
+1. **Citas Reservadas** (Bookings): Shows the total number of appointments scheduled
+2. **Consentimientos Firmados** (Consents): Shows signed consent forms count
+
+These metrics help you quickly identify:
+- Regular customers (high booking count)
+- New clients (low booking count)
+- Compliance status (consents signed)
+
+## Best Practices
+
+<Tip>
+  **Complete Profiles**: Always fill in all fields, even optional ones. Complete profiles enable:
+  - Better customer service
+  - Accurate reporting
+  - Effective marketing campaigns
+  - Legal compliance documentation
+</Tip>
+
+<Tip>
+  **Regular Updates**: Encourage staff to update client information whenever they learn about changes:
+  - New phone numbers
+  - New email addresses
+  - Address changes
+  
+  Updated contact information prevents communication issues.
+</Tip>
+
+<Tip>
+  **Use Status Field**: Instead of deleting clients who stop visiting, mark them as "Inactivo". This:
+  - Preserves historical data
+  - Allows for win-back campaigns
+  - Maintains audit trails
+  - Enables churn analysis
+</Tip>
+
+## Common Tasks
+
+### Onboarding a Walk-in Client
+
+1. When a new customer arrives, quickly create their profile using the "+ Nuevo Cliente" button
+2. Enter their basic information (name, phone, email)
+3. Add document details for legal compliance
+4. Save the profile
+5. Immediately proceed to schedule their appointment in the Agenda module
+
+### Preparing for a VIP Client Visit
+
+1. Search for the client by name
+2. Click to view their full profile
+3. Review their booking history to understand preferences
+4. Check if consent forms need renewal
+5. Note any special requirements in their appointment notes
+
+## Troubleshooting
+
+### "Email inválido" Error
+
+Ensure the email follows the standard format: `name@domain.com`. Common mistakes:
+- Missing @ symbol
+- Spaces in the email
+- Missing domain extension (.com, .es, etc.)
+
+### Cannot Delete Client
+
+If deletion fails, the client may have:
+- Active appointments scheduled
+- Pending financial transactions
+- Dependencies in other modules
+
+Consider marking them as "Inactivo" instead.
+
+### Client Not Appearing in Search
+
+The search looks for matches in:
+- First name
+- Last name  
+- Email address
+
+Check spelling and try searching by a different field (e.g., email instead of name).

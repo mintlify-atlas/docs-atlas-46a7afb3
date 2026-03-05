@@ -1,0 +1,659 @@
+---
+title: Viewing Reports
+description: Access business analytics, financial reports, and performance dashboards
+---
+
+The Reportes (Reports) module provides comprehensive business intelligence through visual dashboards, key performance indicators (KPIs), and financial analytics. This helps you make data-driven decisions about your beauty center operations.
+
+## Accessing Reports
+
+Navigate to **Reportes** from the main menu. The dashboard loads with:
+
+- Four KPI summary cards at the top
+- Revenue trend chart
+- Payment methods distribution chart  
+- Top-selling items chart
+- Export to PDF functionality
+
+<Note>
+  The reports page may take a few seconds to load as it aggregates data from across your system. The loading state shows animated skeleton screens while data is being fetched.
+</Note>
+
+## Understanding the Dashboard
+
+### Key Performance Indicators (KPIs)
+
+Four cards at the top provide instant business insights:
+
+#### 1. Total Revenue (Ingresos)
+- **Icon**: Green trending-up arrow
+- **Displays**: Total sales revenue across all transactions
+- **Formatted**: As euros (€)
+- **Use**: Track overall business performance
+
+<Tip>
+  Compare this month's revenue to previous months to identify growth trends or seasonal patterns.
+</Tip>
+
+#### 2. Total Sales (Tickets)
+- **Icon**: Blue credit card
+- **Displays**: Number of completed transactions
+- **Use**: Measure transaction volume and customer traffic
+
+<Tip>
+  Divide Total Revenue by Total Sales to calculate **Average Transaction Value**:
+  ```
+  €15,000 revenue ÷ 200 tickets = €75 average sale
+  ```
+  Track this metric over time to see if customers are spending more per visit.
+</Tip>
+
+#### 3. Total Clients (Clientes)
+- **Icon**: Yellow users icon
+- **Displays**: Total number of registered clients in your CRM
+- **Use**: Track customer base growth
+
+#### 4. Total Products (Productos)
+- **Icon**: Purple package icon
+- **Displays**: Total products in your catalog
+- **Use**: Monitor inventory scope and product range
+
+### Revenue Trend Chart
+
+**Location**: Top left of charts section  
+**Type**: Line chart with area fill  
+**Title**: "Tendencia de Ingresos" or similar
+
+#### What It Shows
+
+- **X-Axis**: Time periods (months)
+- **Y-Axis**: Revenue in euros
+- **Line**: Revenue trend over time
+- **Shaded Area**: Visual emphasis of revenue volume
+
+#### How to Read It
+
+<Steps>
+  <Step title="Identify Peak Periods">
+    Look for the highest points on the line - these are your best revenue months.
+    
+    Consider:
+    - Seasonal patterns (e.g., summer vs. winter)
+    - Holiday impacts
+    - Marketing campaign effects
+  </Step>
+  
+  <Step title="Spot Trends">
+    Observe the overall line direction:
+    - **Upward slope**: Growing business
+    - **Downward slope**: Declining revenue (investigate causes)
+    - **Flat**: Stable but not growing (time to innovate?)
+  </Step>
+  
+  <Step title="Compare Periods">
+    Hover over data points to see exact values:
+    - Compare same month year-over-year
+    - Identify month-to-month changes
+    - Calculate growth rates
+  </Step>
+</Steps>
+
+<Tip>
+  **Action Items Based on Trends:**
+  
+  - **Declining trend**: Review pricing, service quality, competition
+  - **Flat trend**: Launch new promotions, add services, increase marketing
+  - **Growing trend**: Ensure capacity to handle growth, consider expansion
+  - **Seasonal peaks**: Plan inventory and staff accordingly
+</Tip>
+
+### Payment Methods Chart
+
+**Location**: Top right of charts section  
+**Type**: Donut (ring) chart  
+**Title**: "Métodos de Pago" or similar
+
+#### What It Shows
+
+Breakdown of how customers pay, typically:
+- **Tarjeta** (Card): Credit/debit card payments
+- **Efectivo** (Cash): Cash payments
+- **Mixto** (Mixed): Split payments
+- **Deuda** (Debt): Deferred/account payments
+
+#### How to Read It
+
+<Steps>
+  <Step title="Check Proportions">
+    Each slice's size represents the percentage of that payment method.
+    
+    The legend shows:
+    - Payment method name
+    - Number of transactions
+    - Percentage of total
+  </Step>
+  
+  <Step title="Hover for Details">
+    Mouse over any slice to see:
+    - Exact count
+    - Percentage
+    - Payment method name
+  </Step>
+  
+  <Step title="Identify Dominance">
+    Note which payment method is most common.
+  </Step>
+</Steps>
+
+#### Strategic Insights
+
+**High Card Percentage (70%+):**
+- Good for tracking and reconciliation
+- Lower cash handling risks
+- Easier accounting
+- Modern customer preference
+
+**High Cash Percentage (50%+):**
+- May indicate older client demographic
+- Risk of unrecorded transactions
+- Banking/reconciliation complexity
+- Consider incentivizing card payments
+
+**Significant Debt Percentage (20%+):**
+- Review credit policies
+- Monitor outstanding balances in **Finanzas > Deudas**
+- Ensure collection procedures are followed
+- Consider tightening credit terms if overdue rates are high
+
+<Tip>
+  A healthy mix is typically:
+  - 60-80% Card
+  - 15-30% Cash
+  - 5-10% Mixed
+  - 0-10% Debt
+  
+  This balances modern convenience with customer flexibility while managing risk.
+</Tip>
+
+### Top Items Chart
+
+**Location**: Bottom section, full width  
+**Type**: Horizontal bar chart  
+**Title**: "Productos/Servicios Más Vendidos" or similar
+
+#### What It Shows
+
+Your best-selling products and services ranked by quantity sold.
+
+- **Y-Axis**: Product/service names (top sellers at top)
+- **X-Axis**: Quantity sold
+- **Bars**: Horizontal bars extending right, length = quantity
+
+#### How to Read It
+
+<Steps>
+  <Step title="Identify Top Performers">
+    The longest bars at the top are your star products/services.
+    
+    These are:
+    - High demand items
+    - Client favorites
+    - Revenue drivers
+  </Step>
+  
+  <Step title="Compare Quantities">
+    Note the gaps between bars:
+    - Large gap from #1 to #2: One dominant item
+    - Similar lengths: Evenly distributed demand
+    - Long tail of small bars: Diverse preferences
+  </Step>
+  
+  <Step title="Hover for Details">
+    Mouse over bars to see:
+    - Exact item name
+    - Precise quantity sold
+  </Step>
+</Steps>
+
+#### Strategic Insights
+
+<Tip>
+  **Top Performers (Items Selling Well):**
+  
+  **Actions:**
+  - Ensure adequate inventory/availability
+  - Feature prominently in marketing
+  - Train all staff to deliver/sell these items
+  - Consider package deals with complementary items
+  - Analyze why they're popular (price, quality, trends?)
+  - Maintain consistent quality
+</Tip>
+
+<Tip>
+  **Low Performers (Items Not Appearing or at Bottom):**
+  
+  **Investigate:**
+  - Are they priced too high?
+  - Poor placement or visibility?
+  - Seasonal items in off-season?
+  - Quality concerns?
+  - Staff not mentioning them?
+  - Outdated or unpopular?
+  
+  **Actions:**
+  - Discount to clear inventory
+  - Discontinue and replace with new offerings
+  - Retrain staff on benefits and sales techniques
+  - Reposition or rebrand
+  - Bundle with popular items
+</Tip>
+
+## Exporting Reports
+
+The dashboard includes a PDF export feature for sharing or archiving.
+
+<Steps>
+  <Step title="Click Export Button">
+    Locate the **"Exportar a PDF"** button in the top-right corner.
+  </Step>
+  
+  <Step title="Wait for Generation">
+    The button changes to show "Generando..." (Generating) with a loading spinner.
+    
+    The system:
+    1. Prepares all charts
+    2. Formats data for print
+    3. Generates the PDF
+  </Step>
+  
+  <Step title="Print Dialog Opens">
+    Your browser's print dialog appears automatically.
+  </Step>
+  
+  <Step title="Configure Print Settings">
+    Adjust settings:
+    - **Destination**: Choose "Save as PDF" (not physical printer)
+    - **Layout**: Landscape orientation recommended
+    - **Paper Size**: A4 or Letter
+    - **Margins**: Default
+    - **Background Graphics**: Enable (to include chart colors)
+  </Step>
+  
+  <Step title="Save PDF">
+    Click "Save" and choose a filename:
+    
+    **Good naming convention:**
+    ```
+    Report_2025-11_BeautyCenter.pdf
+    Report_Q4-2025_BeautyCenter.pdf
+    Monthly_Report_November_2025.pdf
+    ```
+    
+    Use dates for easy chronological organization.
+  </Step>
+</Steps>
+
+<Note>
+  The exported PDF includes:
+  - All KPI cards with current values
+  - All charts with legends
+  - Page breaks between sections (automatic)
+  - Print-optimized styling (hides navigation, buttons, etc.)
+  
+  It does NOT include:
+  - Navigation menus
+  - Export button itself
+  - Interactive hover tooltips
+  - Animation effects
+</Note>
+
+### When to Export Reports
+
+<Tip>
+  **Regular Export Schedule:**
+  
+  - **Monthly**: End-of-month snapshot for records
+  - **Quarterly**: Trend analysis and board meetings
+  - **Before Major Decisions**: Document baseline before changes
+  - **After Campaigns**: Measure promotion impact
+  - **Annual**: Year-end summary for taxes and planning
+  
+  Store PDFs in organized folders:
+  ```
+  Reports/
+    2025/
+      01-January/
+      02-February/
+      ...
+    2024/
+      ...
+  ```
+</Tip>
+
+## Analyzing Your Business Performance
+
+### Monthly Review Process
+
+<Steps>
+  <Step title="Compare KPIs to Previous Month">
+    Create a simple tracking sheet:
+    
+    | Metric | This Month | Last Month | Change |
+    |--------|------------|------------|--------|
+    | Revenue | €15,200 | €14,100 | +7.8% |
+    | Tickets | 203 | 188 | +8.0% |
+    | Clients | 347 | 332 | +4.5% |
+    | Products | 125 | 120 | +4.2% |
+    
+    Identify:
+    - Growth areas (celebrate these!)
+    - Declining metrics (investigate why)
+    - Unusual changes (one-time events?)
+  </Step>
+  
+  <Step title="Review Revenue Trend">
+    Look at the trend chart:
+    - Is this month in line with the pattern?
+    - Any unexpected spikes or drops?
+    - Are you meeting projections?
+  </Step>
+  
+  <Step title="Analyze Payment Methods">
+    Check if the distribution changed:
+    - More debt? Tighten credit policies
+    - More cash? Investigate why (system issues? client preference shift?)
+    - Consider running card-payment promotions if needed
+  </Step>
+  
+  <Step title="Study Top Items">
+    Review bestsellers:
+    - Same items as last month? (Stable preferences)
+    - New items appearing? (Successful launches)
+    - Missing items? (Investigate decline)
+    
+    Compare quantities to previous reports.
+  </Step>
+  
+  <Step title="Export and Archive">
+    Save the PDF with the date for future reference.
+  </Step>
+  
+  <Step title="Action Planning">
+    Based on insights, create action items:
+    - Reorder inventory for top sellers
+    - Create promotions for slow items
+    - Adjust staffing for busy periods
+    - Plan marketing for growth opportunities
+  </Step>
+</Steps>
+
+### Quarterly Analysis
+
+Every 3 months, do a deeper dive:
+
+<Steps>
+  <Step title="Compare All Three Months">
+    Look for:
+    - Consistent trends across the quarter
+    - Month-to-month volatility
+    - Seasonal patterns
+  </Step>
+  
+  <Step title="Calculate Averages">
+    ```
+    Q4 Average Revenue = (Oct + Nov + Dec) ÷ 3
+    Q4 Average Tickets = (Oct + Nov + Dec) ÷ 3
+    ```
+    
+    Compare to previous quarters:
+    ```
+    Q4 Avg: €14,500
+    Q3 Avg: €13,200
+    Growth: +9.8%
+    ```
+  </Step>
+  
+  <Step title="Identify Quarterly Winners">
+    Which items were consistently top sellers all three months?
+    
+    These are your core offerings - protect and promote them.
+  </Step>
+  
+  <Step title="Review Strategic Goals">
+    Did you meet quarterly targets?
+    - Revenue goals
+    - Client growth goals
+    - New service adoption
+  </Step>
+  
+  <Step title="Plan Next Quarter">
+    Set goals based on insights:
+    - Revenue targets (typically 5-10% growth)
+    - Client acquisition numbers
+    - New services to launch
+    - Promotions to run
+  </Step>
+</Steps>
+
+## Advanced Analytics Techniques
+
+### Calculating Key Metrics
+
+#### Average Transaction Value
+```
+Total Revenue ÷ Total Sales = Average Transaction Value
+€15,000 ÷ 200 = €75 per sale
+```
+
+**Implications:**
+- Low average: Focus on upselling, bundles
+- High average: Premium positioning is working
+- Decreasing over time: Price sensitivity increasing
+- Increasing over time: Successful premium strategy
+
+#### Revenue Per Client
+```
+Total Revenue ÷ Total Clients = Revenue Per Client
+€15,000 ÷ 350 = €42.86 per client
+```
+
+**Implications:**
+- Low: Need more repeat visits or higher-value services
+- High: Strong client retention and loyalty
+
+#### Top Item Concentration
+```
+(Top 3 Items Quantity ÷ Total Items Sold) × 100 = Concentration %
+(120 ÷ 400) × 100 = 30%
+```
+
+**Implications:**
+- High concentration (greater than 40%): Dependent on few items (risky)
+- Balanced (20-30%): Healthy diverse demand
+- Low concentration (less than 20%): Very diverse, harder to predict
+
+### Comparing Time Periods
+
+<Tip>
+  **Useful Comparisons:**
+  
+  1. **Month-over-Month**: Short-term trends
+  2. **Year-over-Year**: Seasonal adjustments, true growth
+  3. **Quarter-over-Quarter**: Medium-term performance
+  4. **Pre/Post Campaign**: Marketing effectiveness
+  5. **Weekday vs. Weekend**: Staffing optimization
+  
+  For year-over-year, compare:
+  ```
+  November 2025 vs. November 2024
+  Not November 2025 vs. October 2025
+  ```
+  This eliminates seasonal effects.
+</Tip>
+
+## Report Limitations and Considerations
+
+### What's NOT in the Report
+
+The current dashboard doesn't show:
+- Individual client purchase histories (view in client profiles)
+- Staff performance metrics (view in staff management)
+- Inventory levels (view in Productos module)
+- Outstanding debts (view in Finanzas > Deudas)
+- Appointment booking rates (view in Agenda)
+- Product-specific profit margins (requires cost data)
+
+<Note>
+  For comprehensive analysis, combine the Reports dashboard with:
+  - Client module for customer behavior
+  - Agenda module for booking patterns
+  - Productos module for inventory turnover
+  - Deudas module for accounts receivable
+</Note>
+
+### Data Accuracy
+
+<Warning>
+  Report accuracy depends on:
+  
+  1. **Consistent TPV Use**: All sales must go through the system
+  2. **Proper Client Association**: Link sales to clients when possible
+  3. **Accurate Categorization**: Products/services correctly configured
+  4. **Complete Data Entry**: All transactions recorded
+  
+  If staff bypass the TPV or use cash without recording:
+  - Reports will understate revenue
+  - Trends will be misleading
+  - Financial decisions may be wrong
+  
+  Enforce mandatory TPV use for all transactions.
+</Warning>
+
+## Troubleshooting
+
+### Dashboard Not Loading
+
+1. Wait 10-15 seconds - data aggregation takes time
+2. Refresh the page
+3. Check internet connection
+4. Clear browser cache
+5. Try a different browser
+
+### Charts Show "No Data"
+
+If charts are empty:
+1. Ensure you have completed transactions in the system
+2. Check date range (if filtering is available)
+3. Verify sales are marked as "completed" not "pending"
+4. Check if data exists in other modules (TPV, Ventas)
+
+### PDF Export Not Working
+
+1. Allow pop-ups in browser settings
+2. Try a different browser (Chrome recommended)
+3. Disable browser extensions temporarily
+4. Check if print dialog is hidden behind other windows
+
+### Numbers Don't Match Expectations
+
+Verify:
+1. All sales were recorded in TPV
+2. No duplicate entries
+3. Correct date range
+4. Status filters (completed vs. pending)
+5. Refunds were properly processed
+
+Cross-reference with:
+- Bank deposits (for card payments)
+- Cash register counts (for cash payments)
+- Accounting software
+
+## Best Practices
+
+### Regular Monitoring
+
+<Tip>
+  **Review Schedule:**
+  
+  **Daily** (5 minutes):
+  - Check current day's revenue (not in main report, use Ventas)
+  - Verify transactions are recording properly
+  
+  **Weekly** (15 minutes):
+  - Review week's total vs. target
+  - Identify daily patterns
+  - Adjust staffing for next week
+  
+  **Monthly** (30 minutes):
+  - Full dashboard review
+  - Export PDF for records
+  - Month-over-month analysis
+  - Action item creation
+  
+  **Quarterly** (1-2 hours):
+  - Deep dive analysis
+  - Strategic planning
+  - Goal setting
+  - Performance review with team
+</Tip>
+
+### Data-Driven Decision Making
+
+<Steps>
+  <Step title="Observe">
+    Look at the data objectively without preconceptions.
+  </Step>
+  
+  <Step title="Question">
+    Ask why the data looks this way:
+    - Why is this item selling so well?
+    - Why did revenue drop this month?
+    - Why are clients preferring this payment method?
+  </Step>
+  
+  <Step title="Hypothesize">
+    Form theories:
+    - "Revenue dropped because we raised prices"
+    - "This service is popular because of Instagram posts"
+    - "Cash increased because card terminal was broken"
+  </Step>
+  
+  <Step title="Test">
+    Make changes and measure results:
+    - Lower prices and watch next month
+    - Post more about other services
+    - Fix the terminal and monitor payment mix
+  </Step>
+  
+  <Step title="Iterate">
+    Continue the cycle, always referring back to data.
+  </Step>
+</Steps>
+
+### Team Involvement
+
+<Tip>
+  **Share reports with your team:**
+  
+  1. **Monthly Team Meeting**: Present key metrics
+  2. **Celebrate Wins**: Top items, revenue records
+  3. **Problem Solve Together**: Declining metrics
+  4. **Set Team Goals**: Based on data insights
+  5. **Empower Staff**: Let them access reports
+  
+  When staff understand the numbers:
+  - They make better decisions
+  - They see impact of their work
+  - They become solution-oriented
+  - They take ownership of results
+</Tip>
+
+## Quick Reference: Report Sections
+
+| Section | What It Shows | Key Insight |
+|---------|---------------|-------------|
+| **KPI Cards** | Headline metrics | Overall business health |
+| **Revenue Trend** | Income over time | Growth patterns |
+| **Payment Methods** | How clients pay | Payment preferences |
+| **Top Items** | Bestselling products/services | Demand patterns |
+| **Export PDF** | Printable snapshot | Documentation & sharing |

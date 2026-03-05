@@ -1,0 +1,400 @@
+---
+title: "Get Current User"
+api: "GET /api/auth/me"
+description: "Retrieve the authenticated user's profile information"
+---
+
+## Overview
+
+The `/api/auth/me` endpoint returns the profile information of the currently authenticated user based on their JWT token. This endpoint is useful for:
+
+- Verifying token validity
+- Retrieving up-to-date user information
+- Checking user account status
+- Implementing "stay logged in" functionality
+
+## Authentication
+
+This endpoint is **protected** and requires a valid JWT token.
+
+### Token Requirements
+
+You must include your JWT token in one of two ways:
+
+**Option 1: Authorization Header (Recommended)**
+
+```bash
+Authorization: Bearer <your_jwt_token>
+```
+
+**Option 2: Cookie**
+
+```bash
+Cookie: auth_token=<your_jwt_token>
+```
+
+### Authentication Flow
+
+All requests to `/api/*` endpoints (except public routes like `/api/auth/login`) are automatically validated by the authentication middleware at `server/middleware/auth.ts`.
+
+The middleware:
+1. Extracts the token from the Authorization header or `auth_token` cookie
+2. Verifies the token signature using `verifyToken()` from `server/utils/jwt.ts`
+3. Decodes the JWT payload containing `{ userId, email, role }`
+4. Attaches the decoded user data to `event.context.user`
+5. Returns 401 error if token is missing, invalid, or expired
+
+**Source**: `server/middleware/auth.ts:22-55`
+
+## Request
+
+No request body or query parameters required. The user is identified from the JWT token.
+
+## Response
+
+<ResponseField name="user" type="object">
+  Current user's profile information
+  
+  <Expandable title="User object properties">
+    <ResponseField name="user_id" type="string">
+      Unique user identifier (UUID)
+    </ResponseField>
+    
+    <ResponseField name="email" type="string">
+      User's email address
+    </ResponseField>
+    
+    <ResponseField name="name" type="string">
+      User's first name
+    </ResponseField>
+    
+    <ResponseField name="surname" type="string">
+      User's last name
+    </ResponseField>
+    
+    <ResponseField name="role" type="enum">
+      User's role. Possible values: `ADMIN`, `USER`
+    </ResponseField>
+    
+    <ResponseField name="status" type="enum">
+      User account status. Possible values: `ON`, `OFF`
+    </ResponseField>
+    
+    <ResponseField name="document_type" type="enum">
+      Type of identification document. Possible values: `DNI`, `PASSPORT`, `NIE`
+    </ResponseField>
+    
+    <ResponseField name="document_number" type="string">
+      User's document number
+    </ResponseField>
+    
+    <ResponseField name="phone" type="string">
+      User's phone number
+    </ResponseField>
+    
+    <ResponseField name="created_at" type="string">
+      Timestamp of account creation (ISO 8601 format)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Error Responses
+
+<ResponseField name="401 Unauthorized">
+  **Status Message**: "Unauthorized: Token is missing or invalid" or "Unauthorized: Session expired or invalid token"
+  
+  Returned when:
+  - No Authorization header or auth_token cookie is provided
+  - The JWT token is malformed or has an invalid signature
+  - The JWT token has expired (default expiration: 24 hours)
+  - The token payload does not contain a valid `userId`
+  
+  **Middleware Source**: `server/middleware/auth.ts:36-39` and `server/middleware/auth.ts:51-54`
+</ResponseField>
+
+<ResponseField name="403 Forbidden">
+  **Status Message**: "Cuenta inactiva o no encontrada. Contacta con soporte admin."
+  
+  Returned when:
+  - The user account associated with the token no longer exists
+  - The user account status is not `ON` (account has been deactivated)
+  
+  **Source**: `server/api/auth/me.get.ts:31-35`
+</ResponseField>
+
+## Code Examples
+
+<CodeGroup>
+
+```bash cURL
+# Using Authorization header
+curl -X GET https://api.beils.com/api/auth/me \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+```javascript JavaScript
+// Using fetch with Authorization header
+const token = localStorage.getItem('auth_token');
+
+const response = await fetch('https://api.beils.com/api/auth/me', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+  },
+});
+
+const data = await response.json();
+console.log('Current user:', data.user);
+```
+
+```python Python
+import requests
+
+token = "your_jwt_token_here"
+
+response = requests.get(
+    'https://api.beils.com/api/auth/me',
+    headers={
+        'Authorization': f'Bearer {token}'
+    }
+)
+
+data = response.json()
+print('Current user:', data['user'])
+```
+
+```typescript TypeScript
+interface User {
+  user_id: string;
+  email: string;
+  name: string;
+  surname: string;
+  role: 'ADMIN' | 'USER';
+  status: 'ON' | 'OFF';
+  document_type: 'DNI' | 'PASSPORT' | 'NIE';
+  document_number: string;
+  phone: string;
+  created_at: string;
+}
+
+interface MeResponse {
+  user: User;
+}
+
+async function getCurrentUser(token: string): Promise<User> {
+  const response = await fetch('https://api.beils.com/api/auth/me', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch user');
+  }
+  
+  const data: MeResponse = await response.json();
+  return data.user;
+}
+```
+
+</CodeGroup>
+
+## Response Example
+
+```json Success Response (200)
+{
+  "user": {
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "user@example.com",
+    "name": "María",
+    "surname": "García",
+    "role": "USER",
+    "status": "ON",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "phone": "+34612345678",
+    "created_at": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+```json Error Response (401)
+{
+  "statusCode": 401,
+  "statusMessage": "Unauthorized: Token is missing or invalid"
+}
+```
+
+```json Error Response (403)
+{
+  "statusCode": 403,
+  "statusMessage": "Cuenta inactiva o no encontrada. Contacta con soporte admin."
+}
+```
+
+## Implementation Details
+
+### JWT Token Structure
+
+Tokens are generated with the following payload:
+
+```typescript
+interface JwtPayload {
+  userId: string;
+  email: string;
+  role: string;
+  iat: number;  // Issued at timestamp
+  exp: number;  // Expiration timestamp
+}
+```
+
+**Source**: `server/utils/jwt.ts:5-9`
+
+### Token Generation
+
+Tokens are created using the `signToken` function:
+
+```typescript
+export const signToken = (payload: object, expiresIn: string | number = '24h') => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: expiresIn as any });
+}
+```
+
+- **Algorithm**: HS256 (HMAC with SHA-256)
+- **Secret**: Configured via `JWT_SECRET` environment variable
+- **Default Expiration**: 24 hours
+- **Fallback Secret**: `'super-secret-tp-plus-dashboard'` (development only)
+
+**Source**: `server/utils/jwt.ts:11-13`
+
+### Token Verification
+
+Tokens are validated using the `verifyToken` function:
+
+```typescript
+export const verifyToken = (token: string): JwtPayload | null => {
+  try {
+    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+  } catch (error) {
+    return null;
+  }
+}
+```
+
+This function returns `null` if the token is:
+- Expired
+- Malformed
+- Signed with a different secret
+- Otherwise invalid
+
+**Source**: `server/utils/jwt.ts:15-21`
+
+### User Data Selection
+
+The endpoint explicitly selects only the following fields from the database for security:
+
+```typescript
+select: {
+  user_id: true,
+  email: true,
+  name: true,
+  surname: true,
+  role: true,
+  status: true,
+  document_type: true,
+  document_number: true,
+  phone: true,
+  created_at: true,
+}
+```
+
+Sensitive fields like `password`, `refresh_token`, and address information are never returned.
+
+**Source**: `server/api/auth/me.get.ts:17-28`
+
+## Token Best Practices
+
+### Security
+
+1. **Store tokens securely**: Use HTTP-only cookies or secure storage mechanisms
+2. **Never expose tokens**: Don't log tokens or include them in URLs
+3. **Set appropriate expiration**: Default 24 hours balances security and UX
+4. **Use HTTPS**: Always transmit tokens over encrypted connections
+5. **Rotate secrets**: Change `JWT_SECRET` periodically in production
+
+### Token Refresh Strategy
+
+The API currently uses 24-hour access tokens. For extended sessions:
+
+1. Store the token securely on the client
+2. Check token validity before each request
+3. Redirect to login when receiving 401 errors
+4. Consider implementing refresh tokens for seamless re-authentication
+
+### Protected Routes
+
+The following routes are **public** and don't require authentication:
+- `/api/auth/login`
+- `/api/hello`
+
+All other `/api/*` routes require a valid JWT token.
+
+**Source**: `server/middleware/auth.ts:7`
+
+## Common Use Cases
+
+### Verify Token Validity
+
+```javascript
+async function isTokenValid(token) {
+  try {
+    const response = await fetch('https://api.beils.com/api/auth/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+```
+
+### Auto-Login on App Load
+
+```javascript
+async function autoLogin() {
+  const token = localStorage.getItem('auth_token');
+  if (!token) return null;
+  
+  try {
+    const response = await fetch('https://api.beils.com/api/auth/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (response.ok) {
+      const { user } = await response.json();
+      return user;
+    }
+  } catch (error) {
+    localStorage.removeItem('auth_token');
+  }
+  
+  return null;
+}
+```
+
+### Role-Based Access Control
+
+```javascript
+async function checkAdminAccess(token) {
+  const response = await fetch('https://api.beils.com/api/auth/me', {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  
+  const { user } = await response.json();
+  return user.role === 'ADMIN';
+}
+```
+
+## Related Endpoints
+
+- [Login](/api/authentication/login) - Obtain a JWT token by authenticating with email and password

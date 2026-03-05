@@ -1,0 +1,296 @@
+---
+title: 'Brands'
+description: 'Manage product brands and brand associations'
+---
+
+## Overview
+
+The Brands API allows you to manage product brands in your catalog. Brands can be associated with products to help organize inventory and provide filtering capabilities.
+
+## The Brand Object
+
+<ResponseField name="brand_id" type="string" required>
+  Unique identifier for the brand (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Brand name (max 100 characters, must be unique)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Brand description
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime">
+  Brand creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime">
+  Last update timestamp
+</ResponseField>
+
+## List Brands
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/brands" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a list of all brands in the system.
+
+### Response
+
+Returns an array of brand objects, ordered alphabetically by name.
+
+```json
+[
+  {
+    "brand_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Premium Hair Care",
+    "description": "Professional hair care products for salons",
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  },
+  {
+    "brand_id": "660e8400-e29b-41d4-a716-446655440001",
+    "name": "Natural Beauty",
+    "description": "Organic and natural beauty products",
+    "created_at": "2024-03-14T14:20:00Z",
+    "updated_at": "2024-03-14T14:20:00Z"
+  },
+  {
+    "brand_id": "770e8400-e29b-41d4-a716-446655440002",
+    "name": "Luxury Skincare",
+    "description": "High-end skincare and anti-aging products",
+    "created_at": "2024-03-13T09:15:00Z",
+    "updated_at": "2024-03-13T09:15:00Z"
+  }
+]
+```
+
+## Create Brand
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api.beils.com/api/catalog/brands" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium Hair Care",
+    "description": "Professional hair care products for salons"
+  }'
+```
+</CodeGroup>
+
+Creates a new brand in the system.
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Brand name (max 100 characters, must be unique)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Brand description
+</ParamField>
+
+### Response
+
+Returns the created brand object wrapped in a `brand` property.
+
+```json
+{
+  "brand": {
+    "brand_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Premium Hair Care",
+    "description": "Professional hair care products for salons",
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  }
+}
+```
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  El nombre es obligatorio - or - Datos inválidos
+</ResponseField>
+
+<ResponseField name="409" type="error">
+  Ya existe una marca con este nombre
+</ResponseField>
+
+## Update Brand
+
+<CodeGroup>
+```bash cURL
+curl -X PUT "https://api.beils.com/api/catalog/brands/{brand_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium Hair Care Pro",
+    "description": "Professional hair care products for salons and spas"
+  }'
+```
+</CodeGroup>
+
+Updates an existing brand.
+
+### Path Parameters
+
+<ParamField path="brand_id" type="string" required>
+  The unique brand identifier
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Brand name (must be unique)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Brand description
+</ParamField>
+
+### Response
+
+Returns the updated brand object wrapped in a `brand` property.
+
+```json
+{
+  "brand": {
+    "brand_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Premium Hair Care Pro",
+    "description": "Professional hair care products for salons and spas",
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T16:45:00Z"
+  }
+}
+```
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  ID requerido - or - Datos inválidos
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Marca no encontrada
+</ResponseField>
+
+<ResponseField name="409" type="error">
+  Ya existe otra marca con este nombre
+</ResponseField>
+
+## Delete Brand
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE "https://api.beils.com/api/catalog/brands/{brand_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Deletes a brand from the system. The brand must not be associated with any products.
+
+### Path Parameters
+
+<ParamField path="brand_id" type="string" required>
+  The unique brand identifier
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  ID requerido
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Marca no encontrada
+</ResponseField>
+
+<ResponseField name="409" type="error">
+  No se puede eliminar la marca porque tiene X producto(s) asociado(s).
+</ResponseField>
+
+<ResponseField name="500" type="error">
+  Error al eliminar la marca
+</ResponseField>
+
+<Warning>
+  You cannot delete a brand that is associated with products. First, either delete the products or reassign them to a different brand.
+</Warning>
+
+## Use Cases
+
+### Product Filtering
+
+Use brand IDs to filter products in the [Products API](/api/catalog/products):
+
+```bash
+curl -X GET "https://api.beils.com/api/catalog/products?brand_id={brand_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+This returns all products associated with the specified brand.
+
+### Inventory Management
+
+Organize your inventory by brand to:
+- Track stock levels by brand
+- Manage vendor relationships
+- Create brand-specific promotions
+- Generate brand performance reports
+
+### Product Association
+
+When creating or updating products, associate them with a brand:
+
+```json
+{
+  "name": "Professional Shampoo 500ml",
+  "brand_id": "550e8400-e29b-41d4-a716-446655440000",
+  "price": 24.99
+}
+```
+
+The product will automatically include the brand name when retrieved:
+
+```json
+{
+  "product_id": "...",
+  "name": "Professional Shampoo 500ml",
+  "brand_id": "550e8400-e29b-41d4-a716-446655440000",
+  "brand": {
+    "name": "Premium Hair Care"
+  },
+  "price": 24.99
+}
+```
+
+## Validation Rules
+
+### Name Uniqueness
+
+Brand names must be unique across the system. When creating or updating a brand, the API validates that no other brand has the same name.
+
+### Product Dependencies
+
+Before deleting a brand, the system checks for associated products. The API returns the count of associated products in the error message to help you understand the dependency.
+
+### Input Validation
+
+The API uses Zod schema validation to ensure:
+- Name is provided and is a non-empty string
+- Description is optional but must be a string if provided
+- Maximum length constraints are enforced

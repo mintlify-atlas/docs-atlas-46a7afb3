@@ -1,0 +1,274 @@
+---
+title: Catalog Management
+description: Comprehensive product and service catalog with categories, brands, stock tracking, and bundle packs
+---
+
+## Overview
+
+The Catalog Management system provides complete control over your beauty center's product and service offerings. It includes inventory management for retail products, service definitions with duration and pricing, bundled packs for promotions, and a flexible categorization system.
+
+## Product Management
+
+### Key Features
+
+**Product Information**
+- Product name and detailed description
+- SKU (Stock Keeping Unit) for inventory tracking
+- Barcode (EAN) for point-of-sale scanning
+- Product image upload
+- Price and tax rate (default 21% VAT)
+- Stock quantity with minimum stock alerts
+- Status control (activo/inactivo)
+
+**Organization**
+- Brand assignment for product grouping
+- Category classification
+- Subcategory refinement
+- Multi-tag support for flexible filtering
+- Hierarchical structure: Brand > Category > Subcategory > Tags
+
+**Inventory Tracking**
+- Current stock level display
+- Minimum stock threshold configuration
+- Low stock alerts (visual warning when stock ≤ min_stock)
+- Real-time stock updates from sales
+
+### User Workflows
+
+#### Adding a New Product
+
+1. Navigate to **Catálogo > Productos**
+2. Click **Nuevo Producto** button
+3. Fill in the product form:
+   - **Name**: Product title (e.g., "Crema Hidratante Facial")
+   - **Description**: Detailed product information
+   - **SKU**: Internal reference code (optional but recommended)
+   - **Barcode**: EAN code for scanning (optional)
+   - **Price**: Retail price in euros
+   - **Tax Rate**: VAT percentage (defaults to 21%)
+   - **Stock**: Initial quantity available
+   - **Min Stock**: Alert threshold for reordering
+   - **Brand**: Select from brand catalog
+   - **Category**: Choose product category
+   - **Subcategory**: Refine with subcategory (if category has subcategories)
+   - **Tags**: Add multiple tags for filtering
+   - **Image**: Upload product photo
+   - **Status**: Set to "activo" to make available for sale
+4. Click **Save** to add product to catalog
+
+#### Filtering Products
+
+Use the filter bar to find products:
+- **Search**: Type name, SKU, or barcode
+- **Category**: Filter by category dropdown
+- **Brand**: Filter by brand dropdown
+- **Combined Filters**: Use multiple filters simultaneously
+- **Clear**: Reset all filters with "Limpiar" button
+
+#### Managing Stock Levels
+
+1. Locate product in the list (stock shown in "Stock / Precio" column)
+2. Low stock items display red alert icon
+3. Click **Edit** to update stock quantity
+4. Enter new stock amount
+5. Save changes
+6. Stock automatically decreases when products are sold via TPV
+
+<Warning>
+  When a product's stock reaches or falls below the minimum stock threshold, it displays a red warning icon. Set up regular reordering processes to prevent stockouts.
+</Warning>
+
+## Service Management
+
+### Key Features
+
+**Service Details**
+- Service name and description
+- Unique service code for reference
+- Price and tax rate
+- Duration in minutes
+- Status (activo/inactivo)
+
+**Service Characteristics**
+- No inventory tracking (services are not physical items)
+- Can be linked to bonuses (multi-session packages)
+- Duration determines appointment booking length
+- Tax rate for proper invoicing
+
+### User Workflows
+
+#### Creating a Service
+
+1. Navigate to **Servicios** from main menu
+2. Click **Nuevo** button
+3. Complete the service form:
+   - **Name**: Service title (e.g., "Manicura Completa", "Masaje Relajante")
+   - **Description**: What the service includes
+   - **Code**: Optional reference code (e.g., "SRV-001")
+   - **Price**: Service cost in euros
+   - **Tax Rate**: VAT percentage (default 21%)
+   - **Duration**: Time required in minutes (e.g., 30, 60, 90)
+   - **Status**: Set to "activo" to make bookable
+4. Click **Save** to add to service menu
+5. Service appears in grid view with duration and price badges
+
+#### Editing Services
+
+1. Find the service in the grid
+2. Click the three-dot menu icon
+3. Select **Editar**
+4. Update any service details:
+   - Adjust pricing for seasonal promotions
+   - Update duration based on efficiency improvements
+   - Modify description to reflect service changes
+   - Change status to temporarily disable bookings
+5. Save changes
+
+<Tip>
+  Set realistic duration times for services. These durations are used when creating appointments in the Agenda, helping prevent overbooking.
+</Tip>
+
+## Packs & Bundles
+
+### Overview
+
+Packs allow you to bundle multiple products and/or services together at a special combined price. This is perfect for:
+- Promotional packages
+- Seasonal offers
+- Gift sets
+- Treatment packages
+
+### Pack Features
+
+**Pack Configuration**
+- Pack name and description
+- Optional pack code for reference
+- Pack image for visual appeal
+- Combined price (can be discounted from individual prices)
+- Tax rate
+- Status control
+
+**Pack Contents**
+- Add multiple services with quantities
+- Add multiple products with quantities
+- Mix services and products in one pack
+- Display total item count
+
+### User Workflows
+
+#### Creating a Pack
+
+1. Navigate to **Packs** from main menu
+2. Click **Nuevo Pack** button
+3. Fill in pack details:
+   - **Name**: Pack title (e.g., "Paquete Spa Relax")
+   - **Description**: What's included and benefits
+   - **Code**: Optional reference (e.g., "PACK-001")
+   - **Price**: Total pack price (often discounted from individual prices)
+   - **Tax Rate**: VAT percentage
+   - **Image**: Upload attractive pack photo
+   - **Status**: Set to "activo" to make available
+4. Add pack contents:
+   - **Services**: Select services and set quantities
+   - **Products**: Select products and set quantities
+5. Click **Save** to create the pack
+6. Pack appears in list showing total items included
+
+#### Pricing Strategy
+
+Example pack pricing:
+- Service A (Facial): €50
+- Service B (Massage): €60
+- Product C (Cream): €30
+- **Total Individual Price**: €140
+- **Pack Price**: €120 (save €20 / 14% discount)
+
+<Note>
+  Packs use the `Pack` model with relations to `PackItemService` and `PackItemProduct` junction tables. Each item in a pack includes a quantity field for flexibility.
+</Note>
+
+## Categories & Brands
+
+### Category Hierarchy
+
+**Categories** (Top level)
+- Broad product classifications
+- Examples: "Cuidado Facial", "Cuidado Corporal", "Manicura"
+
+**Subcategories** (Second level)
+- Refinements within categories
+- Example: Category "Cuidado Facial" → Subcategories: "Limpieza", "Hidratación", "Anti-edad"
+
+**Managing Categories**
+1. Navigate to **Catálogo > Categorías**
+2. Create new categories with name and description
+3. Add subcategories nested under categories
+4. Assign products to category/subcategory combinations
+
+### Brand Management
+
+**Brand Features**
+- Brand name (must be unique)
+- Description for brand information
+- Used for filtering and grouping products
+
+**Working with Brands**
+1. Navigate to **Catálogo > Marcas**
+2. Create brands as needed
+3. Assign brands to products during product creation
+4. Filter product lists by brand
+
+### Tag System
+
+**Flexible Tagging**
+- Add multiple tags to any product
+- Tags are free-form and reusable
+- Great for cross-cutting attributes
+- Examples: "bio", "vegano", "premium", "nuevo"
+
+**Using Tags**
+1. Navigate to **Catálogo > Etiquetas**
+2. Create reusable tags
+3. Assign multiple tags to products
+4. Use tags for filtering and marketing
+
+## Business Benefits
+
+### Inventory Control
+
+- Real-time stock visibility prevents overselling
+- Automated low-stock alerts enable proactive reordering
+- SKU and barcode tracking integrates with scanning hardware
+- Stock automatically updates from TPV sales
+
+### Pricing Flexibility
+
+- Individual pricing for products and services
+- Bundle pricing for packs and promotions
+- Tax rate configuration for accurate invoicing
+- Easy price updates for seasonal changes
+
+### Organizational Efficiency
+
+- Multi-level categorization for logical structure
+- Brand grouping for vendor management
+- Tagging for cross-category attributes
+- Search and filter for quick product location
+
+### Marketing Opportunities
+
+- Create attractive packs to increase average sale value
+- Bundle slow-moving products with popular services
+- Seasonal packages for holidays and events
+- Gift packages for client gifting
+
+### Operational Insights
+
+- Track which products need reordering
+- Identify best-selling items
+- Monitor service popularity
+- Analyze category performance
+
+<Tip>
+  Use packs strategically to increase revenue. Bundle a popular service with a retail product to boost product sales. For example: "Manicura + Esmalte Profesional" pack.
+</Tip>

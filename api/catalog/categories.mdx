@@ -1,0 +1,329 @@
+---
+title: 'Categories'
+description: 'Organize products with hierarchical categories and subcategories'
+---
+
+## Overview
+
+The Categories API allows you to organize products in a hierarchical structure. Each category can contain multiple subcategories, providing a flexible taxonomy for your product catalog.
+
+## The Category Object
+
+<ResponseField name="category_id" type="string" required>
+  Unique identifier for the category (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Category name (max 100 characters, must be unique)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Category description
+</ResponseField>
+
+<ResponseField name="subcategories" type="array">
+  Array of subcategory objects associated with this category
+</ResponseField>
+
+<ResponseField name="_count" type="object">
+  Object containing count of related entities (e.g., total subcategories)
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime">
+  Category creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime">
+  Last update timestamp
+</ResponseField>
+
+## List Categories
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/categories" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a list of all categories with their subcategories.
+
+### Response
+
+Returns an array of category objects, ordered alphabetically by name. Each category includes up to 4 subcategories for preview and a count of total subcategories.
+
+```json
+[
+  {
+    "category_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Hair Care",
+    "description": "Products for hair treatment and styling",
+    "subcategories": [
+      {
+        "subcategory_id": "660e8400-e29b-41d4-a716-446655440001",
+        "name": "Shampoos"
+      },
+      {
+        "subcategory_id": "660e8400-e29b-41d4-a716-446655440002",
+        "name": "Conditioners"
+      },
+      {
+        "subcategory_id": "660e8400-e29b-41d4-a716-446655440003",
+        "name": "Hair Masks"
+      }
+    ],
+    "_count": {
+      "subcategories": 8
+    },
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  },
+  {
+    "category_id": "770e8400-e29b-41d4-a716-446655440004",
+    "name": "Skin Care",
+    "description": "Products for facial and body skin care",
+    "subcategories": [
+      {
+        "subcategory_id": "880e8400-e29b-41d4-a716-446655440005",
+        "name": "Cleansers"
+      },
+      {
+        "subcategory_id": "880e8400-e29b-41d4-a716-446655440006",
+        "name": "Moisturizers"
+      }
+    ],
+    "_count": {
+      "subcategories": 6
+    },
+    "created_at": "2024-03-14T14:20:00Z",
+    "updated_at": "2024-03-14T14:20:00Z"
+  }
+]
+```
+
+## Create Category
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api.beils.com/api/catalog/categories" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Hair Care",
+    "description": "Products for hair treatment and styling",
+    "subcategories": ["Shampoos", "Conditioners", "Hair Masks"]
+  }'
+```
+</CodeGroup>
+
+Creates a new category with optional subcategories.
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Category name (max 100 characters, must be unique)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Category description
+</ParamField>
+
+<ParamField body="subcategories" type="array">
+  Array of subcategory names (strings) to create under this category
+</ParamField>
+
+### Response
+
+Returns the created category object.
+
+```json
+{
+  "category_id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Hair Care",
+  "description": "Products for hair treatment and styling",
+  "created_at": "2024-03-15T10:30:00Z",
+  "updated_at": "2024-03-15T10:30:00Z"
+}
+```
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  El nombre de la categoría es obligatorio
+</ResponseField>
+
+<ResponseField name="409" type="error">
+  Ya existe una categoría con este nombre
+</ResponseField>
+
+<ResponseField name="500" type="error">
+  Error interno del servidor
+</ResponseField>
+
+## Update Category
+
+<CodeGroup>
+```bash cURL
+curl -X PUT "https://api.beils.com/api/catalog/categories/{category_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Hair Care Products",
+    "description": "Professional hair treatment and styling products",
+    "subcategories": ["Shampoos", "Conditioners", "Hair Masks", "Styling Gels"]
+  }'
+```
+</CodeGroup>
+
+Updates an existing category. The subcategories array is intelligently merged: new subcategories are created, removed subcategories are deleted, and existing ones remain unchanged.
+
+### Path Parameters
+
+<ParamField path="category_id" type="string" required>
+  The unique category identifier
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Category name (must be unique)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Category description
+</ParamField>
+
+<ParamField body="subcategories" type="array">
+  Complete array of subcategory names. The system will:
+  - Create new subcategories not currently in the category
+  - Delete subcategories not included in the array
+  - Keep existing subcategories that are still in the array
+</ParamField>
+
+<Note>
+  When updating subcategories, provide the complete list of subcategory names you want to keep. Any subcategories not in the list will be removed.
+</Note>
+
+### Response
+
+Returns the updated category object.
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  ID requerido
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Categoría no encontrada
+</ResponseField>
+
+<ResponseField name="409" type="error">
+  El nombre ya está en uso
+</ResponseField>
+
+<ResponseField name="500" type="error">
+  Error interno del servidor
+</ResponseField>
+
+## Delete Category
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE "https://api.beils.com/api/catalog/categories/{category_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Deletes a category and all its subcategories.
+
+### Path Parameters
+
+<ParamField path="category_id" type="string" required>
+  The unique category identifier
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  ID requerido
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Categoría no encontrada
+</ResponseField>
+
+<ResponseField name="500" type="error">
+  Error interno del servidor
+</ResponseField>
+
+<Warning>
+  Deleting a category will cascade delete all its subcategories. Products associated with this category will have their `category_id` set to null but will not be deleted.
+</Warning>
+
+## Working with Subcategories
+
+### Subcategory Structure
+
+Subcategories are automatically created when you include them in the `subcategories` array during category creation or update. Each subcategory must have a unique name within its parent category.
+
+### Subcategory Object
+
+<ResponseField name="subcategory_id" type="string">
+  Unique identifier for the subcategory (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Subcategory name (max 100 characters)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Subcategory description
+</ResponseField>
+
+<ResponseField name="category_id" type="string">
+  Parent category ID
+</ResponseField>
+
+### Managing Subcategories
+
+For advanced subcategory management (direct CRUD operations on subcategories), see the [Subcategories API](/api/catalog/subcategories) documentation.
+
+## Use Cases
+
+### Product Organization
+
+Categories and subcategories help organize your product catalog:
+
+```json
+{
+  "category": "Hair Care",
+  "subcategories": [
+    "Shampoos",
+    "Conditioners",
+    "Hair Masks",
+    "Styling Products",
+    "Hair Color"
+  ]
+}
+```
+
+### Filtering Products
+
+Use category IDs to filter products in the [Products API](/api/catalog/products):
+
+```bash
+curl -X GET "https://api.beils.com/api/catalog/products?category_id={category_id}"
+```
+
+### Multi-level Navigation
+
+Build hierarchical navigation menus using categories and their subcategories for improved user experience in your beauty center's e-commerce or POS system.

@@ -1,0 +1,308 @@
+---
+title: 'Services'
+description: 'Manage beauty services including pricing, duration, and availability'
+---
+
+## Overview
+
+The Services API allows you to manage beauty services offered by your center, including pricing, duration, and service codes. Services can be included in packs and bonuses.
+
+## The Service Object
+
+<ResponseField name="service_id" type="string" required>
+  Unique identifier for the service (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Service name (max 150 characters)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Detailed service description
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  Unique service code for internal reference (max 50 characters)
+</ResponseField>
+
+<ResponseField name="price" type="number" required>
+  Service price
+</ResponseField>
+
+<ResponseField name="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ResponseField>
+
+<ResponseField name="duration" type="integer">
+  Service duration in minutes (default: 30)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Service status: `activo` or `inactivo` (default: `activo`)
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime">
+  Service creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime">
+  Last update timestamp
+</ResponseField>
+
+## List Services
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/services" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```bash Search Services
+curl -X GET "https://api.beils.com/api/services?search=facial" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a list of all services in the system.
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search services by name, description, or code (partial match)
+</ParamField>
+
+### Response
+
+Returns an array of service objects, ordered by creation date (newest first).
+
+```json
+[
+  {
+    "service_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Deep Cleansing Facial",
+    "description": "Professional facial treatment with deep cleansing and hydration",
+    "code": "SRV-FACIAL-001",
+    "price": 65.00,
+    "tax_rate": 21.0,
+    "duration": 60,
+    "status": "activo",
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  },
+  {
+    "service_id": "660e8400-e29b-41d4-a716-446655440001",
+    "name": "Relaxing Massage",
+    "description": "Full body relaxing massage with aromatherapy",
+    "code": "SRV-MASSAGE-001",
+    "price": 80.00,
+    "tax_rate": 21.0,
+    "duration": 90,
+    "status": "activo",
+    "created_at": "2024-03-14T14:20:00Z",
+    "updated_at": "2024-03-14T14:20:00Z"
+  }
+]
+```
+
+## Create Service
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api.beils.com/api/services" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Deep Cleansing Facial",
+    "description": "Professional facial treatment with deep cleansing and hydration",
+    "code": "SRV-FACIAL-001",
+    "price": 65.00,
+    "tax_rate": 21.0,
+    "duration": 60,
+    "status": "activo"
+  }'
+```
+</CodeGroup>
+
+Creates a new service in the system.
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Service name (max 150 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Detailed service description
+</ParamField>
+
+<ParamField body="code" type="string">
+  Unique service code (max 50 characters)
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Service price
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ParamField>
+
+<ParamField body="duration" type="integer">
+  Service duration in minutes (default: 30)
+</ParamField>
+
+<ParamField body="status" type="string">
+  Service status: `activo` or `inactivo` (default: `activo`)
+</ParamField>
+
+### Response
+
+Returns the created service object.
+
+```json
+{
+  "service_id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Deep Cleansing Facial",
+  "description": "Professional facial treatment with deep cleansing and hydration",
+  "code": "SRV-FACIAL-001",
+  "price": 65.00,
+  "tax_rate": 21.0,
+  "duration": 60,
+  "status": "activo",
+  "created_at": "2024-03-15T10:30:00Z",
+  "updated_at": "2024-03-15T10:30:00Z"
+}
+```
+
+## Get Service
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/services/{service_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a specific service by ID.
+
+### Path Parameters
+
+<ParamField path="service_id" type="string" required>
+  The unique service identifier
+</ParamField>
+
+### Response
+
+Returns the service object.
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  Service ID is required
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Service not found
+</ResponseField>
+
+## Update Service
+
+<CodeGroup>
+```bash cURL
+curl -X PUT "https://api.beils.com/api/services/{service_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Deep Cleansing Facial - Premium",
+    "price": 75.00,
+    "duration": 75
+  }'
+```
+</CodeGroup>
+
+Updates an existing service. Only provided fields will be updated.
+
+### Path Parameters
+
+<ParamField path="service_id" type="string" required>
+  The unique service identifier
+</ParamField>
+
+### Body Parameters
+
+All fields are optional. Only include the fields you want to update.
+
+<ParamField body="name" type="string">
+  Service name (max 150 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Service description
+</ParamField>
+
+<ParamField body="code" type="string">
+  Service code
+</ParamField>
+
+<ParamField body="price" type="number">
+  Service price
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage
+</ParamField>
+
+<ParamField body="duration" type="integer">
+  Service duration in minutes
+</ParamField>
+
+<ParamField body="status" type="string">
+  Service status: `activo` or `inactivo`
+</ParamField>
+
+### Response
+
+Returns the updated service object.
+
+## Delete Service
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE "https://api.beils.com/api/services/{service_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Deletes a service from the system.
+
+### Path Parameters
+
+<ParamField path="service_id" type="string" required>
+  The unique service identifier
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+<Warning>
+  Deleting a service will remove it from any packs or bonuses it's associated with. Ensure these are updated before deletion.
+</Warning>
+
+## Use Cases
+
+### Scheduling Integration
+
+The `duration` field is essential for appointment scheduling. When creating bookings, the system uses the service duration to calculate appointment end times and prevent scheduling conflicts.
+
+### Service Bundles
+
+Services can be included in [Packs](/api/catalog/packs) to create service bundles with special pricing. Multiple services can be combined with products to create comprehensive treatment packages.
+
+### Loyalty Programs
+
+Services can be associated with [Bonuses](/api/marketing/bonuses) to create session-based loyalty programs where clients purchase multiple sessions at a discounted rate.

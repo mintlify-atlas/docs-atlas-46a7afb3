@@ -1,0 +1,157 @@
+---
+title: 'Delete Client'
+api: 'DELETE /api/clients/{id}'
+description: 'Permanently delete a client from the system'
+---
+
+## Overview
+
+Permanently deletes a client from the system. This action is irreversible. Related records (consents, questionnaires, revokes) will be cascade deleted according to the database schema.
+
+<Warning>
+  This is a destructive operation that cannot be undone. Consider setting the client's `status` to `OFF` using the [Update Client](/api/clients/update-client) endpoint as a soft delete alternative to preserve historical data.
+</Warning>
+
+## Authentication
+
+This endpoint requires authentication. Include a valid session token in your request.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier (UUID) of the client to delete.
+</ParamField>
+
+## Response
+
+Returns a success confirmation object when the deletion is completed.
+
+<ResponseField name="success" type="boolean" required>
+  Always `true` when the deletion is successful
+</ResponseField>
+
+## Example Request
+
+```bash cURL
+curl --request DELETE \
+  --url 'https://your-domain.com/api/clients/550e8400-e29b-41d4-a716-446655440000' \
+  --header 'Cookie: your-session-token'
+```
+
+## Example Response
+
+```json
+{
+  "success": true
+}
+```
+
+## Error Responses
+
+### 400 Bad Request - Missing ID
+
+```json
+{
+  "statusCode": 400,
+  "statusMessage": "ID requerido"
+}
+```
+
+### 404 Not Found - Client Not Found
+
+Returned when no client exists with the specified ID or when the user is not a client (role is not `USER`). This is indicated by Prisma error code `P2025`.
+
+```json
+{
+  "statusCode": 404,
+  "statusMessage": "Cliente no encontrado"
+}
+```
+
+### 500 Internal Server Error
+
+```json
+{
+  "statusCode": 500,
+  "statusMessage": "Error al eliminar cliente"
+}
+```
+
+## Cascade Deletion Behavior
+
+When a client is deleted, the following related records are automatically deleted due to cascade rules in the database schema:
+
+- **Consents** - All consent documents signed by the client
+- **Questionnaires** - All questionnaires completed by the client  
+- **Revokes** - All consent revocation records
+
+<Note>
+  **Bookings** and **Debts** have different cascade behaviors:
+  - **Bookings**: Related booking records reference the client. Check the database schema for specific cascade behavior.
+  - **Debts**: May need to be settled before deletion. Consider implementing business logic to prevent deletion of clients with outstanding debts.
+</Note>
+
+## Implementation Details
+
+- The deletion query verifies that `role: 'USER'` to ensure only clients can be deleted via this endpoint
+- Admin users cannot be deleted through this endpoint
+- The deletion is handled by Prisma's `delete` method
+- Cascade deletion is managed at the database level through foreign key constraints
+- No soft delete mechanism is implemented - this is a hard delete
+
+## Best Practices
+
+### Consider Soft Delete Instead
+
+For most business scenarios, it's recommended to use soft delete (setting `status: 'OFF'`) instead of permanent deletion:
+
+```bash
+curl --request PUT \
+  --url 'https://your-domain.com/api/clients/550e8400-e29b-41d4-a716-446655440000' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: your-session-token' \
+  --data '{"status": "OFF"}'
+```
+
+Benefits of soft delete:
+- Preserves historical data for reporting and analytics
+- Maintains referential integrity with bookings and sales
+- Allows for account reactivation if needed
+- Complies with audit requirements
+- Prevents accidental data loss
+
+### Pre-deletion Checks
+
+Before deleting a client, consider implementing checks for:
+
+1. **Outstanding Debts**: Verify no pending payments
+2. **Active Bookings**: Check for upcoming appointments
+3. **Recent Activity**: Warn if the client has recent transactions
+4. **Legal Compliance**: Ensure deletion complies with data retention policies
+
+### When Permanent Deletion is Appropriate
+
+- **GDPR/Privacy Requests**: When required by data protection regulations
+- **Test Data**: Cleaning up test accounts in non-production environments
+- **Duplicate Records**: Removing accidentally created duplicates
+- **Fraud Prevention**: Removing accounts created for fraudulent purposes
+
+## Data Retention
+
+Some data may need to be retained for legal or business purposes even after client deletion:
+
+- Financial records (sales, payments)
+- Booking history for scheduling analytics
+- Audit logs
+
+Consult your organization's data retention policy before implementing client deletion functionality.
+
+## Source Reference
+
+Implemented in `server/api/clients/[id].delete.ts`
+
+## Related Endpoints
+
+- [Update Client](/api/clients/update-client) - Use to set `status: 'OFF'` for soft delete
+- [Get Client](/api/clients/get-client) - Verify client details before deletion
+- [List Clients](/api/clients/list-clients) - View all clients including their status

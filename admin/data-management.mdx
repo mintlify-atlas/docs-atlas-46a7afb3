@@ -1,0 +1,631 @@
+---
+title: "Data Management"
+description: "Backup, restore, export, and manage data in Beils Dashboard"
+---
+
+## Overview
+
+Effective data management is critical for maintaining business continuity and compliance. This guide covers backup strategies, data export, data integrity, and maintenance tasks for Beils Dashboard.
+
+<Warning>
+  Always test backup and restore procedures in a non-production environment before relying on them in production.
+</Warning>
+
+## Database Structure
+
+Beils Dashboard uses MariaDB (MySQL-compatible) with Prisma ORM. The database schema is organized into logical phases:
+
+<CardGroup cols={2}>
+  <Card title="Users & Auth" icon="user-shield">
+    User accounts, roles, authentication tokens
+  </Card>
+  <Card title="Clients (CRM)" icon="users">
+    Client records, consents, questionnaires, revokes
+  </Card>
+  <Card title="Catalog" icon="box">
+    Products, services, packs, categories, brands, tags
+  </Card>
+  <Card title="Marketing" icon="bullhorn">
+    Coupons, bonuses, client bonuses, gift cards
+  </Card>
+  <Card title="Sales" icon="cash-register">
+    Carts, cart items, payments, debts
+  </Card>
+  <Card title="Appointments" icon="calendar">
+    Bookings with client and staff assignments
+  </Card>
+</CardGroup>
+
+### Data Relationships
+
+The system uses referential integrity with cascading deletes:
+
+```prisma
+// Example: Deleting a user cascades to their related data
+model User {
+  consents       Consent[]      // CASCADE
+  questionnaires Questionnaire[] // CASCADE
+  revokes        Revoke[]        // CASCADE
+  // ... other relations
+}
+```
+
+<Info>
+  Understanding these relationships is crucial when managing data to avoid unintentional data loss.
+</Info>
+
+## Database Backups
+
+### Manual Backup
+
+Create a complete database backup using mysqldump:
+
+```bash
+mysqldump -u username -p beils_dashboard > backup_$(date +%Y%m%d_%H%M%S).sql
+```
+
+**Backup includes:**
+- All table structures
+- All data records
+- Indexes and constraints
+- Stored procedures (if any)
+
+<Tip>
+  Include the timestamp in backup filenames to maintain multiple versions.
+</Tip>
+
+### Compressed Backup
+
+Save disk space with gzip compression:
+
+```bash
+mysqldump -u username -p beils_dashboard | gzip > backup_$(date +%Y%m%d_%H%M%S).sql.gz
+```
+
+### Automated Backups
+
+Set up a daily backup cron job:
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add daily backup at 2 AM
+0 2 * * * /usr/bin/mysqldump -u username -p'password' beils_dashboard | gzip > /backups/beils_$(date +\%Y\%m\%d).sql.gz
+```
+
+<Warning>
+  Storing passwords in cron jobs is insecure. Use MySQL config files or credential management systems instead.
+</Warning>
+
+### Backup Best Practices
+
+<AccordionGroup>
+  <Accordion title="Backup Frequency" icon="clock">
+    - **Daily**: Minimum for production systems
+    - **Hourly**: High-transaction environments
+    - **Before updates**: Always backup before schema changes
+  </Accordion>
+  
+  <Accordion title="Backup Retention" icon="calendar-days">
+    - Keep last 7 daily backups
+    - Keep last 4 weekly backups
+    - Keep monthly backups for 1 year
+    - Archive yearly backups indefinitely
+  </Accordion>
+  
+  <Accordion title="Backup Storage" icon="hard-drive">
+    - Store on separate physical drive
+    - Use cloud storage (S3, Google Cloud Storage)
+    - Keep off-site copies for disaster recovery
+    - Encrypt sensitive backup files
+  </Accordion>
+  
+  <Accordion title="Backup Verification" icon="check-circle">
+    - Test restore monthly
+    - Verify backup file integrity
+    - Check backup file sizes
+    - Monitor backup success/failure
+  </Accordion>
+</AccordionGroup>
+
+## Database Restore
+
+### Complete Restore
+
+Restore from a full database backup:
+
+```bash
+# Restore from uncompressed backup
+mysql -u username -p beils_dashboard < backup_20260305.sql
+
+# Restore from compressed backup
+gunzip < backup_20260305.sql.gz | mysql -u username -p beils_dashboard
+```
+
+<Warning>
+  Restoring will overwrite all existing data. Ensure you have a current backup before restoring.
+</Warning>
+
+### Selective Restore
+
+Restore specific tables:
+
+```bash
+# Extract specific table from backup
+mysqldump -u username -p beils_dashboard users > users_backup.sql
+
+# Restore only that table
+mysql -u username -p beils_dashboard < users_backup.sql
+```
+
+## Data Export
+
+### Export User Data
+
+Export all users to JSON:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  http://localhost:3000/api/users > users_export.json
+```
+
+### Export Clients
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  http://localhost:3000/api/clients > clients_export.json
+```
+
+### Export Products
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  http://localhost:3000/api/catalog/products > products_export.json
+```
+
+### CSV Export
+
+Use Prisma Client or SQL queries to export to CSV:
+
+```typescript
+// Example: Export users to CSV
+import { prisma } from './utils/prisma'
+import { createWriteStream } from 'fs'
+
+const users = await prisma.user.findMany()
+const csv = users.map(u => 
+  `${u.user_id},${u.email},${u.name},${u.role},${u.status}`
+).join('\n')
+
+const stream = createWriteStream('users.csv')
+stream.write('ID,Email,Name,Role,Status\n')
+stream.write(csv)
+stream.end()
+```
+
+Or export directly from MySQL:
+
+```sql
+SELECT * FROM users
+INTO OUTFILE '/tmp/users.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+```
+
+## Data Import
+
+### Import Users
+
+Bulk create users via API:
+
+```typescript
+const users = await fetch('./users_import.json')
+const userData = await users.json()
+
+for (const user of userData) {
+  await fetch('http://localhost:3000/api/users', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(user)
+  })
+}
+```
+
+### Import from CSV
+
+Load CSV data into database:
+
+```sql
+LOAD DATA LOCAL INFILE '/tmp/products.csv'
+INTO TABLE products
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS; -- Skip header row
+```
+
+## Data Seeding
+
+Populate the database with test data for development:
+
+```bash
+pnpm seed
+```
+
+The seed script (`seeds/seed-db.ts`) should create:
+
+- Test users (ADMIN and USER roles)
+- Sample clients
+- Product catalog with categories
+- Services and packs
+- Marketing items (coupons, bonuses)
+
+<Info>
+  Customize the seed file to match your business's products and services.
+</Info>
+
+## Database Migrations
+
+### Creating Migrations
+
+After modifying `prisma/schema.prisma`:
+
+```bash
+pnpm prisma:migrate
+```
+
+This:
+1. Generates SQL migration file
+2. Applies changes to database
+3. Updates Prisma Client
+
+<Warning>
+  Migrations can cause data loss if not carefully reviewed. Always backup before running migrations in production.
+</Warning>
+
+### Migration History
+
+View applied migrations:
+
+```bash
+pnpx prisma migrate status
+```
+
+### Rolling Back Migrations
+
+Prisma doesn't support automatic rollbacks. To revert:
+
+1. Restore from backup before migration
+2. Or manually write SQL to undo changes
+
+## Data Integrity
+
+### Referential Integrity
+
+The database enforces relationships:
+
+```prisma
+// User deletion cascades to related consents
+model Consent {
+  user_id String @db.Char(100)
+  user    User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+}
+```
+
+**Cascade behaviors:**
+- `Cascade` - Delete related records
+- `SetNull` - Set foreign key to null
+- `Restrict` - Prevent deletion if related records exist
+
+### Data Validation
+
+Validation happens at multiple levels:
+
+<Steps>
+  <Step title="Database Constraints">
+    - Unique constraints on email addresses
+    - NOT NULL requirements
+    - Foreign key relationships
+  </Step>
+  <Step title="Prisma Schema">
+    - Type checking (String, Int, DateTime, etc.)
+    - Default values
+    - Field lengths (@db.VarChar(50))
+  </Step>
+  <Step title="API Layer">
+    - Zod schema validation
+    - Business logic checks
+    - Authentication and authorization
+  </Step>
+  <Step title="Frontend Validation">
+    - Form input validation
+    - Type safety with TypeScript
+    - Real-time feedback to users
+  </Step>
+</Steps>
+
+### Unique Constraints
+
+Important unique fields to monitor:
+
+```prisma
+email  String @unique  // User email addresses
+sku    String @unique  // Product SKUs
+barcode String @unique // Product barcodes
+code   String @unique  // Service/pack codes, coupon codes, gift card codes
+```
+
+Attempting to create duplicates will throw an error.
+
+## Data Archiving
+
+### Soft Deletes
+
+Instead of hard deletes, use status flags:
+
+```typescript
+// Mark user as inactive instead of deleting
+await prisma.user.update({
+  where: { user_id: id },
+  data: { status: 'OFF' }
+})
+```
+
+**Benefits:**
+- Preserve historical data
+- Maintain referential integrity
+- Enable data recovery
+- Support audit trails
+
+### Archive Old Data
+
+Move old records to archive tables:
+
+```sql
+-- Archive completed carts older than 2 years
+INSERT INTO carts_archive
+SELECT * FROM carts
+WHERE status = 'completed'
+  AND created_at < DATE_SUB(NOW(), INTERVAL 2 YEAR);
+
+-- Delete from main table
+DELETE FROM carts
+WHERE status = 'completed'
+  AND created_at < DATE_SUB(NOW(), INTERVAL 2 YEAR);
+```
+
+<Tip>
+  Run archive operations during low-traffic hours to minimize performance impact.
+</Tip>
+
+## Data Cleanup
+
+### Remove Test Data
+
+Delete test records created during development:
+
+```sql
+-- Delete users with test email domains
+DELETE FROM users WHERE email LIKE '%@test.com';
+
+-- Remove products with test SKUs
+DELETE FROM products WHERE sku LIKE 'TEST%';
+```
+
+### Clean Up Orphaned Records
+
+Find records without valid foreign keys:
+
+```sql
+-- Find carts without valid user references
+SELECT * FROM carts c
+LEFT JOIN users u ON c.user_id = u.user_id
+WHERE c.user_id IS NOT NULL AND u.user_id IS NULL;
+```
+
+<Warning>
+  Prisma's cascade rules should prevent orphaned records, but verify after manual database operations.
+</Warning>
+
+## Performance Optimization
+
+### Database Indexing
+
+Important indexes for query performance:
+
+```sql
+-- Index frequently queried fields
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_products_sku ON products(sku);
+CREATE INDEX idx_carts_status ON carts(status);
+CREATE INDEX idx_bookings_date ON bookings(booking_date);
+```
+
+### Query Optimization
+
+Use Prisma's query optimization features:
+
+```typescript
+// Select only needed fields
+const users = await prisma.user.findMany({
+  select: {
+    user_id: true,
+    email: true,
+    name: true,
+    role: true,
+    status: true
+  }
+})
+
+// Use pagination for large datasets
+const products = await prisma.product.findMany({
+  skip: (page - 1) * pageSize,
+  take: pageSize,
+  orderBy: { created_at: 'desc' }
+})
+```
+
+### Connection Pooling
+
+Prisma automatically manages connection pooling. Configure in DATABASE_URL:
+
+```bash
+DATABASE_URL="mysql://user:pass@host:3306/db?connection_limit=10"
+```
+
+## Compliance and Privacy
+
+### GDPR Compliance
+
+For European users:
+
+<AccordionGroup>
+  <Accordion title="Right to Access" icon="eye">
+    Export all data for a specific user:
+    ```typescript
+    const userData = await prisma.user.findUnique({
+      where: { user_id: id },
+      include: {
+        consents: true,
+        questionnaires: true,
+        carts: true,
+        debts: true
+      }
+    })
+    ```
+  </Accordion>
+  
+  <Accordion title="Right to Deletion" icon="trash">
+    Delete user and all related data:
+    ```typescript
+    // Cascades to consents, questionnaires, revokes
+    await prisma.user.delete({
+      where: { user_id: id }
+    })
+    ```
+  </Accordion>
+  
+  <Accordion title="Data Portability" icon="file-export">
+    Provide data in JSON format via API endpoints
+  </Accordion>
+  
+  <Accordion title="Consent Management" icon="file-signature">
+    Track consents with the Consent model:
+    - Document URL
+    - Signed date
+    - Status (active/revoked)
+  </Accordion>
+</AccordionGroup>
+
+### Data Retention Policies
+
+Define how long different data types are kept:
+
+- **User accounts**: Inactive for 2 years → archive
+- **Completed transactions**: Keep for 7 years (tax compliance)
+- **Client appointments**: Keep historical records indefinitely
+- **Marketing data**: Review and clean up annually
+- **Logs**: Rotate monthly, archive for 1 year
+
+## Monitoring and Maintenance
+
+### Database Health Checks
+
+Regular maintenance tasks:
+
+```sql
+-- Check table sizes
+SELECT 
+  table_name,
+  ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)"
+FROM information_schema.TABLES
+WHERE table_schema = 'beils_dashboard'
+ORDER BY (data_length + index_length) DESC;
+
+-- Optimize tables
+OPTIMIZE TABLE users, products, carts;
+
+-- Check for fragmentation
+SHOW TABLE STATUS FROM beils_dashboard;
+```
+
+### Storage Monitoring
+
+Monitor disk usage:
+
+```bash
+# Check database directory size
+du -sh /var/lib/mysql/beils_dashboard
+
+# Monitor available disk space
+df -h
+```
+
+<Warning>
+  Set up alerts for low disk space (below 20%) to prevent database write failures.
+</Warning>
+
+## Disaster Recovery
+
+### Recovery Plan
+
+<Steps>
+  <Step title="Assess Damage">
+    Determine extent of data loss or corruption
+  </Step>
+  <Step title="Identify Last Good Backup">
+    Find the most recent backup before the incident
+  </Step>
+  <Step title="Restore Database">
+    Apply backup to database server
+  </Step>
+  <Step title="Verify Data Integrity">
+    Check critical tables and relationships
+  </Step>
+  <Step title="Replay Transactions">
+    If possible, replay transactions since backup
+  </Step>
+  <Step title="Resume Operations">
+    Return system to production after verification
+  </Step>
+</Steps>
+
+### Recovery Time Objective (RTO)
+
+Target time to restore service:
+- **Critical**: 1 hour
+- **High**: 4 hours
+- **Normal**: 24 hours
+
+### Recovery Point Objective (RPO)
+
+Maximum acceptable data loss:
+- **Daily backups**: Up to 24 hours of data loss
+- **Hourly backups**: Up to 1 hour of data loss
+- **Real-time replication**: Minimal data loss
+
+<Tip>
+  Adjust backup frequency based on your RPO requirements.
+</Tip>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="gear" href="/admin/configuration">
+    Database and system configuration
+  </Card>
+  <Card title="User Management" icon="users" href="/admin/user-management">
+    Manage user accounts and data
+  </Card>
+  <Card title="Installation" icon="download" href="/installation">
+    Initial database setup
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/authentication/login">
+    API endpoints for data access
+  </Card>
+</CardGroup>

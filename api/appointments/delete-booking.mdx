@@ -1,0 +1,154 @@
+---
+title: 'Delete Booking'
+description: 'Permanently delete a booking by ID'
+api: 'DELETE /api/agenda/bookings/{id}'
+---
+
+Permanently deletes a booking from the system. This action cannot be undone.
+
+<Warning>
+  This is a destructive operation. Consider updating the booking status to `cancelled` instead of deleting if you need to maintain historical records.
+</Warning>
+
+## Authentication
+
+This endpoint requires authentication via Bearer token in the Authorization header or `auth_token` cookie.
+
+```bash
+Authorization: Bearer YOUR_TOKEN
+```
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier (UUID) of the booking to delete
+  
+  Example: `abc123-def456-ghi789`
+</ParamField>
+
+## Response
+
+Returns a success confirmation object.
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the deletion was successful
+  
+  Will always be `true` if the request succeeds
+</ResponseField>
+
+## Examples
+
+<CodeGroup>
+
+```bash cURL
+curl -X DELETE 'https://api.beils.com/api/agenda/bookings/abc123-def456-ghi789' \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+```javascript JavaScript/TypeScript
+const response = await fetch('https://api.beils.com/api/agenda/bookings/abc123-def456-ghi789', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN'
+  }
+});
+
+const result = await response.json();
+console.log(result); // { success: true }
+```
+
+```python Python
+import requests
+
+response = requests.delete(
+    'https://api.beils.com/api/agenda/bookings/abc123-def456-ghi789',
+    headers={'Authorization': 'Bearer YOUR_TOKEN'}
+)
+
+result = response.json()
+print(result)  # {'success': True}
+```
+
+</CodeGroup>
+
+## Response Example
+
+```json
+{
+  "success": true
+}
+```
+
+## Error Responses
+
+<ResponseField name="401 Unauthorized" type="error">
+  Missing or invalid authentication token
+  
+  ```json
+  {
+    "statusCode": 401,
+    "statusMessage": "Unauthorized: Token is missing or invalid"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="400 Bad Request" type="error">
+  Missing or invalid booking ID
+  
+  ```json
+  {
+    "statusCode": 400,
+    "statusMessage": "Booking ID is required"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="404 Not Found" type="error">
+  Booking with the specified ID does not exist
+  
+  This error occurs when:
+  - The booking has already been deleted
+  - The ID is invalid or doesn't exist in the database
+  - The booking belongs to a different organization (if multi-tenancy is implemented)
+</ResponseField>
+
+## Best Practices
+
+<Note>
+  **Consider Soft Deletes**: Instead of permanently deleting bookings, consider updating the status to `cancelled`. This approach:
+  - Maintains historical records for reporting
+  - Prevents accidental data loss
+  - Allows tracking of cancellation patterns
+  - Supports potential booking restoration
+</Note>
+
+### Recommended Alternative
+
+Instead of deleting, update the booking status:
+
+```bash
+curl -X PUT 'https://api.beils.com/api/agenda/bookings/abc123-def456-ghi789' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "status": "cancelled",
+    "notes": "Cancelled by client on 2024-03-05"
+  }'
+```
+
+## Use Cases for Deletion
+
+Permanent deletion should typically only be used for:
+
+- **Test Data Cleanup**: Removing test bookings created during development or testing
+- **Duplicate Entries**: Eliminating accidental duplicate bookings
+- **Data Privacy Compliance**: Honoring user data deletion requests (GDPR, etc.)
+- **Invalid Data**: Removing bookings created with incorrect or corrupt data
+
+## Notes
+
+- This operation is **irreversible** - deleted bookings cannot be recovered
+- The deletion cascades based on database constraints defined in the Prisma schema
+- Consider implementing role-based access control to restrict deletion permissions to administrators only
+- Audit logging is recommended for tracking who deleted which bookings and when
+- For cancelled appointments, use the [Update Booking](/api/appointments/update-booking) endpoint with `status: "cancelled"` instead

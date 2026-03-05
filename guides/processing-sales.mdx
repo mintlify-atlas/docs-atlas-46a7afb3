@@ -1,0 +1,590 @@
+---
+title: Processing Sales
+description: Learn to use the TPV (Point of Sale) to process transactions, manage carts, and handle payments
+---
+
+The TPV (Terminal Punto de Venta / Point of Sale) is your checkout system for processing sales transactions. It supports products, services, packages, and bonuses with multiple payment methods.
+
+## Accessing the TPV
+
+Navigate to **TPV** from the main menu. The interface opens with:
+
+- **Left side**: Catalog browser with category tabs and product grid
+- **Right side**: Shopping cart, client selection, and payment processing
+
+<Note>
+  The TPV uses a full-height layout optimized for tablet or desktop use. It's designed for quick, touch-friendly interactions at the checkout counter.
+</Note>
+
+## Understanding the TPV Interface
+
+### Category Tabs (Top Left)
+
+Four tabs organize your saleable items:
+
+1. **Servicios** (Services): Individual beauty treatments and services
+2. **Productos** (Products): Retail products from inventory
+3. **Packs** (Packages): Pre-bundled service combinations
+4. **Bonos** (Bonuses): Multi-session vouchers
+
+Click a tab to switch the catalog view. The active tab is highlighted with dark background.
+
+### Catalog Search
+
+The search bar (top right of catalog area) filters items in the current tab:
+- Product/service names
+- SKU codes
+- Service codes
+
+Results update in real-time as you type.
+
+### Product/Service Cards
+
+Each item displays:
+- **Name**: In bold at the top
+- **Code/SKU**: Small text below name
+- **Price**: Large, bold at bottom left
+- **Add button (+)**: Bottom right with hover effect
+
+## Processing a Basic Sale
+
+<Steps>
+  <Step title="Start a New Sale">
+    Ensure the cart is empty. If not, click the trash icon to clear previous items.
+  </Step>
+  
+  <Step title="Select Category">
+    Click the appropriate tab:
+    - **Servicios** for completed beauty treatments
+    - **Productos** for retail item purchases
+    - **Packs** for package deals
+    - **Bonos** for session vouchers
+  </Step>
+  
+  <Step title="Add Items to Cart">
+    Click on any item card or the **+ button** to add it to the cart.
+    
+    - Item appears immediately in the right panel
+    - Quantity defaults to 1
+    - Subtotal updates automatically
+  </Step>
+  
+  <Step title="Adjust Quantities">
+    In the cart, use the **- and +** buttons to modify quantities:
+    - **+**: Increases quantity by 1
+    - **-**: Decreases quantity (clicking at quantity 1 removes the item)
+    
+    The price updates automatically as you adjust quantities.
+  </Step>
+  
+  <Step title="Apply Discount (Optional)">
+    If offering a discount:
+    
+    1. Locate the **Descuento / Cupón** field (middle of right panel)
+    2. Enter the discount amount in euros (e.g., 5.00 for €5 off)
+    3. The total updates to show the discounted price
+    
+    <Note>
+      Discounts are flat amounts, not percentages. Enter the exact euro value to deduct.
+    </Note>
+  </Step>
+  
+  <Step title="Select Payment Method">
+    Choose from four payment options:
+    
+    - **Tarjeta** (Card): Credit/debit card payment
+    - **Efectivo** (Cash): Cash payment
+    - **Mixto** (Mixed): Combination of card and cash
+    - **Deuda** (Debt): Defer payment (requires client selection)
+  </Step>
+  
+  <Step title="Process Payment">
+    Click the large **"Procesar Cobro"** button at the bottom.
+    
+    - A success message confirms the sale
+    - The cart clears automatically
+    - You're ready for the next customer
+  </Step>
+</Steps>
+
+## Working with Clients
+
+### Associating a Sale with a Client
+
+To track purchases by customer:
+
+<Steps>
+  <Step title="Search for Client">
+    In the client search field at the top of the right panel, type:
+    - Client phone number
+    - First or last name
+    - Document number
+    
+    Matching results appear in a dropdown (maximum 5 results).
+  </Step>
+  
+  <Step title="Select Client">
+    Click the desired client from the dropdown.
+    
+    The search field is replaced by a client card showing:
+    - Client initials in a colored circle
+    - Full name
+    - "Cliente Seleccionado" label
+  </Step>
+  
+  <Step title="Process Sale">
+    Complete the transaction as normal. The sale will be associated with this client's purchase history.
+  </Step>
+</Steps>
+
+### Removing Client Association
+
+Click the **trash icon** on the client card to deselect them. The search field reappears.
+
+<Tip>
+  Always associate sales with clients when possible. This enables:
+  - Purchase history tracking
+  - Loyalty program management
+  - Personalized marketing
+  - Better customer service
+</Tip>
+
+## Payment Methods
+
+### Tarjeta (Card Payment)
+
+**When to use**: Most transactions, preferred for accuracy and tracking
+
+<Steps>
+  <Step title="Select Tarjeta">
+    Click the **Tarjeta** button (credit card icon).
+  </Step>
+  
+  <Step title="Process Card">
+    Use your external card terminal:
+    1. Enter the amount shown in the "Total a Pagar"
+    2. Process the card payment
+    3. Wait for approval
+  </Step>
+  
+  <Step title="Complete in System">
+    Once payment is approved, click **"Procesar Cobro"** to record the sale.
+  </Step>
+</Steps>
+
+### Efectivo (Cash Payment)
+
+**When to use**: Walk-in customers paying cash
+
+<Steps>
+  <Step title="Select Efectivo">
+    Click the **Efectivo** button (banknote icon).
+  </Step>
+  
+  <Step title="Collect Cash">
+    1. Tell customer the total amount
+    2. Collect cash
+    3. Provide change if needed (calculate manually or use cash register)
+  </Step>
+  
+  <Step title="Record Sale">
+    Click **"Procesar Cobro"** to complete the transaction.
+  </Step>
+</Steps>
+
+<Tip>
+  For cash payments, double-check the amount before completing the sale. Cash discrepancies are harder to track and resolve than card payments.
+</Tip>
+
+### Mixto (Mixed Payment)
+
+**When to use**: Customer wants to split payment between cash and card
+
+<Steps>
+  <Step title="Select Mixto">
+    Click the **Mixto** button (wallet icon).
+  </Step>
+  
+  <Step title="Calculate Split">
+    Agree with the customer on the split:
+    - "€40 on card, €20 in cash"
+    
+    Note these amounts externally (write on receipt or notepad).
+  </Step>
+  
+  <Step title="Process Each Payment">
+    1. Process the card payment for the agreed card amount
+    2. Collect the cash portion
+  </Step>
+  
+  <Step title="Complete Sale">
+    Click **"Procesar Cobro"** to record the mixed-payment transaction.
+  </Step>
+</Steps>
+
+<Note>
+  The system records "mixed" as the payment method but doesn't track the exact split. Document this externally if needed for accounting.
+</Note>
+
+### Deuda (Deferred Payment)
+
+**When to use**: Trusted clients with accounts, credit arrangements, or payment plans
+
+<Warning>
+  **Deuda requires client selection**. You cannot process a debt payment without associating the sale to a client.
+</Warning>
+
+<Steps>
+  <Step title="Select Client First">
+    Before choosing payment method, search for and select the client.
+  </Step>
+  
+  <Step title="Select Deuda">
+    Click the **Deuda** button (red "0€" icon).
+  </Step>
+  
+  <Step title="Process Sale">
+    Click **"Procesar Cobro"**.
+    
+    The system:
+    - Creates a sale record with "pending" status
+    - Automatically creates a debt record linked to the client
+    - Associates the debt with the specific cart/sale
+  </Step>
+  
+  <Step title="Manage Debt">
+    View and manage outstanding debts in **Finanzas > Deudas** module.
+  </Step>
+</Steps>
+
+<Tip>
+  Use the Deuda payment method for:
+  - Clients with pre-paid packages
+  - Corporate accounts with monthly billing
+  - Trusted regular customers
+  - Payment plan arrangements
+  
+  Always document credit policies clearly with clients.
+</Tip>
+
+## Cart Management
+
+### Modifying Cart Items
+
+**Increase Quantity:**
+- Click the **+** button next to the item
+- Each click adds 1 to the quantity
+
+**Decrease Quantity:**
+- Click the **-** button next to the item
+- At quantity 1, clicking - removes the item entirely
+
+**Remove Item:**
+- Hover over the item card
+- Click the **trash icon** that appears in the top-right
+- Item is removed immediately
+
+### Clearing the Cart
+
+To start over completely:
+1. Click the **trash icon** on the selected client card (if applicable)
+2. Remove all items individually, or
+3. Refresh the page (use with caution - asks for confirmation)
+
+## Working with Different Item Types
+
+### Selling Services
+
+**Use case**: Client just completed a facial, massage, or other treatment
+
+<Steps>
+  <Step title="Switch to Servicios Tab">
+    Ensure the **Servicios** tab is active.
+  </Step>
+  
+  <Step title="Select Completed Service">
+    Click the service card matching what was provided.
+  </Step>
+  
+  <Step title="Verify Details">
+    Check the cart shows:
+    - Correct service name
+    - Correct price
+    - Quantity: 1
+  </Step>
+  
+  <Step title="Process Payment">
+    Complete checkout with appropriate payment method.
+  </Step>
+</Steps>
+
+### Selling Products
+
+**Use case**: Client wants to purchase retail items (shampoos, creams, etc.)
+
+<Steps>
+  <Step title="Switch to Productos Tab">
+    Click the **Productos** tab.
+  </Step>
+  
+  <Step title="Find Products">
+    Use search or browse to locate each product.
+  </Step>
+  
+  <Step title="Add Multiple Items">
+    Click each product the client is purchasing.
+    
+    - They appear as separate cart items
+    - Adjust quantities as needed
+  </Step>
+  
+  <Step title="Review Total">
+    Check the cart subtotal matches the retail prices.
+  </Step>
+  
+  <Step title="Complete Sale">
+    Process payment and provide receipt.
+  </Step>
+</Steps>
+
+<Note>
+  When products sell through the TPV, their stock levels decrease automatically in the inventory system.
+</Note>
+
+### Selling Packs
+
+**Use case**: Client wants to purchase a multi-service package
+
+<Steps>
+  <Step title="Switch to Packs Tab">
+    Click the **Packs** tab.
+  </Step>
+  
+  <Step title="Select Package">
+    Click the appropriate pack (e.g., "5-Session Massage Package").
+  </Step>
+  
+  <Step title="Process Full Payment">
+    Packs are typically paid upfront:
+    1. Add pack to cart
+    2. Process payment for full amount
+    3. Complete sale
+  </Step>
+  
+  <Step title="Note Client Purchase">
+    Inform client their package is now in the system and can be used for future bookings.
+  </Step>
+</Steps>
+
+### Selling Bonos
+
+**Use case**: Client wants to purchase a bonus (session voucher)
+
+<Steps>
+  <Step title="Switch to Bonos Tab">
+    Click the **Bonos** tab.
+  </Step>
+  
+  <Step title="Select Bonus Package">
+    Click the bonus card (e.g., "10-Session Bonus").
+  </Step>
+  
+  <Step title="Associate with Client">
+    **Important**: Always select the client first when selling bonuses:
+    1. Search for client
+    2. Select from dropdown
+    3. Then add bonus to cart
+  </Step>
+  
+  <Step title="Complete Sale">
+    Process payment. The bonus is now associated with the client's account.
+  </Step>
+</Steps>
+
+<Tip>
+  Bonuses and Packs are similar but different:
+  - **Packs**: Pre-bundled services, configured in the Packs module
+  - **Bonos**: Multi-session vouchers for single services, configured in Marketing > Bonos
+  
+  Choose based on how your business structures pre-paid offerings.
+</Tip>
+
+## Best Practices
+
+### Speed and Efficiency
+
+<Tip>
+  **Fast Checkout Tips**:
+  
+  1. **Learn Keyboard Shortcuts**: Use tab to navigate, enter to confirm
+  2. **Memorize Common Items**: Frequent products/services should be easy to locate
+  3. **Use Search Effectively**: Type SKU or first few letters instead of browsing
+  4. **Prepare During Service**: Start building the cart while the service is being completed
+  5. **Pre-select Payment Method**: Ask clients how they'll pay at the start
+</Tip>
+
+### Accuracy
+
+<Steps>
+  <Step title="Verify Cart Contents">
+    Before processing:
+    - Read each item name aloud or to yourself
+    - Confirm quantities match what's being purchased
+    - Check prices seem reasonable
+  </Step>
+  
+  <Step title="Show Total to Client">
+    Turn screen toward client or clearly state:
+    "Your total is [amount]"
+    
+    This prevents disputes and builds trust.
+  </Step>
+  
+  <Step title="Confirm Payment Method">
+    Ask: "How would you like to pay today?"
+    
+    Don't assume based on previous visits.
+  </Step>
+  
+  <Step title="Double-Check Before Clicking">
+    Pause 1-2 seconds before clicking "Procesar Cobro" to mentally verify everything is correct.
+  </Step>
+</Steps>
+
+### Client Experience
+
+<Tip>
+  **Professional Checkout**:
+  
+  - **Make Eye Contact**: Look at the client, not just the screen
+  - **Explain Charges**: Briefly mention each item ("One facial treatment and the serum you selected")
+  - **Offer Discounts Transparently**: If applying discount, explain why ("I'm applying your loyalty discount")
+  - **Thank Them**: Always end with "Thank you for your visit!"
+  - **Provide Receipt**: Offer printed or digital receipt
+</Tip>
+
+## Handling Common Scenarios
+
+### Client Forgot Wallet
+
+<Steps>
+  <Step title="Offer Deuda Option">
+    If the client is trusted/regular:
+    1. Select the client in the TPV
+    2. Choose **Deuda** payment method
+    3. Process the sale
+    4. Follow up later for payment
+  </Step>
+  
+  <Step title="Cancel Sale">
+    If credit isn't appropriate:
+    1. Click trash to clear cart
+    2. Offer to hold items/rebook service
+    3. Client can return when ready to pay
+  </Step>
+</Steps>
+
+### Wrong Item Added
+
+<Steps>
+  <Step title="Remove Incorrect Item">
+    Hover over the wrong item in cart and click the trash icon.
+  </Step>
+  
+  <Step title="Add Correct Item">
+    Switch to appropriate tab and add the right item.
+  </Step>
+  
+  <Step title="Verify with Client">
+    Show the updated cart to confirm accuracy.
+  </Step>
+</Steps>
+
+### Client Questions Price
+
+<Steps>
+  <Step title="Show Item Details">
+    Point to the specific item in the catalog showing the price.
+  </Step>
+  
+  <Step title="Explain Components">
+    Break down:
+    - Base service/product price
+    - Any taxes included
+    - Discounts applied
+  </Step>
+  
+  <Step title="Offer Manager Review">
+    If dispute continues, involve a manager to review pricing.
+  </Step>
+</Steps>
+
+### Applying Coupon Codes
+
+<Note>
+  The current TPV shows a discount field but doesn't validate coupon codes automatically.
+</Note>
+
+<Steps>
+  <Step title="Check Coupon Validity">
+    Verify in **Marketing > Cupones**:
+    - Code exists and is active
+    - Not expired
+    - Hasn't exceeded max uses
+    - Meets minimum purchase amount
+  </Step>
+  
+  <Step title="Calculate Discount">
+    Determine the discount amount:
+    - Percentage coupons: Calculate % of subtotal
+    - Fixed amount coupons: Use the coupon value directly
+  </Step>
+  
+  <Step title="Enter Discount">
+    Type the calculated amount into the **Descuento** field.
+  </Step>
+  
+  <Step title="Complete Sale">
+    Process payment with the discounted total.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### "Procesar Cobro" Button is Disabled
+
+The button is disabled when:
+- Cart is empty (add at least one item)
+- System is processing a previous sale (wait for completion)
+
+### Item Doesn't Appear in Catalog
+
+Check:
+1. **Correct Tab**: Ensure you're in the right category (Servicios/Productos/Packs/Bonos)
+2. **Active Status**: Item must be "Activo" in its management module
+3. **Stock Level**: Products with 0 stock may not show
+4. **Search Filter**: Clear search to see all items
+
+### Cannot Select Deuda Payment
+
+Deuda requires:
+1. Client must be selected first (search and choose client)
+2. Cart must not be empty
+
+If conditions are met but still fails, the client may have account restrictions.
+
+### Sale Processed But Cart Not Clearing
+
+1. Refresh the TPV page
+2. Check if sale appears in sales history
+3. Manually clear cart using trash icons
+4. Report issue to system administrator if it persists
+
+## Quick Reference: Payment Methods
+
+| Method | Icon | When to Use | Requires Client |
+|--------|------|-------------|------------------|
+| Tarjeta | Card | Credit/debit card | No (optional) |
+| Efectivo | Banknote | Cash payments | No (optional) |
+| Mixto | Wallet | Split payment | No (optional) |
+| Deuda | 0€ (Red) | Deferred payment | Yes (required) |

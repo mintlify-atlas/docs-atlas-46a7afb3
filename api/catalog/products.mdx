@@ -1,0 +1,404 @@
+---
+title: 'Products'
+description: 'Manage products in the catalog including inventory, pricing, and categorization'
+---
+
+## Overview
+
+The Products API allows you to manage your product catalog, including inventory tracking, pricing, categorization, and brand associations. Products can be organized using categories, subcategories, brands, and tags.
+
+## The Product Object
+
+<ResponseField name="product_id" type="string" required>
+  Unique identifier for the product (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Product name (max 150 characters)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Detailed product description
+</ResponseField>
+
+<ResponseField name="sku" type="string">
+  Stock Keeping Unit - unique product identifier (max 50 characters)
+</ResponseField>
+
+<ResponseField name="barcode" type="string">
+  Product barcode (max 50 characters)
+</ResponseField>
+
+<ResponseField name="price" type="number" required>
+  Product price
+</ResponseField>
+
+<ResponseField name="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ResponseField>
+
+<ResponseField name="stock" type="integer">
+  Current stock quantity (default: 0)
+</ResponseField>
+
+<ResponseField name="min_stock" type="integer">
+  Minimum stock threshold for alerts (default: 0)
+</ResponseField>
+
+<ResponseField name="image_url" type="string">
+  URL to product image (max 255 characters)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Product status: `activo` or `inactivo` (default: `activo`)
+</ResponseField>
+
+<ResponseField name="brand_id" type="string">
+  Associated brand ID (UUID)
+</ResponseField>
+
+<ResponseField name="category_id" type="string">
+  Associated category ID (UUID)
+</ResponseField>
+
+<ResponseField name="subcategory_id" type="string">
+  Associated subcategory ID (UUID)
+</ResponseField>
+
+<ResponseField name="brand" type="object">
+  Populated brand object with `name` field
+</ResponseField>
+
+<ResponseField name="category" type="object">
+  Populated category object with `name` field
+</ResponseField>
+
+<ResponseField name="subcategory" type="object">
+  Populated subcategory object with `name` field
+</ResponseField>
+
+<ResponseField name="tags" type="array">
+  Array of associated tags with `tag_id` and `name` fields
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime">
+  Product creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime">
+  Last update timestamp
+</ResponseField>
+
+## List Products
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/products" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```bash Filter by Category
+curl -X GET "https://api.beils.com/api/catalog/products?category_id=cat_123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```bash Search Products
+curl -X GET "https://api.beils.com/api/catalog/products?search=shampoo" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a list of all products with their associated brand, category, subcategory, and tags.
+
+### Query Parameters
+
+<ParamField query="category_id" type="string">
+  Filter products by category ID
+</ParamField>
+
+<ParamField query="subcategory_id" type="string">
+  Filter products by subcategory ID
+</ParamField>
+
+<ParamField query="brand_id" type="string">
+  Filter products by brand ID
+</ParamField>
+
+<ParamField query="search" type="string">
+  Search products by name, description, SKU, or barcode (partial match)
+</ParamField>
+
+### Response
+
+Returns an array of product objects, ordered by creation date (newest first).
+
+```json
+[
+  {
+    "product_id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Professional Shampoo 500ml",
+    "description": "Moisturizing shampoo for all hair types",
+    "sku": "SHA-500-001",
+    "barcode": "8436535240012",
+    "price": 24.99,
+    "tax_rate": 21.0,
+    "stock": 45,
+    "min_stock": 10,
+    "image_url": "https://cdn.beils.com/products/shampoo-001.jpg",
+    "status": "activo",
+    "brand_id": "brand_123",
+    "category_id": "cat_456",
+    "subcategory_id": "subcat_789",
+    "brand": { "name": "Premium Hair Care" },
+    "category": { "name": "Hair Products" },
+    "subcategory": { "name": "Shampoos" },
+    "tags": [
+      { "tag_id": "tag_1", "name": "organic" },
+      { "tag_id": "tag_2", "name": "sulfate-free" }
+    ],
+    "created_at": "2024-03-15T10:30:00Z",
+    "updated_at": "2024-03-15T10:30:00Z"
+  }
+]
+```
+
+## Create Product
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://api.beils.com/api/catalog/products" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Professional Shampoo 500ml",
+    "description": "Moisturizing shampoo for all hair types",
+    "sku": "SHA-500-001",
+    "barcode": "8436535240012",
+    "price": 24.99,
+    "tax_rate": 21.0,
+    "stock": 50,
+    "min_stock": 10,
+    "status": "activo",
+    "brand_id": "brand_123",
+    "category_id": "cat_456",
+    "subcategory_id": "subcat_789",
+    "tags": ["tag_1", "tag_2"]
+  }'
+```
+</CodeGroup>
+
+Creates a new product in the catalog.
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  Product name (max 150 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Product description
+</ParamField>
+
+<ParamField body="sku" type="string">
+  Unique SKU (max 50 characters)
+</ParamField>
+
+<ParamField body="barcode" type="string">
+  Product barcode (max 50 characters)
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Product price
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage (default: 21.0)
+</ParamField>
+
+<ParamField body="stock" type="integer">
+  Initial stock quantity (default: 0)
+</ParamField>
+
+<ParamField body="min_stock" type="integer">
+  Minimum stock threshold (default: 0)
+</ParamField>
+
+<ParamField body="image_url" type="string">
+  URL to product image
+</ParamField>
+
+<ParamField body="status" type="string">
+  Product status: `activo` or `inactivo`
+</ParamField>
+
+<ParamField body="brand_id" type="string">
+  Brand ID to associate with product
+</ParamField>
+
+<ParamField body="category_id" type="string">
+  Category ID to associate with product
+</ParamField>
+
+<ParamField body="subcategory_id" type="string">
+  Subcategory ID to associate with product
+</ParamField>
+
+<ParamField body="tags" type="array">
+  Array of tag IDs to associate with product
+</ParamField>
+
+### Response
+
+Returns the created product object with populated relations.
+
+## Get Product
+
+<CodeGroup>
+```bash cURL
+curl -X GET "https://api.beils.com/api/catalog/products/{product_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Retrieves a specific product by ID with all related data.
+
+### Path Parameters
+
+<ParamField path="product_id" type="string" required>
+  The unique product identifier
+</ParamField>
+
+### Response
+
+Returns the product object with full brand, category, subcategory, and tags details.
+
+### Error Responses
+
+<ResponseField name="400" type="error">
+  Product ID is required
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  Product not found
+</ResponseField>
+
+## Update Product
+
+<CodeGroup>
+```bash cURL
+curl -X PUT "https://api.beils.com/api/catalog/products/{product_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Professional Shampoo 500ml - Updated",
+    "price": 26.99,
+    "stock": 55,
+    "tags": ["tag_1", "tag_3"]
+  }'
+```
+</CodeGroup>
+
+Updates an existing product. Only provided fields will be updated.
+
+### Path Parameters
+
+<ParamField path="product_id" type="string" required>
+  The unique product identifier
+</ParamField>
+
+### Body Parameters
+
+All fields are optional. Only include the fields you want to update.
+
+<ParamField body="name" type="string">
+  Product name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Product description
+</ParamField>
+
+<ParamField body="sku" type="string">
+  Product SKU
+</ParamField>
+
+<ParamField body="barcode" type="string">
+  Product barcode
+</ParamField>
+
+<ParamField body="price" type="number">
+  Product price
+</ParamField>
+
+<ParamField body="tax_rate" type="number">
+  Tax rate percentage
+</ParamField>
+
+<ParamField body="stock" type="integer">
+  Stock quantity
+</ParamField>
+
+<ParamField body="min_stock" type="integer">
+  Minimum stock threshold
+</ParamField>
+
+<ParamField body="image_url" type="string">
+  Product image URL
+</ParamField>
+
+<ParamField body="status" type="string">
+  Product status
+</ParamField>
+
+<ParamField body="brand_id" type="string">
+  Brand ID (use empty string or null to remove association)
+</ParamField>
+
+<ParamField body="category_id" type="string">
+  Category ID (use empty string or null to remove association)
+</ParamField>
+
+<ParamField body="subcategory_id" type="string">
+  Subcategory ID (use empty string or null to remove association)
+</ParamField>
+
+<ParamField body="tags" type="array">
+  Array of tag IDs to associate. This replaces all existing tags.
+</ParamField>
+
+<Note>
+  When updating tags, the existing tag associations are completely replaced with the new array. To remove all tags, pass an empty array `[]`.
+</Note>
+
+### Response
+
+Returns the updated product object with populated relations.
+
+## Delete Product
+
+<CodeGroup>
+```bash cURL
+curl -X DELETE "https://api.beils.com/api/catalog/products/{product_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</CodeGroup>
+
+Deletes a product from the catalog. This also removes all associated tag relationships.
+
+### Path Parameters
+
+<ParamField path="product_id" type="string" required>
+  The unique product identifier
+</ParamField>
+
+### Response
+
+```json
+{
+  "success": true
+}
+```
+
+<Warning>
+  Deleting a product will remove it from any packs it's associated with. Make sure to review pack contents before deleting products.
+</Warning>

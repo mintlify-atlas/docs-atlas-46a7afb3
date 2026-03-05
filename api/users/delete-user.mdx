@@ -1,0 +1,208 @@
+---
+title: 'Delete User'
+description: 'Permanently delete a user from the system'
+api: 'DELETE /api/users/{id}'
+---
+
+Permanently deletes a user from the database. This endpoint is protected and requires authentication.
+
+<Warning>
+  This is a destructive operation. Deleting a user will also cascade delete related records including consents, questionnaires, and revokes due to the `onDelete: Cascade` relationships in the Prisma schema.
+</Warning>
+
+## Authentication
+
+This endpoint requires a valid JWT token. Include the token in one of the following ways:
+
+- **Authorization header**: `Authorization: Bearer <token>`
+- **Cookie**: `auth_token=<token>`
+
+## Authorization
+
+Should require `ADMIN` role. Regular users should not be able to delete accounts.
+
+<Note>
+  Consider implementing soft deletes (setting status to `OFF`) instead of hard deletes to maintain data integrity and audit trails.
+</Note>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier (UUID) of the user to delete. This corresponds to the `user_id` field.
+</ParamField>
+
+## Request
+
+No request body required.
+
+### Example Request
+
+```bash
+curl -X DELETE https://your-domain.com/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+## Response
+
+Returns a success confirmation object.
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the deletion was successful (always `true` on success)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Confirmation message in Spanish: "Usuario eliminado"
+</ResponseField>
+
+### Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Usuario eliminado"
+}
+```
+
+### Error Responses
+
+<ResponseField name="400 Bad Request">
+  User ID is missing from the path
+  
+  ```json
+  {
+    "statusCode": 400,
+    "statusMessage": "ID requerido"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="401 Unauthorized">
+  Token is missing, invalid, or expired
+  
+  ```json
+  {
+    "statusCode": 401,
+    "statusMessage": "Unauthorized: Token is missing or invalid"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="500 Internal Server Error">
+  Database error (e.g., user not found, foreign key constraint) or server issue
+  
+  ```json
+  {
+    "statusCode": 500,
+    "statusMessage": "Error al eliminar usuario"
+  }
+  ```
+  
+  <Note>
+    A 500 error may occur if:
+    - The user_id doesn't exist in the database
+    - There are foreign key constraints preventing deletion (though most should cascade)
+    - Database connection issues
+  </Note>
+</ResponseField>
+
+## Cascade Deletion Behavior
+
+When a user is deleted, the following related records are automatically deleted due to `onDelete: Cascade` in the Prisma schema:
+
+### Automatically Deleted (Cascade)
+
+- **Consents** - All consent records linked to the user
+- **Questionnaires** - All questionnaire responses from the user
+- **Revokes** - All revocation records for the user
+
+### Affected Relationships
+
+- **Carts** - User reference is set to `null` (nullable relationship)
+- **Debts** - User reference is maintained (non-nullable, may cause deletion to fail if debts exist)
+- **Bookings** - Both client and staff bookings reference users (may prevent deletion)
+
+<Warning>
+  If a user has active bookings (either as a client or staff member) or outstanding debts, the deletion may fail due to foreign key constraints. Consider handling these cases in your application:
+  
+  1. Reassign or cancel bookings before deletion
+  2. Resolve or reassign debts
+  3. Implement soft deletes instead
+</Warning>
+
+## Implementation Details
+
+### Database Operation
+
+The deletion uses Prisma's `delete` method:
+
+```typescript
+await prisma.user.delete({
+  where: { user_id: id }
+})
+```
+
+### No Soft Delete
+
+This endpoint performs a **hard delete** - the user record is permanently removed from the database. There is no built-in way to recover the data after deletion.
+
+## Best Practices
+
+<Warning>
+  **Production Recommendations:**
+  
+  1. **Implement soft deletes** - Set `status` to `OFF` instead of deleting
+  2. **Add authorization checks** - Only allow ADMIN role to delete users
+  3. **Check for dependencies** - Verify no active bookings, carts, or debts before deletion
+  4. **Audit logging** - Log all user deletions with timestamp and admin who performed the action
+  5. **Confirmation dialog** - Require double confirmation in the UI
+  6. **Backup strategy** - Ensure database backups before allowing deletions
+</Warning>
+
+### Example: Soft Delete Implementation
+
+Instead of deleting, consider updating the status:
+
+```typescript
+// Soft delete - recommended approach
+const deactivatedUser = await prisma.user.update({
+  where: { user_id: id },
+  data: { status: 'OFF' }
+})
+```
+
+## Security Considerations
+
+- **Role-Based Access Control**: Implement middleware to verify only ADMIN users can delete
+- **Self-Deletion Prevention**: Prevent users from deleting their own account if they're the last admin
+- **Audit Trail**: Log all deletion attempts with user ID, admin who initiated, and timestamp
+- **Rate Limiting**: Implement rate limiting to prevent bulk deletion attacks
+
+### Example Authorization Check
+
+```typescript
+// Check if user is admin
+if (event.context.user.role !== 'ADMIN') {
+  throw createError({
+    statusCode: 403,
+    statusMessage: 'Solo administradores pueden eliminar usuarios'
+  })
+}
+
+// Prevent deleting own account if last admin
+const adminCount = await prisma.user.count({
+  where: { role: 'ADMIN', status: 'ON' }
+})
+
+if (adminCount === 1 && id === event.context.user.userId) {
+  throw createError({
+    statusCode: 400,
+    statusMessage: 'No puede eliminar la única cuenta de administrador'
+  })
+}
+```
+
+## Related Endpoints
+
+- [List Users](/api/users/list-users) - Retrieve all users
+- [Create User](/api/users/create-user) - Add a new user
+- [Update User](/api/users/update-user) - Modify user details (use for soft deletes)

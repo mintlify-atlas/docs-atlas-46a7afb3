@@ -1,0 +1,263 @@
+---
+title: "User Management"
+description: "Manage system users, roles, and access control in Beils Dashboard"
+---
+
+## Overview
+
+Beils Dashboard provides comprehensive user management capabilities for beauty center staff and administrators. You can create, update, and manage user accounts with different permission levels.
+
+<Note>
+  User management is restricted to administrators (ADMIN role) only. Regular users cannot access these features.
+</Note>
+
+## User Roles
+
+The system supports two primary roles defined in the database schema:
+
+<CardGroup cols={2}>
+  <Card title="ADMIN" icon="shield-halved">
+    Full system access with permissions to:
+    - Manage all users
+    - Configure system settings
+    - Access all modules and features
+    - View and manage all data
+  </Card>
+  <Card title="USER" icon="user">
+    Standard staff access with permissions to:
+    - Manage clients and appointments
+    - Process sales and checkouts
+    - Create and edit catalog items
+    - View assigned data
+  </Card>
+</CardGroup>
+
+## User Status
+
+Each user account has a status that controls access:
+
+- **ON** - User is active and can log into the system
+- **OFF** - User is inactive and cannot authenticate
+
+<Warning>
+  Deactivating a user (setting status to OFF) immediately prevents them from logging in and invalidates their current session.
+</Warning>
+
+## Accessing User Management
+
+Navigate to the **Users** section from the main navigation menu. This page displays all system users with their key information.
+
+### User List View
+
+The user management interface provides:
+
+- **Search and filtering** - Find users by name, email, or role
+- **Status indicators** - Visual badges showing active/inactive status
+- **Quick actions** - Edit, delete, or toggle user status
+- **Pagination** - Navigate through large user lists (10 users per page)
+
+## Creating Users
+
+To add a new user to the system:
+
+<Steps>
+  <Step title="Open User Form">
+    Click the **Create User** button in the user management interface
+  </Step>
+  <Step title="Enter Basic Information">
+    Provide required fields:
+    - Full name and surname
+    - Email address (must be unique)
+    - Phone number
+    - Password (default: `123456` if not specified)
+  </Step>
+  <Step title="Assign Role and Status">
+    Select the appropriate role:
+    - **ADMIN** for administrators
+    - **USER** for standard staff (default)
+    
+    Set initial status (defaults to ON)
+  </Step>
+  <Step title="Add Personal Details">
+    Complete optional fields:
+    - Address, city, country, postal code
+    - Gender and birth date
+    - Document type (DNI, PASSPORT, NIE)
+    - Document number
+  </Step>
+  <Step title="Save User">
+    Click **Create** to add the user to the system
+  </Step>
+</Steps>
+
+### API Endpoint
+
+```typescript
+POST /api/users
+```
+
+See the [Create User API](/api/users/create-user) documentation for details.
+
+## Editing Users
+
+To update an existing user account:
+
+1. Click the **Edit** icon next to the user in the list
+2. Modify any fields in the user form
+3. Update the password if needed (automatically hashed with bcrypt)
+4. Click **Update** to save changes
+
+<Info>
+  Password changes take effect immediately. The user must use the new password for their next login.
+</Info>
+
+### API Endpoint
+
+```typescript
+PUT /api/users/:id
+```
+
+## Toggling User Status
+
+Quickly activate or deactivate users without opening the edit form:
+
+1. Locate the user in the list
+2. Click the **Status Toggle** button
+3. Confirm the action if prompted
+
+The system updates the status optimistically in the UI and syncs with the server.
+
+## Deleting Users
+
+<Warning>
+  Deleting a user is permanent and cascades to related data (consents, questionnaires, revokes). Use with caution.
+</Warning>
+
+To remove a user from the system:
+
+1. Click the **Delete** icon next to the user
+2. Confirm the deletion in the modal dialog
+3. The user and associated data are permanently removed
+
+### API Endpoint
+
+```typescript
+DELETE /api/users/:id
+```
+
+## User Authentication
+
+Users authenticate using their email and password:
+
+### Login Process
+
+1. User enters email and password at `/login`
+2. System validates credentials using bcrypt password comparison
+3. Checks if user status is ON
+4. Generates JWT token containing:
+   - User ID
+   - Email address
+   - Role (ADMIN or USER)
+5. Returns user data (excluding password) and authentication token
+
+### Session Management
+
+Authentication tokens:
+- Valid for **24 hours** by default
+- Stored in HTTP-only cookie (`auth_token`)
+- Can be sent via Authorization header: `Bearer <token>`
+- Automatically validated by server middleware on protected routes
+
+<Tip>
+  The JWT secret is configurable via the `JWT_SECRET` environment variable. Use a strong secret in production.
+</Tip>
+
+## User Data Model
+
+Each user record contains:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | UUID | Unique user identifier |
+| `email` | String | Unique email address (max 50 chars) |
+| `password` | String | Bcrypt hashed password |
+| `name` | String | First name (max 50 chars) |
+| `surname` | String | Last name (max 50 chars) |
+| `phone` | String | Contact phone number |
+| `address` | String | Street address |
+| `city` | String | City name |
+| `country` | String | Country name |
+| `postal_code` | String | Postal/ZIP code |
+| `gender` | String | Gender identifier |
+| `birth_date` | Date | Date of birth |
+| `role` | Enum | ADMIN or USER |
+| `status` | Enum | ON or OFF |
+| `avatar` | String | Avatar URL (auto-generated if not provided) |
+| `document_type` | Enum | DNI, PASSPORT, or NIE |
+| `document_number` | String | ID document number |
+| `refresh_token` | String | OAuth refresh token (nullable) |
+| `created_at` | DateTime | Account creation timestamp |
+| `updated_at` | DateTime | Last update timestamp |
+
+## Filtering and Search
+
+The user management interface supports advanced filtering:
+
+### Available Filters
+
+- **Search Query** - Search by name, email, or role
+- **Role Filter** - Show only ADMIN or USER accounts
+- **Status Filter** - Display active (ON) or inactive (OFF) users
+- **Document Type** - Filter by DNI, PASSPORT, or NIE
+
+<Tip>
+  Filters are applied in real-time as you type or select options. The page automatically resets to page 1 when filters change.
+</Tip>
+
+## Avatar Generation
+
+If no avatar is provided during user creation, the system automatically generates one using the UI Avatars service:
+
+```typescript
+`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
+```
+
+This creates a colorful initial-based avatar for each user.
+
+## Security Considerations
+
+<Warning>
+  Follow these security best practices when managing users:
+</Warning>
+
+- **Strong Passwords** - Enforce password complexity requirements
+- **Regular Audits** - Review user accounts periodically and deactivate unused accounts
+- **Least Privilege** - Assign USER role by default; only promote to ADMIN when necessary
+- **Secure Storage** - All passwords are hashed with bcrypt (10 rounds)
+- **Token Security** - JWT tokens contain minimal user data (ID, email, role)
+- **HTTPS Only** - Always use HTTPS in production for secure cookie transmission
+
+## Best Practices
+
+1. **Unique Emails** - Each user must have a unique email address
+2. **Document Verification** - Collect and verify document information for compliance
+3. **Regular Updates** - Keep user contact information current
+4. **Status Management** - Use OFF status instead of deletion when possible
+5. **Role Assignment** - Carefully control who receives ADMIN privileges
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Roles & Permissions" icon="key" href="/admin/roles-permissions">
+    Learn about role-based access control
+  </Card>
+  <Card title="User API Reference" icon="code" href="/api/users/list-users">
+    View API endpoints for user management
+  </Card>
+  <Card title="Configuration" icon="gear" href="/admin/configuration">
+    Configure authentication and security settings
+  </Card>
+  <Card title="Data Management" icon="database" href="/admin/data-management">
+    Backup and export user data
+  </Card>
+</CardGroup>

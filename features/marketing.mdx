@@ -1,0 +1,358 @@
+---
+title: Marketing & Loyalty
+description: Promotional tools including coupons, session bonuses, and gift cards to drive sales and client retention
+---
+
+## Overview
+
+The Marketing & Loyalty module provides powerful promotional tools to attract new clients, reward repeat business, and increase average sale values. It includes discount coupons, multi-session bonuses, and gift card management to support your beauty center's marketing strategies.
+
+## Discount Coupons
+
+### Key Features
+
+**Coupon Configuration**
+- Unique coupon code (alphanumeric)
+- Description for internal reference
+- Discount type: percentage or fixed amount
+- Discount value (% or €)
+- Minimum purchase requirement (optional)
+- Maximum uses limit (optional)
+- Valid from date (optional)
+- Valid until date (optional)
+- Status control (activo/inactivo)
+- Current usage tracking
+
+**Coupon Validation**
+- Validates against maximum uses
+- Checks validity date range
+- Verifies minimum purchase amount
+- Confirms active status
+- Prevents over-redemption
+
+### User Workflows
+
+#### Creating a Coupon
+
+1. Navigate to **Marketing > Cupones**
+2. Click **Nuevo Cupón** button
+3. Fill in coupon details:
+   - **Code**: Unique identifier (e.g., "SPRING2024", "WELCOME10")
+   - **Description**: Internal note about coupon purpose
+   - **Discount Type**: Choose "percentage" or "fixed"
+   - **Discount Value**: 
+     - For percentage: enter number without % (e.g., 20 for 20%)
+     - For fixed: enter euro amount (e.g., 10 for €10 off)
+   - **Min Purchase**: Optional minimum cart value to use coupon
+   - **Max Uses**: Optional limit on total redemptions (blank = unlimited)
+   - **Valid From**: Optional start date
+   - **Valid Until**: Optional end date
+   - **Status**: Set to "activo" to enable
+4. Click **Save** to create coupon
+5. Coupon appears in grid view with code and details
+
+#### Coupon Card Display
+
+Each coupon card shows:
+- Status badge (green for active)
+- Coupon code in large uppercase text
+- Description
+- Discount value (formatted as percentage or currency)
+- Minimum purchase requirement (if set)
+- Validity period
+- Current uses vs. max uses (or ∞ for unlimited)
+- Edit and delete options in dropdown menu
+
+#### Editing Coupons
+
+1. Find coupon in grid
+2. Click three-dot menu
+3. Select **Editar**
+4. Modify any fields:
+   - Extend validity dates for ongoing promotions
+   - Increase max uses if campaign is successful
+   - Adjust discount value
+   - Change status to pause temporarily
+5. Save changes
+
+#### Deactivating Coupons
+
+1. Edit the coupon
+2. Change status to "inactivo"
+3. Save
+4. Coupon code will no longer validate for new purchases
+5. Historical uses remain tracked
+
+### Coupon Strategies
+
+**New Client Acquisition**
+- Code: "BIENVENIDA20"
+- 20% off first service
+- Max uses: unlimited
+- Valid for 3 months
+
+**Seasonal Promotions**
+- Code: "VERANO2024"
+- €15 off on purchases over €50
+- Valid June 1 - August 31
+- Limited to 100 uses
+
+**Client Reactivation**
+- Code: "TEVOLVEMOS"
+- 25% off any service
+- Valid for 30 days
+- Sent to inactive clients
+
+**Referral Programs**
+- Code: "REFERIDO"
+- €10 off for referred friend
+- €10 credit to referrer (handled manually)
+- Unlimited uses
+
+<Tip>
+  Create memorable, descriptive coupon codes that reflect the offer (e.g., "PRIMAVERA20" for a spring promotion). Avoid generic codes like "DISC123" which don't communicate value.
+</Tip>
+
+## Session Bonuses (Bonos)
+
+### Overview
+
+Session bonuses are prepaid packages of multiple service sessions sold at a bundled price. They encourage:
+- Upfront payment commitment
+- Regular client visits
+- Higher lifetime value
+- Predictable revenue
+
+### Key Features
+
+**Bonus Configuration**
+- Bonus name and description
+- Total number of sessions included
+- Bundle price (typically discounted)
+- Optional service restriction (or valid for any service)
+- Status control (activo/inactivo)
+- Tax rate for invoicing
+
+**Bonus Tracking**
+- Client bonuses (`ClientBonus`) track individual purchases
+- Remaining sessions counter
+- Purchase date tracking
+- Optional expiration dates
+- Status monitoring (active/used/expired)
+
+### User Workflows
+
+#### Creating a Bonus Package
+
+1. Navigate to **Marketing > Bonos**
+2. Click **Nuevo Bono** button
+3. Configure the bonus:
+   - **Name**: Package title (e.g., "Bono 5 Manicuras")
+   - **Description**: What's included and benefits
+   - **Total Sessions**: Number of sessions (e.g., 5, 10, 20)
+   - **Price**: Total package price
+   - **Service**: Optional link to specific service (or leave blank for flexible use)
+   - **Status**: Set to "activo"
+4. Click **Save** to add to catalog
+5. Bonus appears in grid showing sessions and pricing
+
+#### Bonus Card Display
+
+Each bonus card shows:
+- Status badge
+- Bonus name
+- Sessions badge (e.g., "10 Sesiones")
+- Description
+- Linked service name (or "Válido para múltiples servicios")
+- Total price
+- Price per session calculation
+- Edit and delete options
+
+#### Pricing Strategy Example
+
+**Single Session Service**
+- Manicure: €25 per session
+
+**5-Session Bonus**
+- Regular price: 5 × €25 = €125
+- Bonus price: €110 (save €15 / 12% discount)
+- Per-session cost: €22
+
+**10-Session Bonus**
+- Regular price: 10 × €25 = €250
+- Bonus price: €200 (save €50 / 20% discount)
+- Per-session cost: €20
+
+#### Selling Bonuses
+
+1. Client purchases bonus at TPV or front desk
+2. Add bonus to cart in TPV (Bonos tab)
+3. Process payment
+4. System creates `ClientBonus` record:
+   - Links to client
+   - Links to bonus type
+   - Sets remaining_sessions = total_sessions
+   - Records purchase_date
+   - Status = "activo"
+5. Client can now redeem sessions
+
+#### Redeeming Bonus Sessions
+
+**Current Implementation**:
+Bonus tracking is manual:
+1. When client books appointment using bonus
+2. Staff notes bonus usage
+3. Manually update `ClientBonus.remaining_sessions`
+4. Mark bonus as "used" when remaining_sessions = 0
+
+**Future Enhancement**:
+Automatic redemption during appointment check-in or completion.
+
+<Note>
+  The bonus system uses the `Bonus` model for catalog templates and `ClientBonus` for tracking individual client purchases. Each `ClientBonus` maintains a `remaining_sessions` counter that staff should decrement as sessions are used.
+</Note>
+
+### Managing Client Bonuses
+
+View and manage client-specific bonuses:
+1. Access via client profile or dedicated bonus management page
+2. See all active and expired bonuses
+3. Track remaining sessions
+4. View purchase and expiration dates
+5. Manually adjust sessions if needed (refunds, credits, etc.)
+
+## Gift Cards
+
+### Key Features
+
+**Gift Card Properties**
+- Unique gift card code
+- Initial balance (value at purchase)
+- Current balance (decreases with use)
+- Issue date
+- Optional expiration date
+- Status (active/used/expired)
+- Optional client association (purchaser or recipient)
+
+**Gift Card Lifecycle**
+1. **Purchase**: Created with initial balance
+2. **Active**: Can be applied to purchases
+3. **Partial Use**: Balance decreases, remains active
+4. **Fully Used**: Balance reaches zero, status = "used"
+5. **Expired**: Past expiration date, status = "expired"
+
+### User Workflows
+
+#### Issuing a Gift Card
+
+1. Navigate to **Marketing > Giftcards**
+2. Click **Nueva Giftcard** button (if implemented)
+3. Configure gift card:
+   - **Code**: Unique identifier (auto-generated or manual)
+   - **Initial Balance**: Value (e.g., €50, €100)
+   - **Expiration Date**: Optional validity period
+   - **Client**: Optional link to purchaser or recipient
+   - **Status**: Set to "active"
+4. Save to create gift card
+5. Provide code to client (printed or digital)
+
+#### Redeeming Gift Cards
+
+**At Checkout** (Integration point):
+1. Client provides gift card code
+2. Validate code is active and not expired
+3. Check current balance
+4. Apply gift card to cart total:
+   - If balance ≥ total: Pay full amount from card, reduce balance
+   - If balance < total: Apply full balance, collect difference via other payment
+5. Update `current_balance`
+6. If balance reaches €0, set status to "used"
+
+<Warning>
+  Gift card redemption logic may need integration with TPV workflow. Currently, the `Giftcard` model exists in the schema but may require additional implementation for seamless POS integration.
+</Warning>
+
+## Marketing Strategies
+
+### Client Acquisition
+
+**Welcome Offers**
+- First-time client coupons (20-30% off)
+- Free add-on service with first booking
+- Gift card bonus ($100 gift card for $90)
+
+**Referral Programs**
+- Coupon for referred friend
+- Bonus for referrer
+- Track referrals manually or via coupon codes
+
+### Client Retention
+
+**Loyalty Incentives**
+- Multi-session bonuses for commitment
+- Birthday month coupons (special offers)
+- Anniversary rewards (annual client appreciation)
+
+**Reactivation Campaigns**
+- Send coupons to clients inactive >90 days
+- Limited-time offers to create urgency
+- Personalized services based on past bookings
+
+### Revenue Optimization
+
+**Upselling**
+- Bundle packs combining services + products
+- Bonuses for premium services
+- Gift cards for holidays and events
+
+**Seasonal Promotions**
+- Summer skincare packages
+- Holiday gift card sales
+- New year wellness bonuses
+- Back-to-school specials
+
+**Minimum Purchase Drivers**
+- Coupons with minimum spend requirements
+- Free product with service over threshold
+- Percentage off on higher-value services
+
+## Business Benefits
+
+### Increased Revenue
+
+- Bonuses generate upfront cash flow
+- Gift cards create future revenue (and often go partially unredeemed)
+- Coupons drive new bookings that may not have occurred
+- Minimum purchase coupons increase average transaction value
+
+### Client Lifetime Value
+
+- Bonuses commit clients to multiple visits
+- Prepaid sessions reduce churn
+- Loyalty rewards encourage repeat business
+- Gift cards bring new clients into the funnel
+
+### Marketing ROI Tracking
+
+- Coupon usage statistics measure campaign effectiveness
+- Bonus sales indicate promotion appeal
+- Gift card sales show seasonal demand
+- Redemption rates reveal client engagement
+
+### Competitive Advantage
+
+- Professional promotional programs enhance brand perception
+- Flexible offers match client needs
+- Gift cards enable gift-giving market
+- Bonuses differentiate from pay-per-visit competitors
+
+### Cash Flow Management
+
+- Bonuses provide prepayment for future services
+- Gift cards create advance revenue
+- Predictable income from committed clients
+- Reduced payment collection efforts
+
+<Tip>
+  Analyze coupon usage data regularly. If a coupon has low redemption, consider increasing the discount or simplifying requirements. If it has high redemption, you've found a winning offer to repeat.
+</Tip>

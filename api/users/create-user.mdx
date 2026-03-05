@@ -1,0 +1,317 @@
+---
+title: 'Create User'
+description: 'Create a new user in the system'
+api: 'POST /api/users'
+---
+
+Creates a new user account with the provided information. This endpoint is protected and requires authentication.
+
+## Authentication
+
+This endpoint requires a valid JWT token. Include the token in one of the following ways:
+
+- **Authorization header**: `Authorization: Bearer <token>`
+- **Cookie**: `auth_token=<token>`
+
+## Authorization
+
+Typically requires `ADMIN` role to create users, though this depends on your implementation of role-based access control.
+
+## Request Body
+
+<ParamField body="email" type="string" required>
+  User's email address (max 50 characters). Must be unique in the system.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  User's first name (max 50 characters)
+</ParamField>
+
+<ParamField body="surname" type="string">
+  User's last name (max 50 characters). Defaults to empty string if not provided.
+</ParamField>
+
+<ParamField body="password" type="string">
+  User's password. Will be hashed using bcrypt with 10 salt rounds. Defaults to `"123456"` if not provided.
+  
+  <Warning>
+    The password is hashed using bcryptjs before storage. Never store plain-text passwords.
+  </Warning>
+</ParamField>
+
+<ParamField body="role" type="enum" default="USER">
+  User's role in the system
+  
+  **Possible values:**
+  - `ADMIN`: Administrator with full access
+  - `USER`: Regular user with limited access
+</ParamField>
+
+<ParamField body="status" type="enum" default="ON">
+  User's account status
+  
+  **Possible values:**
+  - `ON`: Active account
+  - `OFF`: Inactive/disabled account
+</ParamField>
+
+<ParamField body="phone" type="string">
+  User's phone number (max 20 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="address" type="string">
+  Street address (max 255 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="city" type="string">
+  City name (max 50 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="country" type="string">
+  Country name (max 50 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="postal_code" type="string">
+  Postal/ZIP code (max 20 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="gender" type="string">
+  User's gender (max 10 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="birth_date" type="string">
+  Date of birth in ISO 8601 format (YYYY-MM-DD). Defaults to `"1990-01-01"` if not provided.
+</ParamField>
+
+<ParamField body="document_type" type="enum" default="DNI">
+  Type of identification document
+  
+  **Possible values:**
+  - `DNI`: National Identity Document (Spain)
+  - `PASSPORT`: Passport
+  - `NIE`: Foreign Identity Number (Spain)
+</ParamField>
+
+<ParamField body="document_number" type="string">
+  Document identification number (max 20 characters). Defaults to empty string.
+</ParamField>
+
+<ParamField body="avatar" type="string">
+  URL to user's avatar image (max 255 characters). If not provided, generates a default avatar using ui-avatars.com based on the user's name.
+</ParamField>
+
+### Example Request
+
+```bash
+curl -X POST https://your-domain.com/api/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Laura",
+    "surname": "Martínez",
+    "email": "laura.martinez@example.com",
+    "password": "SecurePass123!",
+    "role": "USER",
+    "phone": "+34655443322",
+    "address": "Calle de la Rosa 78",
+    "city": "Valencia",
+    "country": "España",
+    "postal_code": "46001",
+    "gender": "Femenino",
+    "birth_date": "1995-08-22",
+    "document_type": "DNI",
+    "document_number": "23456789C"
+  }'
+```
+
+## Response
+
+Returns the created user object without the password field.
+
+<ResponseField name="user_id" type="string">
+  Unique identifier for the user (UUID format, max 100 characters)
+</ResponseField>
+
+<ResponseField name="email" type="string">
+  User's email address
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  User's first name
+</ResponseField>
+
+<ResponseField name="surname" type="string">
+  User's last name
+</ResponseField>
+
+<ResponseField name="phone" type="string">
+  User's phone number
+</ResponseField>
+
+<ResponseField name="address" type="string">
+  Street address
+</ResponseField>
+
+<ResponseField name="city" type="string">
+  City name
+</ResponseField>
+
+<ResponseField name="country" type="string">
+  Country name
+</ResponseField>
+
+<ResponseField name="postal_code" type="string">
+  Postal/ZIP code
+</ResponseField>
+
+<ResponseField name="gender" type="string">
+  User's gender
+</ResponseField>
+
+<ResponseField name="birth_date" type="string">
+  Date of birth in ISO 8601 format
+</ResponseField>
+
+<ResponseField name="role" type="enum">
+  User's role (`ADMIN` or `USER`)
+</ResponseField>
+
+<ResponseField name="status" type="enum">
+  User's account status (`ON` or `OFF`)
+</ResponseField>
+
+<ResponseField name="avatar" type="string">
+  URL to user's avatar image
+</ResponseField>
+
+<ResponseField name="document_type" type="enum">
+  Type of identification document
+</ResponseField>
+
+<ResponseField name="document_number" type="string">
+  Document identification number
+</ResponseField>
+
+<ResponseField name="refresh_token" type="string | null">
+  JWT refresh token (null for newly created users)
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Timestamp when the user was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Timestamp when the user was last updated
+</ResponseField>
+
+### Success Response (200)
+
+```json
+{
+  "user_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+  "email": "laura.martinez@example.com",
+  "name": "Laura",
+  "surname": "Martínez",
+  "phone": "+34655443322",
+  "address": "Calle de la Rosa 78",
+  "city": "Valencia",
+  "country": "España",
+  "postal_code": "46001",
+  "gender": "Femenino",
+  "birth_date": "1995-08-22T00:00:00.000Z",
+  "role": "USER",
+  "status": "ON",
+  "avatar": "https://ui-avatars.com/api/?name=Laura&background=random",
+  "document_type": "DNI",
+  "document_number": "23456789C",
+  "refresh_token": null,
+  "created_at": "2024-03-05T10:30:00.000Z",
+  "updated_at": "2024-03-05T10:30:00.000Z"
+}
+```
+
+### Error Responses
+
+<ResponseField name="400 Bad Request - Missing Fields">
+  Required fields (email and name) are missing
+  
+  ```json
+  {
+    "statusCode": 400,
+    "statusMessage": "Faltan campos obligatorios"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="400 Bad Request - Duplicate Email">
+  Email address is already registered
+  
+  ```json
+  {
+    "statusCode": 400,
+    "statusMessage": "El email ya está en uso"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="401 Unauthorized">
+  Token is missing, invalid, or expired
+  
+  ```json
+  {
+    "statusCode": 401,
+    "statusMessage": "Unauthorized: Token is missing or invalid"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="500 Internal Server Error">
+  Database error or server issue
+  
+  ```json
+  {
+    "statusCode": 500,
+    "statusMessage": "Error al crear usuario"
+  }
+  ```
+</ResponseField>
+
+## Implementation Details
+
+### Password Hashing
+
+Passwords are hashed using **bcryptjs** with 10 salt rounds before storage:
+
+```typescript
+const hashedPassword = await bcrypt.hash(password || '123456', 10)
+```
+
+<Warning>
+  Never store plain-text passwords. Always use bcrypt or similar secure hashing algorithms.
+</Warning>
+
+### Default Avatar Generation
+
+If no avatar URL is provided, the system generates a default avatar using ui-avatars.com:
+
+```typescript
+avatar: body.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
+```
+
+### User ID Generation
+
+User IDs are automatically generated as UUIDs by Prisma using `@default(uuid())`.
+
+### Field Validation
+
+- **Email**: Must be unique and max 50 characters
+- **Name**: Required, max 50 characters
+- **Password**: Hashed before storage, max 255 characters (hashed)
+- **Document Number**: Max 20 characters
+- All address fields have specific length constraints as defined in the Prisma schema
+
+## Related Endpoints
+
+- [List Users](/api/users/list-users) - Retrieve all users
+- [Update User](/api/users/update-user) - Modify user details
+- [Delete User](/api/users/delete-user) - Remove a user

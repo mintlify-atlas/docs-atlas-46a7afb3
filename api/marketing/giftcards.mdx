@@ -1,0 +1,498 @@
+---
+title: 'Gift Cards'
+description: 'Manage gift card creation, balance tracking, and redemption'
+icon: 'credit-card'
+---
+
+## Overview
+
+Gift cards provide a flexible way to offer prepaid credit that clients can use for any services or products. Each gift card has a unique code, tracks balance usage, and can have an optional expiration date.
+
+### Key Features
+
+- **Unique codes**: Each gift card has a unique identifier code
+- **Balance tracking**: Monitors initial and current balance separately
+- **Flexible redemption**: Can be partially used across multiple transactions
+- **Expiration dates**: Optional expiration for time-limited offers
+- **Status management**: Track active, used, and expired states
+
+## Gift Card Model
+
+<ResponseField name="giftcard_id" type="string" required>
+  Unique identifier for the gift card (UUID)
+</ResponseField>
+
+<ResponseField name="code" type="string" required>
+  Unique redemption code (e.g., "GC-2026-ABC123")
+</ResponseField>
+
+<ResponseField name="initial_balance" type="number" required>
+  Original balance when the gift card was created
+</ResponseField>
+
+<ResponseField name="current_balance" type="number" required>
+  Remaining balance available for use
+</ResponseField>
+
+<ResponseField name="issue_date" type="datetime" required>
+  When the gift card was issued
+</ResponseField>
+
+<ResponseField name="expiration_date" type="datetime">
+  When the gift card expires (null for no expiration)
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Gift card status:
+  - `active`: Can be used for purchases
+  - `used`: Fully redeemed (current_balance = 0)
+  - `expired`: Past expiration date
+</ResponseField>
+
+<ResponseField name="client_id" type="string">
+  Optional reference to the client who purchased or owns the gift card
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime" required>
+  Timestamp when the gift card was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime" required>
+  Timestamp when the gift card was last updated
+</ResponseField>
+
+## List Gift Cards
+
+Retrieve all gift cards in the system.
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/giftcards?search=GC-2026" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search gift cards by code
+</ParamField>
+
+### Response
+
+Returns an array of gift card objects ordered by creation date (newest first).
+
+```json
+[
+  {
+    "giftcard_id": "gc-uuid-123",
+    "code": "GC-2026-ABC123",
+    "initial_balance": 100.00,
+    "current_balance": 65.50,
+    "issue_date": "2026-03-01T10:00:00Z",
+    "expiration_date": "2027-03-01T23:59:59Z",
+    "status": "active",
+    "client_id": "client-uuid-456",
+    "created_at": "2026-03-01T10:00:00Z",
+    "updated_at": "2026-03-05T14:30:00Z"
+  }
+]
+```
+
+## Create Gift Card
+
+Issue a new gift card.
+
+```bash
+curl -X POST "https://your-domain.com/api/marketing/giftcards" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "GC-2026-SPRING100",
+    "initial_balance": 100.00,
+    "expiration_date": "2027-03-05T23:59:59Z",
+    "client_id": "client-uuid-789",
+    "status": "active"
+  }'
+```
+
+### Request Body
+
+<ParamField body="code" type="string" required>
+  Unique gift card code. Must be unique across all gift cards.
+  
+  **Format recommendations:**
+  - Include prefix (e.g., "GC-")
+  - Add year for tracking
+  - Use random alphanumeric string
+  - Example: `GC-2026-ABC123XYZ`
+</ParamField>
+
+<ParamField body="initial_balance" type="number" required>
+  Starting balance in currency units (e.g., €100.00)
+  
+  **Validation:**
+  - Must be positive
+  - Typically ranges from €25 to €500
+</ParamField>
+
+<ParamField body="issue_date" type="datetime">
+  Date the gift card was issued. Defaults to current timestamp if not provided.
+</ParamField>
+
+<ParamField body="expiration_date" type="datetime">
+  Optional expiration date. Gift card cannot be used after this date.
+  
+  **Common expiration periods:**
+  - 1 year: Standard for most retail
+  - 2 years: Extended validity
+  - No expiration: Maximum flexibility
+</ParamField>
+
+<ParamField body="client_id" type="string">
+  UUID of the client purchasing or receiving the gift card
+</ParamField>
+
+<ParamField body="status" type="string" default="active">
+  Initial status: typically `active`
+</ParamField>
+
+### Response
+
+Returns the created gift card object with `current_balance` automatically set to `initial_balance`.
+
+### Automatic Field Initialization
+
+- `current_balance` is automatically set to equal `initial_balance`
+- `issue_date` defaults to current timestamp if not provided
+- `giftcard_id` is automatically generated as UUID
+
+## Get Gift Card
+
+Retrieve a specific gift card by ID or code.
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/giftcards/{giftcard_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="giftcard_id" type="string" required>
+  The unique identifier of the gift card
+</ParamField>
+
+### Response
+
+Returns the complete gift card object.
+
+### Error Responses
+
+<ResponseField name="statusCode" type="integer">
+  HTTP status code
+  - `400`: Gift card ID is required
+  - `404`: Gift card not found
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  Error message describing the issue
+</ResponseField>
+
+## Update Gift Card
+
+Update gift card properties, typically used for balance adjustments or status changes.
+
+```bash
+curl -X PUT "https://your-domain.com/api/marketing/giftcards/{giftcard_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "current_balance": 45.00,
+    "status": "active"
+  }'
+```
+
+### Path Parameters
+
+<ParamField path="giftcard_id" type="string" required>
+  The unique identifier of the gift card to update
+</ParamField>
+
+### Request Body
+
+All fields are optional. Only include fields you want to update.
+
+<ParamField body="code" type="string">
+  Update the gift card code (must remain unique)
+</ParamField>
+
+<ParamField body="initial_balance" type="number">
+  Update the initial balance (use cautiously)
+</ParamField>
+
+<ParamField body="current_balance" type="number">
+  Update remaining balance
+  
+  **Use cases:**
+  - Manual balance adjustments
+  - Refunds or credits
+  - Administrative corrections
+</ParamField>
+
+<ParamField body="issue_date" type="datetime">
+  Update issue date
+</ParamField>
+
+<ParamField body="expiration_date" type="datetime">
+  Update or remove expiration date (set to null for no expiration)
+</ParamField>
+
+<ParamField body="status" type="string">
+  Update status:
+  - `active`: Enable for use
+  - `used`: Mark as fully redeemed
+  - `expired`: Mark as expired
+</ParamField>
+
+<ParamField body="client_id" type="string">
+  Associate or change client ownership
+</ParamField>
+
+### Response
+
+Returns the updated gift card object.
+
+## Delete Gift Card
+
+Permanently delete a gift card from the system.
+
+```bash
+curl -X DELETE "https://your-domain.com/api/marketing/giftcards/{giftcard_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="giftcard_id" type="string" required>
+  The unique identifier of the gift card to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Returns `true` if the deletion was successful
+</ResponseField>
+
+<Warning>
+  Deleting a gift card removes all records. Consider marking as `used` or `expired` instead to maintain transaction history.
+</Warning>
+
+## Validation Rules
+
+### Code Uniqueness
+The `code` field must be unique across all gift cards. Recommended format:
+- Prefix: "GC-" or "GIFT-"
+- Year: "2026"
+- Random string: 6-12 alphanumeric characters
+- Example: `GC-2026-X7K9M2P5`
+
+### Balance Rules
+- `initial_balance` must be positive
+- `current_balance` cannot exceed `initial_balance`
+- `current_balance` cannot be negative
+- When `current_balance` reaches 0, status should be updated to `used`
+
+### Date Validation
+- `issue_date` cannot be in the future
+- `expiration_date` must be after `issue_date`
+- Common validity periods: 1-2 years from issue date
+- Some jurisdictions require minimum validity periods
+
+### Status Management
+
+**Active**: `current_balance > 0` AND not expired
+- Can be applied to purchases
+- Balance can be partially or fully redeemed
+
+**Used**: `current_balance = 0`
+- Fully redeemed
+- Cannot be used for new purchases
+- Preserved for transaction history
+
+**Expired**: Past `expiration_date`
+- Cannot be used regardless of balance
+- May have remaining balance
+- Consider refund policies for expired cards with balance
+
+## Business Logic
+
+### Balance Tracking
+
+Gift cards maintain two balance fields:
+
+```javascript
+// At creation
+initial_balance = 100.00
+current_balance = 100.00
+
+// After first use (€34.50)
+current_balance = 65.50
+
+// After second use (€40.00)
+current_balance = 25.50
+
+// After final use (€25.50)
+current_balance = 0.00
+status = "used"
+```
+
+### Partial Redemption
+
+Gift cards can be used across multiple transactions:
+
+1. **First purchase** (€34.50):
+   - Original balance: €100.00
+   - Purchase amount: €34.50
+   - Remaining: €65.50
+
+2. **Second purchase** (€75.00):
+   - Available balance: €65.50
+   - Gift card applies: €65.50
+   - Additional payment needed: €9.50
+   - Remaining: €0.00
+   - Status: `used`
+
+### Cart Integration
+
+Gift cards are applied during checkout:
+
+```bash
+curl -X POST "https://your-domain.com/api/sales/carts/{cart_id}/apply-giftcard" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "giftcard_code": "GC-2026-ABC123"
+  }'
+```
+
+**Processing logic:**
+
+1. Validate gift card:
+   - Exists and code matches
+   - Status is `active`
+   - Not expired (`expiration_date` > now)
+   - Has available balance (`current_balance` > 0)
+
+2. Calculate discount:
+   - If `current_balance` ≥ cart total: Apply full amount
+   - If `current_balance` < cart total: Apply available balance
+
+3. Update gift card:
+   - Deduct used amount from `current_balance`
+   - If balance reaches 0, set status to `used`
+   - Store gift card code in cart's `applied_giftcard` field
+
+4. Update cart:
+   - Add discount amount to cart's `discount` field
+   - Recalculate cart `total`
+
+### Expiration Management
+
+**Background job recommendations:**
+
+```javascript
+// Daily cron job to mark expired cards
+const expiredCards = await prisma.giftcard.findMany({
+  where: {
+    expiration_date: { lt: new Date() },
+    status: 'active'
+  }
+});
+
+for (const card of expiredCards) {
+  await prisma.giftcard.update({
+    where: { giftcard_id: card.giftcard_id },
+    data: { status: 'expired' }
+  });
+}
+```
+
+**Client notifications:**
+- 30 days before expiration: First reminder
+- 7 days before expiration: Final reminder
+- Day of expiration: Expiration notice
+
+### Selling Gift Cards
+
+Gift cards are sold as cart items:
+
+```json
+{
+  "item_type": "giftcard",
+  "item_id": "new",
+  "name": "Gift Card €100",
+  "quantity": 1,
+  "unit_price": 100.00,
+  "tax_rate": 0.0
+}
+```
+
+**Post-purchase processing:**
+
+1. Generate unique code
+2. Create Giftcard record:
+   - `code`: Generated unique code
+   - `initial_balance`: Purchase amount
+   - `current_balance`: Purchase amount
+   - `issue_date`: Current timestamp
+   - `expiration_date`: issue_date + 1 year
+   - `status`: "active"
+   - `client_id`: Purchaser's ID
+
+3. Email gift card details to purchaser
+4. Optionally email to recipient if gift
+
+## Reporting and Analytics
+
+### Key Metrics
+
+**Outstanding liability:**
+```sql
+SELECT SUM(current_balance) 
+FROM giftcards 
+WHERE status = 'active'
+```
+
+**Redemption rate:**
+```sql
+SELECT 
+  COUNT(CASE WHEN status = 'used' THEN 1 END) * 100.0 / COUNT(*) as redemption_rate
+FROM giftcards
+```
+
+**Average balance remaining:**
+```sql
+SELECT AVG(current_balance)
+FROM giftcards
+WHERE status = 'active' AND current_balance > 0
+```
+
+### Transaction History
+
+Consider implementing a separate `GiftcardTransaction` table to track usage:
+
+```json
+{
+  "transaction_id": "txn-uuid",
+  "giftcard_id": "gc-uuid",
+  "cart_id": "cart-uuid",
+  "amount_used": 34.50,
+  "balance_before": 100.00,
+  "balance_after": 65.50,
+  "transaction_date": "2026-03-05T14:30:00Z"
+}
+```
+
+This provides:
+- Detailed audit trail
+- Dispute resolution capability
+- Client transaction history
+- Financial reconciliation

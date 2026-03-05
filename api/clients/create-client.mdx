@@ -1,0 +1,269 @@
+---
+title: 'Create Client'
+api: 'POST /api/clients'
+description: 'Create a new client in the system'
+---
+
+## Overview
+
+Creates a new client (user with `USER` role) in the system. The endpoint validates all input fields, checks for duplicate emails, and automatically sets a default secure password.
+
+## Authentication
+
+This endpoint requires authentication. Include a valid session token in your request.
+
+## Request Body
+
+<ParamField body="email" type="string" required>
+  Client's email address. Must be a valid email format and unique in the system.
+  
+  **Validation**: Valid email format, max 50 characters
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Client's first name.
+  
+  **Validation**: Minimum 2 characters, max 50 characters
+</ParamField>
+
+<ParamField body="surname" type="string" required>
+  Client's last name.
+  
+  **Validation**: Minimum 2 characters, max 50 characters
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Client's phone number.
+  
+  **Validation**: Minimum 6 characters, max 20 characters
+</ParamField>
+
+<ParamField body="address" type="string" optional>
+  Street address. Defaults to empty string if not provided.
+  
+  **Max length**: 255 characters
+</ParamField>
+
+<ParamField body="city" type="string" optional>
+  City name. Defaults to empty string if not provided.
+  
+  **Max length**: 50 characters
+</ParamField>
+
+<ParamField body="country" type="string" optional>
+  Country name. Defaults to empty string if not provided.
+  
+  **Max length**: 50 characters
+</ParamField>
+
+<ParamField body="postal_code" type="string" optional>
+  Postal/ZIP code. Defaults to empty string if not provided.
+  
+  **Max length**: 20 characters
+</ParamField>
+
+<ParamField body="gender" type="string" optional>
+  Gender identifier. Defaults to empty string if not provided.
+  
+  **Max length**: 10 characters
+</ParamField>
+
+<ParamField body="birth_date" type="string" optional>
+  Date of birth in ISO 8601 format. Defaults to current date if not provided.
+  
+  **Format**: ISO 8601 date string (e.g., "1990-05-15")
+</ParamField>
+
+<ParamField body="document_type" type="string" optional>
+  Type of identification document. Defaults to `DNI`.
+  
+  **Allowed values**: `DNI`, `PASSPORT`, `NIE`
+</ParamField>
+
+<ParamField body="document_number" type="string" optional>
+  Identification document number. Defaults to empty string if not provided.
+  
+  **Max length**: 20 characters
+</ParamField>
+
+<ParamField body="status" type="string" optional>
+  Account status. Defaults to `ON`.
+  
+  **Allowed values**: `ON`, `OFF`
+</ParamField>
+
+## Response
+
+Returns the created client object. The password field is excluded from the response for security.
+
+<ResponseField name="user_id" type="string" required>
+  Unique identifier for the client (UUID format)
+</ResponseField>
+
+<ResponseField name="email" type="string" required>
+  Client's email address
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Client's first name
+</ResponseField>
+
+<ResponseField name="surname" type="string" required>
+  Client's last name
+</ResponseField>
+
+<ResponseField name="phone" type="string" required>
+  Client's phone number
+</ResponseField>
+
+<ResponseField name="address" type="string" required>
+  Street address
+</ResponseField>
+
+<ResponseField name="city" type="string" required>
+  City name
+</ResponseField>
+
+<ResponseField name="country" type="string" required>
+  Country name
+</ResponseField>
+
+<ResponseField name="postal_code" type="string" required>
+  Postal/ZIP code
+</ResponseField>
+
+<ResponseField name="gender" type="string" required>
+  Gender identifier
+</ResponseField>
+
+<ResponseField name="birth_date" type="string" required>
+  Date of birth in ISO 8601 date format
+</ResponseField>
+
+<ResponseField name="role" type="string" required>
+  User role - always `USER` for clients
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Account status (`ON` or `OFF`)
+</ResponseField>
+
+<ResponseField name="avatar" type="string" required>
+  URL to client's avatar image (empty string by default)
+</ResponseField>
+
+<ResponseField name="document_type" type="string" required>
+  Type of identification document
+</ResponseField>
+
+<ResponseField name="document_number" type="string" required>
+  Identification document number
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  Timestamp when the client was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  Timestamp when the client was last updated
+</ResponseField>
+
+## Example Request
+
+```bash cURL
+curl --request POST \
+  --url 'https://your-domain.com/api/clients' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: your-session-token' \
+  --data '{
+    "email": "lucia.martin@example.com",
+    "name": "Lucia",
+    "surname": "Martin",
+    "phone": "+34623456789",
+    "address": "Avenida Libertad 45",
+    "city": "Barcelona",
+    "country": "Spain",
+    "postal_code": "08001",
+    "gender": "female",
+    "birth_date": "1988-03-22",
+    "document_type": "DNI",
+    "document_number": "87654321B",
+    "status": "ON"
+  }'
+```
+
+## Example Response
+
+```json
+{
+  "user_id": "660e8400-e29b-41d4-a716-446655440001",
+  "email": "lucia.martin@example.com",
+  "name": "Lucia",
+  "surname": "Martin",
+  "phone": "+34623456789",
+  "address": "Avenida Libertad 45",
+  "city": "Barcelona",
+  "country": "Spain",
+  "postal_code": "08001",
+  "gender": "female",
+  "birth_date": "1988-03-22",
+  "role": "USER",
+  "status": "ON",
+  "avatar": "",
+  "document_type": "DNI",
+  "document_number": "87654321B",
+  "created_at": "2024-03-05T09:15:00.000Z",
+  "updated_at": "2024-03-05T09:15:00.000Z"
+}
+```
+
+## Error Responses
+
+### 409 Conflict - Duplicate Email
+
+Returned when the email address is already registered in the system.
+
+```json
+{
+  "statusCode": 409,
+  "statusMessage": "El correo electrónico ya está registrado"
+}
+```
+
+### 400 Bad Request - Validation Error
+
+Returned when the request body fails validation.
+
+```json
+{
+  "statusCode": 400,
+  "statusMessage": "Email inválido"
+}
+```
+
+Common validation errors:
+- `Email inválido` - Invalid email format
+- `El nombre es obligatorio` - Name must be at least 2 characters
+- `El apellido es obligatorio` - Surname must be at least 2 characters
+- `El teléfono es obligatorio` - Phone must be at least 6 characters
+
+## Implementation Details
+
+- The endpoint automatically sets `role: 'USER'` for all created clients
+- A default password `beils12345` is set (hashed with bcrypt, salt rounds: 10)
+- The `avatar` field is initialized as an empty string
+- Email uniqueness is enforced at the database level
+- The `password` field is always excluded from responses
+- All optional string fields default to empty strings if not provided
+- The `birth_date` is stored as a Date object in the database
+- Input validation is performed using Zod schemas
+
+## Security Notes
+
+- Passwords are hashed using bcrypt before storage
+- The default password should be changed by the client on first login
+- Consider implementing a password reset flow for new clients
+
+## Source Reference
+
+Implemented in `server/api/clients/index.post.ts`

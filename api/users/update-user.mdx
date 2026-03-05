@@ -1,0 +1,361 @@
+---
+title: 'Update User'
+description: 'Update an existing user in the system'
+api: 'PUT /api/users/{id}'
+---
+
+Updates an existing user's information. This endpoint is protected and requires authentication.
+
+## Authentication
+
+This endpoint requires a valid JWT token. Include the token in one of the following ways:
+
+- **Authorization header**: `Authorization: Bearer <token>`
+- **Cookie**: `auth_token=<token>`
+
+## Authorization
+
+Typically requires `ADMIN` role to update users, or users should only be able to update their own profile.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier (UUID) of the user to update. This corresponds to the `user_id` field.
+</ParamField>
+
+## Request Body
+
+All fields are optional. Only include the fields you want to update. The request body is merged with the existing user data.
+
+<ParamField body="email" type="string">
+  User's email address (max 50 characters). Must be unique if changed.
+</ParamField>
+
+<ParamField body="name" type="string">
+  User's first name (max 50 characters)
+</ParamField>
+
+<ParamField body="surname" type="string">
+  User's last name (max 50 characters)
+</ParamField>
+
+<ParamField body="password" type="string">
+  New password for the user. Will be hashed using bcrypt with 10 salt rounds before storage.
+  
+  <Warning>
+    When updating a password, it is automatically hashed using bcryptjs. Never send or store plain-text passwords.
+  </Warning>
+</ParamField>
+
+<ParamField body="role" type="enum">
+  User's role in the system
+  
+  **Possible values:**
+  - `ADMIN`: Administrator with full access
+  - `USER`: Regular user with limited access
+</ParamField>
+
+<ParamField body="status" type="enum">
+  User's account status
+  
+  **Possible values:**
+  - `ON`: Active account
+  - `OFF`: Inactive/disabled account
+</ParamField>
+
+<ParamField body="phone" type="string">
+  User's phone number (max 20 characters)
+</ParamField>
+
+<ParamField body="address" type="string">
+  Street address (max 255 characters)
+</ParamField>
+
+<ParamField body="city" type="string">
+  City name (max 50 characters)
+</ParamField>
+
+<ParamField body="country" type="string">
+  Country name (max 50 characters)
+</ParamField>
+
+<ParamField body="postal_code" type="string">
+  Postal/ZIP code (max 20 characters)
+</ParamField>
+
+<ParamField body="gender" type="string">
+  User's gender (max 10 characters)
+</ParamField>
+
+<ParamField body="birth_date" type="string">
+  Date of birth in ISO 8601 format (YYYY-MM-DD). Will be converted to a Date object.
+</ParamField>
+
+<ParamField body="document_type" type="enum">
+  Type of identification document
+  
+  **Possible values:**
+  - `DNI`: National Identity Document (Spain)
+  - `PASSPORT`: Passport
+  - `NIE`: Foreign Identity Number (Spain)
+</ParamField>
+
+<ParamField body="document_number" type="string">
+  Document identification number (max 20 characters)
+</ParamField>
+
+<ParamField body="avatar" type="string">
+  URL to user's avatar image (max 255 characters)
+</ParamField>
+
+<ParamField body="refresh_token" type="string | null">
+  JWT refresh token for maintaining sessions
+</ParamField>
+
+### Example Requests
+
+**Update user's email and phone:**
+
+```bash
+curl -X PUT https://your-domain.com/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "maria.nueva@example.com",
+    "phone": "+34677889900"
+  }'
+```
+
+**Change user's password:**
+
+```bash
+curl -X PUT https://your-domain.com/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "password": "NewSecurePassword456!"
+  }'
+```
+
+**Deactivate a user account:**
+
+```bash
+curl -X PUT https://your-domain.com/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "OFF"
+  }'
+```
+
+**Update multiple fields:**
+
+```bash
+curl -X PUT https://your-domain.com/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "María Carmen",
+    "address": "Calle Nueva 456",
+    "city": "Sevilla",
+    "postal_code": "41001"
+  }'
+```
+
+## Response
+
+Returns the updated user object without the password field.
+
+<ResponseField name="user_id" type="string">
+  Unique identifier for the user (UUID format)
+</ResponseField>
+
+<ResponseField name="email" type="string">
+  User's email address
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  User's first name
+</ResponseField>
+
+<ResponseField name="surname" type="string">
+  User's last name
+</ResponseField>
+
+<ResponseField name="phone" type="string">
+  User's phone number
+</ResponseField>
+
+<ResponseField name="address" type="string">
+  Street address
+</ResponseField>
+
+<ResponseField name="city" type="string">
+  City name
+</ResponseField>
+
+<ResponseField name="country" type="string">
+  Country name
+</ResponseField>
+
+<ResponseField name="postal_code" type="string">
+  Postal/ZIP code
+</ResponseField>
+
+<ResponseField name="gender" type="string">
+  User's gender
+</ResponseField>
+
+<ResponseField name="birth_date" type="string">
+  Date of birth in ISO 8601 format
+</ResponseField>
+
+<ResponseField name="role" type="enum">
+  User's role (`ADMIN` or `USER`)
+</ResponseField>
+
+<ResponseField name="status" type="enum">
+  User's account status (`ON` or `OFF`)
+</ResponseField>
+
+<ResponseField name="avatar" type="string">
+  URL to user's avatar image
+</ResponseField>
+
+<ResponseField name="document_type" type="enum">
+  Type of identification document
+</ResponseField>
+
+<ResponseField name="document_number" type="string">
+  Document identification number
+</ResponseField>
+
+<ResponseField name="refresh_token" type="string | null">
+  JWT refresh token
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Timestamp when the user was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Timestamp when the user was last updated (automatically updated by Prisma)
+</ResponseField>
+
+### Success Response (200)
+
+```json
+{
+  "user_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "email": "maria.nueva@example.com",
+  "name": "María Carmen",
+  "surname": "García",
+  "phone": "+34677889900",
+  "address": "Calle Nueva 456",
+  "city": "Sevilla",
+  "country": "España",
+  "postal_code": "41001",
+  "gender": "Femenino",
+  "birth_date": "1990-05-15T00:00:00.000Z",
+  "role": "USER",
+  "status": "ON",
+  "avatar": "https://ui-avatars.com/api/?name=María&background=random",
+  "document_type": "DNI",
+  "document_number": "12345678A",
+  "refresh_token": null,
+  "created_at": "2024-01-15T10:30:00.000Z",
+  "updated_at": "2024-03-05T14:22:00.000Z"
+}
+```
+
+### Error Responses
+
+<ResponseField name="400 Bad Request">
+  User ID is missing from the path
+  
+  ```json
+  {
+    "statusCode": 400,
+    "statusMessage": "ID requerido"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="401 Unauthorized">
+  Token is missing, invalid, or expired
+  
+  ```json
+  {
+    "statusCode": 401,
+    "statusMessage": "Unauthorized: Token is missing or invalid"
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="500 Internal Server Error">
+  Database error (e.g., user not found, unique constraint violation) or server issue
+  
+  ```json
+  {
+    "statusCode": 500,
+    "statusMessage": "Error al actualizar usuario"
+  }
+  ```
+  
+  <Note>
+    A 500 error may also occur if the user_id doesn't exist in the database. Prisma will throw an error when trying to update a non-existent record.
+  </Note>
+</ResponseField>
+
+## Implementation Details
+
+### Password Hashing
+
+If a password is included in the update request, it is automatically hashed before storage:
+
+```typescript
+if (updateData.password) {
+  updateData.password = await bcrypt.hash(updateData.password, 10)
+}
+```
+
+<Warning>
+  Passwords are always hashed using bcryptjs with 10 salt rounds. Never store plain-text passwords.
+</Warning>
+
+### Date Conversion
+
+If `birth_date` is included, it's converted to a JavaScript Date object:
+
+```typescript
+if (updateData.birth_date) {
+  updateData.birth_date = new Date(updateData.birth_date)
+}
+```
+
+### Automatic Timestamp Update
+
+The `updated_at` field is automatically updated by Prisma using the `@updatedAt` directive in the schema. You don't need to include it in your request.
+
+### Partial Updates
+
+This endpoint performs partial updates - only the fields provided in the request body will be updated. All other fields remain unchanged.
+
+### Database Transaction
+
+The update is performed as a single atomic operation using Prisma's `update` method.
+
+## Security Considerations
+
+<Warning>
+  Consider implementing additional authorization checks:
+  - Regular users should only be able to update their own profile
+  - Only ADMIN users should be able to change roles or status
+  - Validate that users cannot escalate their own privileges
+</Warning>
+
+## Related Endpoints
+
+- [List Users](/api/users/list-users) - Retrieve all users
+- [Create User](/api/users/create-user) - Add a new user
+- [Delete User](/api/users/delete-user) - Remove a user

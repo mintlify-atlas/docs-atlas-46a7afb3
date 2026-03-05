@@ -1,0 +1,190 @@
+---
+title: 'List Clients'
+api: 'GET /api/clients'
+description: 'Retrieve a list of all clients with optional search filtering'
+---
+
+## Overview
+
+Returns a list of all users with the `USER` role (clients) in the system. Supports optional text search across multiple fields. The response includes booking, consent, and debt counts for each client.
+
+## Authentication
+
+This endpoint requires authentication. Include a valid session token in your request.
+
+## Query Parameters
+
+<ParamField query="search" type="string" optional>
+  Filter clients by searching across name, surname, email, or phone number. The search is case-sensitive and uses partial matching.
+  
+  **Example**: `search=john` will match clients with "John" in their name, surname, email, or phone.
+</ParamField>
+
+## Response
+
+Returns an array of client objects. The password field is excluded from all responses for security.
+
+<ResponseField name="user_id" type="string" required>
+  Unique identifier for the client (UUID format, max 100 characters)
+</ResponseField>
+
+<ResponseField name="email" type="string" required>
+  Client's email address (max 50 characters)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Client's first name (max 50 characters)
+</ResponseField>
+
+<ResponseField name="surname" type="string" required>
+  Client's last name (max 50 characters)
+</ResponseField>
+
+<ResponseField name="phone" type="string" required>
+  Client's phone number (max 20 characters)
+</ResponseField>
+
+<ResponseField name="address" type="string" required>
+  Street address (max 255 characters)
+</ResponseField>
+
+<ResponseField name="city" type="string" required>
+  City name (max 50 characters)
+</ResponseField>
+
+<ResponseField name="country" type="string" required>
+  Country name (max 50 characters)
+</ResponseField>
+
+<ResponseField name="postal_code" type="string" required>
+  Postal/ZIP code (max 20 characters)
+</ResponseField>
+
+<ResponseField name="gender" type="string" required>
+  Gender identifier (max 10 characters)
+</ResponseField>
+
+<ResponseField name="birth_date" type="string" required>
+  Date of birth in ISO 8601 date format
+</ResponseField>
+
+<ResponseField name="role" type="string" required>
+  User role - always `USER` for clients (enum: `ADMIN`, `USER`)
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Account status (enum: `ON`, `OFF`). Default is `ON`
+</ResponseField>
+
+<ResponseField name="avatar" type="string" required>
+  URL to client's avatar image (max 255 characters)
+</ResponseField>
+
+<ResponseField name="document_type" type="string" required>
+  Type of identification document (enum: `DNI`, `PASSPORT`, `NIE`). Default is `DNI`
+</ResponseField>
+
+<ResponseField name="document_number" type="string" required>
+  Identification document number (max 20 characters)
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  Timestamp when the client was created (ISO 8601 format)
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  Timestamp when the client was last updated (ISO 8601 format)
+</ResponseField>
+
+<ResponseField name="_count" type="object" required>
+  Aggregate counts of related records
+  
+  <ResponseField name="client_bookings" type="number">
+    Total number of bookings made by this client
+  </ResponseField>
+  
+  <ResponseField name="consents" type="number">
+    Total number of consent documents signed
+  </ResponseField>
+  
+  <ResponseField name="debts" type="number">
+    Total number of debt records
+  </ResponseField>
+</ResponseField>
+
+## Example Request
+
+```bash cURL
+curl --request GET \
+  --url 'https://your-domain.com/api/clients' \
+  --header 'Cookie: your-session-token'
+```
+
+```bash cURL with search
+curl --request GET \
+  --url 'https://your-domain.com/api/clients?search=maria' \
+  --header 'Cookie: your-session-token'
+```
+
+## Example Response
+
+```json
+[
+  {
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "email": "maria.garcia@example.com",
+    "name": "Maria",
+    "surname": "Garcia",
+    "phone": "+34612345678",
+    "address": "Calle Mayor 123",
+    "city": "Madrid",
+    "country": "Spain",
+    "postal_code": "28013",
+    "gender": "female",
+    "birth_date": "1990-05-15",
+    "role": "USER",
+    "status": "ON",
+    "avatar": "",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "created_at": "2024-01-15T10:30:00.000Z",
+    "updated_at": "2024-03-01T14:20:00.000Z",
+    "_count": {
+      "client_bookings": 12,
+      "consents": 2,
+      "debts": 0
+    }
+  }
+]
+```
+
+## Error Responses
+
+<ResponseField name="statusCode" type="number">
+  HTTP status code
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  Error message
+</ResponseField>
+
+### 500 Internal Server Error
+
+```json
+{
+  "statusCode": 500,
+  "statusMessage": "Error al obtener clientes"
+}
+```
+
+## Implementation Details
+
+- Clients are filtered by `role: 'USER'` to exclude admin users
+- Results are ordered by `created_at` in descending order (newest first)
+- The `password` field is always excluded from responses
+- Search performs partial matching across name, surname, email, and phone fields using OR logic
+- Related counts are computed for bookings, consents, and debts
+
+## Source Reference
+
+Implemented in `server/api/clients/index.get.ts`

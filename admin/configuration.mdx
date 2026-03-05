@@ -1,0 +1,571 @@
+---
+title: "System Configuration"
+description: "Configure Beils Dashboard settings, environment variables, and system preferences"
+---
+
+## Overview
+
+Beils Dashboard is configured through a combination of environment variables, configuration files, and database settings. This page covers all configuration options available to administrators.
+
+<Warning>
+  Configuration changes can affect system behavior and security. Always test changes in a development environment first.
+</Warning>
+
+## Environment Variables
+
+Environment variables control critical system settings and integrations.
+
+### Database Configuration
+
+Configure your MariaDB database connection:
+
+```bash
+DATABASE_URL="mysql://user:password@localhost:3306/beils_dashboard"
+```
+
+<Info>
+  The database URL follows the format: `mysql://USER:PASSWORD@HOST:PORT/DATABASE`
+</Info>
+
+**Required fields:**
+- `USER` - Database username
+- `PASSWORD` - Database password
+- `HOST` - Database server hostname or IP
+- `PORT` - Database port (default: 3306)
+- `DATABASE` - Database name
+
+### Authentication Configuration
+
+Configure JWT-based authentication:
+
+```bash
+JWT_SECRET="your-super-secret-key-here"
+```
+
+<Warning>
+  **Critical Security Setting**: Use a strong, random secret in production. This secret signs all authentication tokens.
+</Warning>
+
+**Best practices:**
+- Minimum 32 characters
+- Mix of letters, numbers, and special characters
+- Never commit to version control
+- Rotate periodically for enhanced security
+
+Generate a secure secret:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+### Application Settings
+
+```bash
+NODE_ENV="production"
+PORT="3000"
+```
+
+- `NODE_ENV` - Environment mode (`development` or `production`)
+- `PORT` - Server port (default: 3000)
+
+### Session Configuration
+
+Authentication cookies are configured in the auth store:
+
+```typescript
+const token = useCookie('auth_token', {
+  maxAge: 60 * 60 * 24, // 24 hours
+  path: '/',
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production'
+})
+```
+
+**Cookie settings:**
+- **maxAge**: Token lifetime in seconds (default: 86400 = 24 hours)
+- **secure**: HTTPS-only in production
+- **sameSite**: CSRF protection (`lax` recommended)
+
+## Nuxt Configuration
+
+The main application configuration is in `nuxt.config.ts`.
+
+### Core Settings
+
+```typescript
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  css: ['~/assets/css/main.css'],
+  devtools: { enabled: false },
+  telemetry: false,
+})
+```
+
+### Modules
+
+Enabled Nuxt modules:
+
+<CardGroup cols={2}>
+  <Card title="@nuxt/eslint" icon="code">
+    Code quality and linting
+  </Card>
+  <Card title="@nuxt/fonts" icon="font">
+    Font optimization and loading
+  </Card>
+  <Card title="@nuxtjs/google-fonts" icon="google">
+    Google Fonts integration
+  </Card>
+  <Card title="@pinia/nuxt" icon="store">
+    State management with Pinia
+  </Card>
+  <Card title="@nuxt/image" icon="image">
+    Image optimization
+  </Card>
+</CardGroup>
+
+### Google Fonts
+
+Customize font configuration:
+
+```typescript
+googleFonts: {
+  families: {
+    Roboto: [300, 400, 500, 700],
+    'Roboto Condensed': [300, 400, 700],
+  },
+  display: 'swap',
+}
+```
+
+### Vite Configuration
+
+Advanced build settings:
+
+```typescript
+vite: {
+  server: {
+    allowedHosts: [
+      'disclamatory-boraginaceous-cedric.ngrok-free.dev',
+      'localhost'
+    ],
+  },
+  plugins: [tailwindcss()],
+  optimizeDeps: {
+    include: [
+      'aos',
+      'lucide-vue-next',
+      '@tanstack/vue-query',
+      'vue-i18n',
+      'zod'
+    ],
+  },
+}
+```
+
+<Tip>
+  Add your custom domain to `allowedHosts` when deploying to production or using tunnel services.
+</Tip>
+
+## Prisma Configuration
+
+Database schema and ORM settings are managed through Prisma.
+
+### Schema Location
+
+`prisma/schema.prisma` defines your database structure:
+
+```prisma
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "mysql"
+}
+```
+
+### Prisma Commands
+
+Common database operations:
+
+```bash
+# Generate Prisma Client after schema changes
+pnpm prisma:generate
+
+# Create and apply migrations
+pnpm prisma:migrate
+
+# Pull schema from existing database
+pnpm prisma:pull
+
+# Reset database (⚠️ deletes all data)
+pnpm prisma:reset
+```
+
+<Warning>
+  `prisma:reset` will delete all data in your database. Only use in development.
+</Warning>
+
+## Business Configuration
+
+### Tax Rates
+
+Default tax rate is configured in the Prisma schema:
+
+```prisma
+tax_rate Float @default(21.0) @db.Double
+```
+
+This applies to:
+- Products
+- Services
+- Packs
+- Cart items
+
+<Note>
+  To change default tax rates, update the Prisma schema and run migrations. Individual items can override this rate.
+</Note>
+
+### Product Defaults
+
+New products receive these default values:
+
+```prisma
+status     String @default("activo") @db.VarChar(20)
+stock      Int    @default(0)
+min_stock  Int    @default(0)
+tax_rate   Float  @default(21.0) @db.Double
+```
+
+### Service Defaults
+
+```prisma
+status   String @default("activo") @db.VarChar(20)
+tax_rate Float  @default(21.0) @db.Double
+duration Int    @default(30) // Minutes
+```
+
+## Payment Methods
+
+Configured payment methods for transactions:
+
+```prisma
+payment_method String? @db.VarChar(50)
+// Supported values: cash, card, transfer, mixed
+```
+
+These are stored as strings in the Cart model.
+
+<Info>
+  To add new payment methods, update the frontend cart components to include the new option.
+</Info>
+
+## Document Types
+
+Supported identification document types:
+
+```prisma
+enum DocumentType {
+  DNI
+  PASSPORT
+  NIE
+}
+```
+
+These are used for user and client identification.
+
+## Status Enums
+
+### User Status
+
+```prisma
+enum UserStatus {
+  ON   // Active user
+  OFF  // Inactive user
+}
+```
+
+### Item Status
+
+For products, services, coupons, etc.:
+
+- `"activo"` - Active and available
+- `"inactivo"` - Hidden or discontinued
+- Custom statuses can be added as needed
+
+## Security Configuration
+
+### Password Hashing
+
+Passwords are hashed using bcrypt with 10 rounds:
+
+```typescript
+const hashedPassword = await bcrypt.hash(password, 10)
+```
+
+<Tip>
+  Increase the number of rounds (e.g., 12 or 14) for enhanced security at the cost of performance.
+</Tip>
+
+### Authentication Middleware
+
+Protected routes configuration:
+
+```typescript
+const PROTECTED_PREFIX = '/api/'
+const PUBLIC_ROUTES = [
+  '/api/auth/login',
+  '/api/hello'
+]
+```
+
+All API routes require authentication except those in `PUBLIC_ROUTES`.
+
+### Cookie Security
+
+In production:
+- **secure: true** - HTTPS-only cookies
+- **sameSite: 'lax'** - CSRF protection
+- **httpOnly: true** - Prevents XSS attacks (recommended)
+
+## Frontend Configuration
+
+### Tailwind CSS
+
+Styles are configured via Tailwind 4:
+
+```typescript
+import tailwindcss from '@tailwindcss/vite'
+
+vite: {
+  plugins: [tailwindcss()]
+}
+```
+
+Custom styles in `assets/css/main.css`.
+
+### State Management
+
+Pinia stores handle global state:
+
+- `auth.ts` - Authentication and user session
+- `useUsersFilterStore.ts` - User list filtering
+
+Add new stores in `app/stores/` directory.
+
+### Query Client
+
+TanStack Query configuration for API calls:
+
+```typescript
+import { useQuery } from '@tanstack/vue-query'
+
+const { data, refetch, isPending } = useQuery({
+  queryKey: ['users'],
+  queryFn: () => $fetch('/api/users')
+})
+```
+
+## Development Configuration
+
+### Dev Server
+
+Start the development server:
+
+```bash
+pnpm dev
+```
+
+Default URL: `http://localhost:3000`
+
+### Hot Module Replacement
+
+Nuxt 4 provides automatic HMR for:
+- Vue components
+- Server routes
+- Styles
+- Configuration files
+
+### Database Seeding
+
+Populate the database with test data:
+
+```bash
+pnpm seed
+```
+
+Seed file location: `seeds/seed-db.ts`
+
+<Info>
+  Customize the seed file to generate test users, products, clients, and other data for development.
+</Info>
+
+## Production Configuration
+
+### Build Process
+
+```bash
+pnpm build
+```
+
+This generates:
+- Optimized frontend assets
+- Server bundles
+- Static files
+
+### Production Server
+
+```bash
+pnpm preview
+```
+
+Or deploy with:
+```bash
+NODE_ENV=production node .output/server/index.mjs
+```
+
+### Performance Optimization
+
+<AccordionGroup>
+  <Accordion title="Vite Optimization" icon="bolt">
+    Pre-bundled dependencies:
+    - aos
+    - lucide-vue-next
+    - @tanstack/vue-query
+    - vue-i18n
+    - zod
+  </Accordion>
+  
+  <Accordion title="Image Optimization" icon="image">
+    Nuxt Image automatically:
+    - Lazy loads images
+    - Generates responsive sizes
+    - Converts to modern formats (WebP)
+  </Accordion>
+  
+  <Accordion title="Font Optimization" icon="font">
+    Google Fonts with `display: swap`:
+    - Prevents layout shift
+    - Shows fallback fonts immediately
+    - Loads custom fonts asynchronously
+  </Accordion>
+</AccordionGroup>
+
+### Environment Variables in Production
+
+Set these environment variables on your production server:
+
+```bash
+DATABASE_URL="mysql://prod_user:strong_password@db.example.com:3306/beils_prod"
+JWT_SECRET="production-secret-key-32-chars-minimum"
+NODE_ENV="production"
+PORT="3000"
+```
+
+<Warning>
+  Never use development credentials in production. Always use separate databases and secrets.
+</Warning>
+
+## Backup Configuration
+
+Regular database backups are essential:
+
+```bash
+# Backup database
+mysqldump -u user -p beils_dashboard > backup_$(date +%Y%m%d).sql
+
+# Restore from backup
+mysql -u user -p beils_dashboard < backup_20260305.sql
+```
+
+<Tip>
+  Automate backups using cron jobs or your hosting provider's backup tools.
+</Tip>
+
+## Monitoring and Logging
+
+Consider implementing:
+
+- **Application logs** - Track errors and important events
+- **Database query logs** - Monitor slow queries
+- **Authentication logs** - Track login attempts and failures
+- **API request logs** - Monitor usage and errors
+
+### Error Handling
+
+Nuxt provides error handling:
+
+```typescript
+try {
+  // API call
+} catch (error) {
+  throw createError({
+    statusCode: 500,
+    statusMessage: 'Error message'
+  })
+}
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Database Connection Issues" icon="database">
+    - Verify DATABASE_URL is correct
+    - Check database server is running
+    - Confirm user has proper permissions
+    - Test connection with `pnpm prisma:generate`
+  </Accordion>
+  
+  <Accordion title="Authentication Failures" icon="lock">
+    - Check JWT_SECRET is set
+    - Verify token hasn't expired
+    - Confirm user status is ON
+    - Check cookie settings in browser
+  </Accordion>
+  
+  <Accordion title="Build Errors" icon="triangle-exclamation">
+    - Clear `.nuxt` and `node_modules` directories
+    - Run `pnpm install` to reinstall dependencies
+    - Check for TypeScript errors
+    - Verify all environment variables are set
+  </Accordion>
+  
+  <Accordion title="Performance Issues" icon="gauge">
+    - Enable production mode (NODE_ENV=production)
+    - Check database query performance
+    - Monitor server resources (CPU, memory)
+    - Optimize images and assets
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Checklist
+
+Before going to production:
+
+- [ ] Set strong JWT_SECRET
+- [ ] Configure production DATABASE_URL
+- [ ] Enable HTTPS and secure cookies
+- [ ] Set NODE_ENV to "production"
+- [ ] Configure allowed hosts in Vite
+- [ ] Set up automated database backups
+- [ ] Configure error monitoring
+- [ ] Test authentication flow
+- [ ] Verify role permissions
+- [ ] Review security settings
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="User Management" icon="users" href="/admin/user-management">
+    Manage system users and accounts
+  </Card>
+  <Card title="Roles & Permissions" icon="key" href="/admin/roles-permissions">
+    Configure access control
+  </Card>
+  <Card title="Data Management" icon="database" href="/admin/data-management">
+    Backup and restore data
+  </Card>
+  <Card title="Installation Guide" icon="download" href="/installation">
+    Initial setup instructions
+  </Card>
+</CardGroup>

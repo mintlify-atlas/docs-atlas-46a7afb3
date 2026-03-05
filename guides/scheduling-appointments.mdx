@@ -1,0 +1,344 @@
+---
+title: Scheduling Appointments
+description: Master the Agenda module to schedule, manage, and track client appointments
+---
+
+The Agenda (Calendar) module is your central booking system for managing all client appointments. It provides day and week views, real-time availability, and complete appointment lifecycle management.
+
+## Accessing the Agenda
+
+Navigate to **Agenda** from the main menu. The agenda opens in day view by default, showing appointments for the current date.
+
+## Understanding the Agenda Interface
+
+### View Modes
+
+The agenda offers two view modes:
+
+- **Día** (Day View): Shows all appointments for a single day in chronological order
+- **Semana** (Week View): Displays appointments across 7 days for broader planning
+
+Switch between views using the tabs in the toolbar.
+
+### Navigation Controls
+
+- **Hoy** (Today): Jump back to the current date
+- **Left Arrow (◄)**: Go to previous day/week
+- **Right Arrow (►)**: Go to next day/week
+- **Date Display**: Shows the currently selected date range
+
+### Search Functionality
+
+The search bar filters appointments by:
+- Client name (first or last)
+- Staff member name
+
+Results update in real-time as you type.
+
+## Creating a New Appointment
+
+<Steps>
+  <Step title="Open the Booking Form">
+    Click the **"+ Nueva Cita"** button in the top-right corner.
+  </Step>
+  
+  <Step title="Select the Client">
+    Choose a client from the **Cliente** dropdown. This is a required field.
+    
+    The dropdown shows:
+    - Client full name
+    - Phone number in parentheses
+    
+    <Tip>
+      If the client isn't in the system, you'll need to create them first in the Clientes module.
+    </Tip>
+  </Step>
+  
+  <Step title="Assign Staff (Optional)">
+    Select a professional from the **Profesional Asignado** dropdown.
+    
+    - Choose "-- Sin asignar --" if no specific staff member is required
+    - Assigned staff helps with workload distribution and commission tracking
+  </Step>
+  
+  <Step title="Set Date and Time">
+    Configure the appointment schedule:
+    - **Fecha**: Select the appointment date (defaults to currently selected date)
+    - **Hora Inicio**: Set the start time (format: HH:MM)
+    - **Duración (Min)**: Enter duration in minutes (default: 60)
+    
+    <Note>
+      Duration must be in 5-minute increments (e.g., 30, 45, 60, 90).
+    </Note>
+  </Step>
+  
+  <Step title="Choose Service or Package">
+    Select what the client will receive:
+    
+    1. Click **Servicio Individual** or **Paquete (Packs)** tab
+    2. From the dropdown, select the specific service or package
+    3. The dropdown shows the name and price of each option
+    
+    <Tip>
+      Packages (packs) are pre-bundled service combinations. Use individual services for standalone appointments.
+    </Tip>
+  </Step>
+  
+  <Step title="Add Notes (Optional)">
+    Use the **Notas y Comentarios** field for:
+    - Special client requests
+    - Allergy alerts
+    - Preparation requirements
+    - Staff reminders
+  </Step>
+  
+  <Step title="Confirm the Booking">
+    Click **"Confirmar Reserva"** to create the appointment. It will be created with "Pendiente" (Pending) status.
+  </Step>
+</Steps>
+
+## Viewing Appointment Details
+
+Each appointment card in the agenda displays:
+
+### Time Column (Left)
+- **Large time**: Start time in 24-hour format
+- **Small time**: End time (calculated from start + duration)
+- **Day abbreviation**: Weekday label
+
+### Appointment Card
+- **Status badge**: Color-coded current status
+- **Staff icon**: Assigned professional (if any)
+- **Client name**: Full name in bold
+- **Item type**: Service/Package ID reference
+- **Duration**: Total minutes with clock icon
+- **Notes**: Truncated preview if notes exist
+
+### Status Colors
+
+- **Yellow/Warning**: Pendiente (Pending) - Newly created, awaiting confirmation
+- **Blue/Info**: Confirmada (Confirmed) - Client confirmed attendance
+- **Green/Success**: Finalizada (Completed) - Service delivered
+- **Red/Error**: Cancelada (Cancelled) - Appointment cancelled
+- **Gray/Muted**: No asiste (No-show) - Client didn't arrive
+
+## Managing Appointments
+
+### Changing Appointment Status
+
+<Steps>
+  <Step title="Open Actions Menu">
+    Click the **three-dot menu (⋮)** on the appointment card.
+  </Step>
+  
+  <Step title="Select Status">
+    Under the "Estado" section, choose:
+    - **Confirmar**: Mark as confirmed
+    - **Finalizar**: Mark as completed
+    - **Cancelar**: Mark as cancelled
+  </Step>
+</Steps>
+
+The appointment card color and badge will update immediately to reflect the new status.
+
+<Tip>
+  **Status Workflow**: A typical appointment flows through these states:
+  1. Pendiente (when first created)
+  2. Confirmada (after client confirmation call)
+  3. Finalizada (after service completion)
+</Tip>
+
+### Editing an Appointment
+
+<Steps>
+  <Step title="Access Edit Form">
+    Click the **three-dot menu (⋮)** and select **Editar**.
+  </Step>
+  
+  <Step title="Modify Details">
+    The booking form opens in edit mode with all current information pre-filled.
+    
+    - The modal title shows "Editar Reserva"
+    - Status dropdown appears in the header for quick status changes
+    - All fields can be modified
+  </Step>
+  
+  <Step title="Save Changes">
+    Click **"Guardar Cambios"** to update the appointment.
+  </Step>
+</Steps>
+
+### Deleting an Appointment
+
+<Warning>
+  Deleting an appointment permanently removes it from the system. This action cannot be undone.
+  
+  Consider using "Cancelada" status instead to preserve the record for reporting.
+</Warning>
+
+<Steps>
+  <Step title="Open Actions Menu">
+    Click the **three-dot menu (⋮)** on the appointment card.
+  </Step>
+  
+  <Step title="Select Delete">
+    Click **Eliminar** (red option at the bottom).
+  </Step>
+  
+  <Step title="Confirm Deletion">
+    Confirm the deletion in the browser prompt.
+  </Step>
+</Steps>
+
+## Best Practices
+
+### Booking Workflow
+
+<Steps>
+  <Step title="Check Availability">
+    Before creating an appointment:
+    1. Navigate to the desired date
+    2. Review existing appointments
+    3. Identify time gaps for new bookings
+  </Step>
+  
+  <Step title="Create with Buffer Time">
+    Add 10-15 minutes buffer between appointments for:
+    - Room cleaning and setup
+    - Staff preparation
+    - Client check-in/checkout
+  </Step>
+  
+  <Step title="Confirm Promptly">
+    After creating a booking:
+    1. Call or message the client
+    2. Confirm the date, time, and service
+    3. Update status to "Confirmada"
+  </Step>
+</Steps>
+
+### Preventing Double-Bookings
+
+<Tip>
+  To avoid scheduling conflicts:
+  
+  1. **Check Day View First**: Always view the day before adding appointments
+  2. **Use Staff Assignment**: Filter by staff member to see their specific availability
+  3. **Consider Service Duration**: Account for actual service time plus buffer
+  4. **Review Week View**: Check for patterns and avoid overloading specific days
+</Tip>
+
+### Handling No-Shows
+
+<Steps>
+  <Step title="Wait 15 Minutes">
+    If a client is late, wait 15 minutes past the start time before taking action.
+  </Step>
+  
+  <Step title="Attempt Contact">
+    Call or message the client to check if they're on the way.
+  </Step>
+  
+  <Step title="Mark as No-Show">
+    If no response after 15-20 minutes, change status to "No asiste".
+  </Step>
+  
+  <Step title="Document in Notes">
+    Edit the appointment and add a note about:
+    - What time you attempted contact
+    - Any response received
+    - Follow-up actions needed
+  </Step>
+</Steps>
+
+### Using Notes Effectively
+
+<Tip>
+  **Good Note Examples**:
+  - "Cliente prefiere sala tranquila - evitar cerca de entrada"
+  - "Alergia a aceite de lavanda - usar productos alternativos"
+  - "Primera vez - explicar proceso detalladamente"
+  - "Cliente VIP - preparar toallas premium"
+  
+  These notes help staff prepare properly and provide personalized service.
+</Tip>
+
+## Managing High-Volume Days
+
+### Planning Ahead
+
+1. Switch to **Week View** to see the full schedule
+2. Identify heavy booking days
+3. Ensure adequate staff coverage
+4. Block out lunch breaks and staff meetings
+
+### Same-Day Walk-Ins
+
+<Steps>
+  <Step title="Quick Availability Check">
+    Open today's agenda in Day View to see gaps.
+  </Step>
+  
+  <Step title="Fast Entry">
+    Use "+ Nueva Cita" and select:
+    - Client (or create quickly if new)
+    - Nearest available time slot
+    - Service required
+    
+    Skip optional fields for speed.
+  </Step>
+  
+  <Step title="Confirm Immediately">
+    Since the client is present, set status to "Confirmada" right away.
+  </Step>
+</Steps>
+
+## Understanding Service vs. Pack Selection
+
+### When to Use Services
+
+- Single treatment appointments
+- One-time services
+- À la carte bookings
+
+### When to Use Packs
+
+- Pre-purchased multi-session packages
+- Treatment courses (e.g., 6-session programs)
+- Bundled service combinations
+
+<Note>
+  Packs must be configured in the **Packs** module before they appear in the booking dropdown.
+</Note>
+
+## Troubleshooting
+
+### Appointment Doesn't Appear After Creating
+
+1. **Check the Date**: Ensure you're viewing the correct date
+2. **Refresh the View**: Navigate away and back to the Agenda
+3. **Search for Client**: Use the search bar to find the appointment
+
+### Cannot Select Client
+
+If a client doesn't appear in the dropdown:
+1. They may not exist in the system - create them in **Clientes** first
+2. They may be marked as "Inactivo" - edit their profile to activate
+3. Check for spelling mistakes in your search
+
+### Overlapping Appointments
+
+The system doesn't prevent double-bookings automatically. To avoid conflicts:
+- Always check the day view before scheduling
+- Use different staff members for overlapping times
+- Ensure room/resource availability
+
+## Quick Reference: Status Updates
+
+| Status | When to Use | Next Steps |
+|--------|------------|------------|
+| Pendiente | Just created | Call client to confirm |
+| Confirmada | Client confirmed | Wait for appointment time |
+| Finalizada | Service completed | Process payment in TPV |
+| Cancelada | Client cancelled | Follow cancellation policy |
+| No asiste | Client didn't show | Document and follow up |

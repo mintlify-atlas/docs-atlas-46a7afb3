@@ -1,0 +1,334 @@
+---
+title: Analytics & Reports
+description: Business intelligence dashboard with revenue tracking, sales analytics, and performance metrics for data-driven decisions
+---
+
+## Overview
+
+The Analytics & Reports module transforms your beauty center's operational data into actionable business insights. It provides visual dashboards with key performance indicators (KPIs), revenue trends, payment method analysis, and top-selling item reports to help you make informed decisions about your business.
+
+## Dashboard Overview
+
+### Key Performance Indicators (KPIs)
+
+The dashboard displays four essential metrics at the top:
+
+**Total Revenue**
+- Sum of all completed sales
+- Displayed with success styling (green)
+- Shows overall business performance
+- Currency formatted in euros
+
+**Total Sales (Tickets)**
+- Number of completed transactions
+- Displayed with info styling (blue)
+- Indicates transaction volume
+- Useful for calculating average ticket size
+
+**Total Clients**
+- Count of registered clients in database
+- Displayed with warning styling (orange)
+- Tracks customer base growth
+- Shows market penetration
+
+**Total Products**
+- Count of active products in catalog
+- Displayed with primary styling
+- Indicates inventory breadth
+- Monitors catalog expansion
+
+### Visual Analytics
+
+The dashboard includes three main chart types:
+
+#### 1. Revenue Trend Chart
+
+**Line Chart Features**
+- Monthly revenue over time
+- Smooth line visualization
+- Gradient area fill for visual appeal
+- X-axis: Month labels
+- Y-axis: Euro amounts
+- Tooltip on hover showing exact values
+
+**Use Cases**
+- Identify seasonal patterns (peak months, slow periods)
+- Track growth trajectory
+- Spot unusual revenue drops requiring investigation
+- Forecast future revenue based on trends
+- Measure impact of marketing campaigns
+
+#### 2. Payment Methods Distribution
+
+**Donut Chart Features**
+- Percentage breakdown by payment type
+- Color-coded segments:
+  - Card payments
+  - Cash payments
+  - Mixed payments
+  - Debt/accounts receivable
+- Legend showing payment method names
+- Tooltip with exact percentages
+
+**Use Cases**
+- Understand client payment preferences
+- Plan for cash drawer needs
+- Monitor accounts receivable levels
+- Identify trends in payment behavior
+- Optimize payment processing setup
+
+#### 3. Top Items Chart
+
+**Horizontal Bar Chart Features**
+- Ranking of best-selling items
+- Items sorted by quantity sold (highest first)
+- Bar length represents sales volume
+- Value labels on bars
+- Items from all categories (products, services, packs, bonuses)
+
+**Use Cases**
+- Identify star performers in your catalog
+- Make inventory decisions based on demand
+- Promote popular items more heavily
+- Bundle best-sellers with slower items
+- Adjust staffing for popular services
+- Discontinue or discount poor performers
+
+## Data Sources
+
+The analytics system pulls data from:
+
+**Carts** (`Cart` model)
+- Completed sales (status = "completed")
+- Payment methods
+- Total amounts and discounts
+- Transaction timestamps
+
+**Cart Items** (`CartItem` model)
+- Item types and IDs
+- Quantities sold
+- Prices at time of sale
+- Item names (snapshot)
+
+**Clients** (`User` model with role = USER)
+- Total registered clients count
+- Client demographics (future enhancement)
+
+**Products** (`Product` model)
+- Total active products count
+- Inventory levels (future enhancement)
+
+<Note>
+  The reports are generated server-side via `/api/reports` endpoint which aggregates data across multiple models to produce KPIs and chart data.
+</Note>
+
+## User Workflows
+
+### Viewing the Dashboard
+
+1. Navigate to **Reportes** from the main menu
+2. Dashboard loads with current data
+3. Review KPIs at the top for quick insights
+4. Scroll down to examine detailed charts
+5. Hover over chart elements for specific values
+6. Use charts to identify trends and patterns
+
+### Exporting Reports (PDF)
+
+1. Click **Exportar PDF** button in header
+2. System prepares print-friendly view
+3. Browser print dialog opens
+4. Options:
+   - Save as PDF
+   - Print to physical printer
+5. Report includes:
+   - KPI cards
+   - All charts (rendered as images)
+   - Professional formatting
+6. Print styles hide navigation and interactive elements
+
+### Interpreting Revenue Trends
+
+**Analyze the Line Chart**:
+- **Upward trend**: Growth, successful marketing, expanding client base
+- **Downward trend**: Declining sales, investigate causes (competition, seasonality, service quality)
+- **Flat trend**: Stable business, may need growth initiatives
+- **Spikes**: Successful promotions, holidays, special events
+- **Dips**: Seasonal slowdowns, competitor activity, external factors
+
+**Seasonal Patterns**:
+- Identify which months are strongest
+- Plan inventory and staffing accordingly
+- Schedule promotions during slow periods
+- Prepare for peak season demand
+
+### Analyzing Payment Methods
+
+**Ideal Distribution** (example):
+- Card: 70% (convenient for clients and business)
+- Cash: 20% (decreasing as digital payments grow)
+- Mixed: 5% (occasional split payments)
+- Debt: 5% (manageable credit risk)
+
+**Red Flags**:
+- **High Debt %**: May indicate collection problems or generous credit policies
+- **Very High Cash %**: Potential for theft, difficult reconciliation
+- **Zero Card %**: Missing convenience for clients
+
+**Actions Based on Data**:
+- High debt: Tighten credit policies, improve collection
+- High cash: Promote card payments, consider cash handling security
+- Low card: Ensure card terminal works, train staff
+
+### Using Top Items Data
+
+**Identify Best Sellers**:
+- Top items generate most revenue
+- Ensure always in stock (products)
+- Ensure staff trained to deliver (services)
+- Consider creating variations or premium versions
+
+**Marketing Applications**:
+- Feature best-sellers in promotions
+- Highlight in social media and advertising
+- Create bundles with best-sellers as anchors
+- Offer bonuses for popular services
+
+**Inventory Management**:
+- Allocate more shelf space to top products
+- Negotiate better pricing with suppliers for high-volume items
+- Keep safety stock of best-selling products
+- Monitor for stockouts closely
+
+**Service Optimization**:
+- Schedule more availability for popular services
+- Train additional staff on in-demand treatments
+- Create express versions of lengthy popular services
+- Develop related services to upsell
+
+## Business Applications
+
+### Strategic Planning
+
+**Growth Decisions**
+- Revenue trends inform expansion timing
+- Top items guide service/product additions
+- Client count growth indicates market opportunity
+- Seasonal patterns help budget planning
+
+**Resource Allocation**
+- Staff popular services heavily
+- Stock best-selling products generously
+- Invest in marketing during growth periods
+- Conserve cash during slow seasons
+
+### Operational Improvements
+
+**Inventory Optimization**
+- Base purchasing on top items data
+- Reduce inventory of slow movers
+- Prevent stockouts of fast movers
+- Adjust reorder points by demand
+
+**Staffing Decisions**
+- Schedule more staff during peak months
+- Train staff on popular services
+- Reduce hours during predictable slow periods
+- Cross-train for service demand shifts
+
+### Financial Management
+
+**Cash Flow Planning**
+- Anticipate revenue based on trends
+- Plan for seasonal fluctuations
+- Manage payables around slow periods
+- Build cash reserves during peak times
+
+**Credit Management**
+- Monitor debt payment method percentage
+- Set debt policies based on default risk
+- Follow up on aging receivables
+- Offer prepayment incentives if debt is high
+
+### Marketing Effectiveness
+
+**Campaign Measurement**
+- Compare revenue before/after campaigns
+- Track new client acquisition
+- Measure coupon redemption impact
+- Assess seasonal promotion success
+
+**Product/Service Mix**
+- Phase out items that never top the charts
+- Expand offerings similar to best-sellers
+- Create premium versions of popular items
+- Bundle slow movers with stars
+
+## Performance Benchmarks
+
+### Revenue Metrics
+
+**Average Transaction Value**
+- Formula: Total Revenue ÷ Total Sales
+- Higher is better (indicates upselling success)
+- Track month-over-month changes
+- Set goals to increase through bundles and add-ons
+
+**Revenue per Client**
+- Formula: Total Revenue ÷ Total Clients
+- Indicates lifetime value potential
+- Growing = successful retention and upselling
+- Declining = need reactivation campaigns
+
+### Growth Rates
+
+**Month-over-Month Growth**
+- Formula: (This Month - Last Month) ÷ Last Month × 100%
+- Positive is healthy growth
+- Benchmark: 5-10% monthly growth is strong for established business
+- 20%+ is exceptional (new business or successful expansion)
+
+**Year-over-Year Growth**
+- Formula: (This Year - Last Year) ÷ Last Year × 100%
+- Removes seasonality from comparison
+- More stable indicator than month-over-month
+- Benchmark: 10-20% annually is solid
+
+## Future Enhancements
+
+### Advanced Analytics
+
+- Client segmentation (new vs. returning, high-value vs. low-value)
+- Service profitability analysis (revenue vs. cost of delivery)
+- Staff performance metrics (sales per staff member)
+- Appointment utilization rates (booked vs. available slots)
+- Product margin analysis (revenue vs. cost of goods)
+
+### Time Period Filters
+
+- Custom date range selection
+- Week/Month/Quarter/Year toggles
+- Compare periods (this month vs. last month)
+- Year-over-year comparisons
+
+### Drill-Down Capabilities
+
+- Click chart segments to see details
+- Filter other charts based on selections
+- View transactions behind aggregated metrics
+- Export filtered data to CSV
+
+### Predictive Analytics
+
+- Revenue forecasting based on trends
+- Demand prediction for inventory planning
+- Churn risk scoring for clients
+- Optimal pricing recommendations
+
+<Tip>
+  Review your analytics dashboard weekly to stay informed about business performance. Set aside time each week to analyze trends and adjust your strategies accordingly. Data-driven decisions consistently outperform gut feeling.
+</Tip>
+
+<Warning>
+  The accuracy of reports depends on consistent data entry. Ensure staff properly records all sales through the TPV, assigns clients to transactions when possible, and accurately categorizes items. Incomplete data leads to inaccurate insights.
+</Warning>

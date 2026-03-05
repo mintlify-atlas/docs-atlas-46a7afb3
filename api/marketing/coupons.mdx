@@ -1,0 +1,306 @@
+---
+title: 'Coupons'
+description: 'Manage discount coupons for promotional campaigns'
+icon: 'ticket'
+---
+
+## Overview
+
+Coupons allow you to create promotional discount codes that clients can apply during checkout. Each coupon can have usage limits, validity periods, and minimum purchase requirements.
+
+### Discount Types
+
+- **percentage**: Discount as a percentage of the purchase amount (e.g., 20% off)
+- **fixed**: Fixed amount discount (e.g., €10 off)
+
+## List Coupons
+
+<ParamField query="search" type="string">
+  Search coupons by code or description
+</ParamField>
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/coupons?search=SUMMER" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseField name="coupon_id" type="string" required>
+  Unique identifier for the coupon (UUID)
+</ResponseField>
+
+<ResponseField name="code" type="string" required>
+  Unique coupon code that clients use at checkout
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Internal description of the coupon purpose
+</ResponseField>
+
+<ResponseField name="discount_type" type="string" required>
+  Type of discount: `percentage` or `fixed`
+</ResponseField>
+
+<ResponseField name="discount_value" type="number" required>
+  Discount amount (percentage value or fixed amount in currency)
+</ResponseField>
+
+<ResponseField name="min_purchase" type="number">
+  Minimum purchase amount required to use the coupon
+</ResponseField>
+
+<ResponseField name="max_uses" type="integer">
+  Maximum number of times this coupon can be used (null for unlimited)
+</ResponseField>
+
+<ResponseField name="current_uses" type="integer" required>
+  Number of times the coupon has been used
+</ResponseField>
+
+<ResponseField name="valid_from" type="datetime">
+  Start date for coupon validity
+</ResponseField>
+
+<ResponseField name="valid_until" type="datetime">
+  Expiration date for the coupon
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Coupon status: `activo` (active) or `inactivo` (inactive)
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime" required>
+  Timestamp when the coupon was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime" required>
+  Timestamp when the coupon was last updated
+</ResponseField>
+
+## Create Coupon
+
+```bash
+curl -X POST "https://your-domain.com/api/marketing/coupons" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "SUMMER2026",
+    "description": "Summer promotion 2026",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "min_purchase": 50,
+    "max_uses": 100,
+    "valid_from": "2026-06-01T00:00:00Z",
+    "valid_until": "2026-08-31T23:59:59Z",
+    "status": "activo"
+  }'
+```
+
+### Request Body
+
+<ParamField body="code" type="string" required>
+  Unique coupon code (must be unique across all coupons)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the coupon for internal reference
+</ParamField>
+
+<ParamField body="discount_type" type="string" required>
+  Discount type: `percentage` or `fixed`
+</ParamField>
+
+<ParamField body="discount_value" type="number" required>
+  Discount value (0-100 for percentage, any positive number for fixed)
+</ParamField>
+
+<ParamField body="min_purchase" type="number">
+  Minimum purchase amount required
+</ParamField>
+
+<ParamField body="max_uses" type="integer">
+  Maximum uses allowed (omit for unlimited)
+</ParamField>
+
+<ParamField body="valid_from" type="datetime">
+  When the coupon becomes valid (ISO 8601 format)
+</ParamField>
+
+<ParamField body="valid_until" type="datetime">
+  When the coupon expires (ISO 8601 format)
+</ParamField>
+
+<ParamField body="status" type="string" default="activo">
+  Initial status: `activo` or `inactivo`
+</ParamField>
+
+### Response
+
+Returns the created coupon object with all fields including generated `coupon_id`.
+
+## Get Coupon
+
+Retrieve a specific coupon by ID.
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/coupons/{coupon_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="coupon_id" type="string" required>
+  The unique identifier of the coupon
+</ParamField>
+
+### Response
+
+Returns the complete coupon object.
+
+### Error Responses
+
+<ResponseField name="statusCode" type="integer">
+  HTTP status code
+  - `400`: Coupon ID is required
+  - `404`: Coupon not found
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  Error message describing the issue
+</ResponseField>
+
+## Update Coupon
+
+Update an existing coupon's properties.
+
+```bash
+curl -X PUT "https://your-domain.com/api/marketing/coupons/{coupon_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "inactivo",
+    "max_uses": 150
+  }'
+```
+
+### Path Parameters
+
+<ParamField path="coupon_id" type="string" required>
+  The unique identifier of the coupon to update
+</ParamField>
+
+### Request Body
+
+All fields are optional. Only include the fields you want to update.
+
+<ParamField body="code" type="string">
+  Update the coupon code (must remain unique)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Update the description
+</ParamField>
+
+<ParamField body="discount_type" type="string">
+  Change discount type
+</ParamField>
+
+<ParamField body="discount_value" type="number">
+  Change discount value
+</ParamField>
+
+<ParamField body="min_purchase" type="number">
+  Update minimum purchase requirement
+</ParamField>
+
+<ParamField body="max_uses" type="integer">
+  Update maximum uses (set to null for unlimited)
+</ParamField>
+
+<ParamField body="valid_from" type="datetime">
+  Update validity start date
+</ParamField>
+
+<ParamField body="valid_until" type="datetime">
+  Update expiration date
+</ParamField>
+
+<ParamField body="status" type="string">
+  Update status
+</ParamField>
+
+### Response
+
+Returns the updated coupon object.
+
+## Delete Coupon
+
+Permanently delete a coupon.
+
+```bash
+curl -X DELETE "https://your-domain.com/api/marketing/coupons/{coupon_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="coupon_id" type="string" required>
+  The unique identifier of the coupon to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Returns `true` if the deletion was successful
+</ResponseField>
+
+## Validation Rules
+
+### Code Uniqueness
+The `code` field must be unique across all coupons. Attempting to create a coupon with a duplicate code will result in an error.
+
+### Discount Value Validation
+- For `percentage` discount type: Value should be between 0 and 100
+- For `fixed` discount type: Value should be a positive number
+
+### Usage Tracking
+- `current_uses` is automatically incremented when a coupon is applied to a cart
+- When `current_uses` reaches `max_uses`, the coupon should no longer be accepted
+- This counter is read-only and managed by the system
+
+### Date Validation
+- `valid_from` must be before `valid_until`
+- Coupons can only be used between these dates
+- If `valid_from` is not set, the coupon is valid immediately
+- If `valid_until` is not set, the coupon never expires
+
+### Status Management
+- Only coupons with status `activo` can be used at checkout
+- Setting status to `inactivo` immediately disables the coupon
+- This allows temporary deactivation without deleting the coupon
+
+## Business Logic
+
+### Minimum Purchase Requirement
+When `min_purchase` is set, the cart subtotal must meet or exceed this amount for the coupon to be valid.
+
+### Maximum Uses
+The `max_uses` field limits how many times a coupon can be applied across all transactions. This is useful for limited-time promotions.
+
+### Percentage vs Fixed Discounts
+- **Percentage**: Applied as `subtotal * (discount_value / 100)`
+- **Fixed**: Applied as direct reduction up to the cart subtotal (never negative)
+
+## Cart Integration
+
+Coupons are applied during checkout via the Cart API:
+
+```bash
+curl -X POST "https://your-domain.com/api/sales/carts/{cart_id}/apply-coupon" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "coupon_code": "SUMMER2026"
+  }'
+```
+
+The applied coupon code is stored in the `applied_coupon` field of the Cart model, and the discount is reflected in the cart's `discount` and `total` fields.

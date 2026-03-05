@@ -1,80 +1,363 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get Beils Dashboard up and running in minutes
 ---
 
-## Get started in three steps
+## Prerequisites
 
-Get your documentation site running locally and make your first customization.
+Before you begin, ensure you have the following installed:
 
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+- **Node.js**: Version 18.x or higher
+- **pnpm**: Package manager (recommended) or npm/yarn
+- **MariaDB/MySQL**: Version 10.6 or higher
+- **Git**: For cloning the repository
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  This guide uses `pnpm` as the package manager. You can also use `npm` or `yarn` by replacing `pnpm` commands accordingly.
 </Note>
+
+## Getting Started
+
+Follow these steps to get Beils Dashboard running on your local machine:
+
+<Steps>
+  <Step title="Clone the Repository">
+    Clone the Beils Dashboard repository to your local machine:
+    
+    ```bash
+    git clone <repository-url>
+    cd tp-plus-dashboard
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    Install all required packages using pnpm:
+    
+    ```bash
+    pnpm install
+    ```
+    
+    This will install all dependencies including:
+    - Nuxt 4 framework and modules
+    - Prisma ORM and MariaDB adapter
+    - Vue Query for data fetching
+    - Authentication libraries (bcryptjs, jsonwebtoken)
+    - UI libraries (Tailwind CSS, DaisyUI, Lucide icons)
+  </Step>
+
+  <Step title="Configure Database">
+    Create a MariaDB/MySQL database for the application:
+    
+    ```sql
+    CREATE DATABASE transpallet_plus_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    ```
+    
+    Create a `.env` file in the project root with your database credentials:
+    
+    ```bash .env
+    # Database Configuration
+    DATABASE_HOST=localhost
+    DATABASE_USER=root
+    DATABASE_PASSWORD=your_password_here
+    DATABASE_NAME=transpallet_plus_db
+    DATABASE_PORT=3306
+    
+    # JWT Secret for Authentication
+    JWT_SECRET=your-secure-secret-key-here
+    
+    # Node Environment
+    NODE_ENV=development
+    ```
+    
+    <Warning>
+      Never commit your `.env` file to version control. It contains sensitive credentials.
+    </Warning>
+  </Step>
+
+  <Step title="Generate Prisma Client">
+    Generate the Prisma client based on your schema:
+    
+    ```bash
+    pnpm prisma:generate
+    ```
+    
+    This creates the type-safe Prisma client for database operations.
+  </Step>
+
+  <Step title="Run Database Migrations">
+    Apply the database schema to your MariaDB database:
+    
+    ```bash
+    pnpm prisma:migrate
+    ```
+    
+    This creates all necessary tables, indexes, and relationships defined in the Prisma schema.
+  </Step>
+
+  <Step title="Seed the Database">
+    Populate the database with sample data:
+    
+    ```bash
+    pnpm seed
+    ```
+    
+    This creates:
+    - 25 sample users (1 admin, 2 staff, 22 clients)
+    - 2 brands (Masglo, Bioline Jato)
+    - Client consents, questionnaires, and bookings
+    - Random appointments across past and future dates
+    
+    <Tip>
+      The seed script creates an admin account with credentials:
+      - **Email**: `admin@beils.com`
+      - **Password**: `password123`
+    </Tip>
+  </Step>
+
+  <Step title="Start the Development Server">
+    Launch the Nuxt development server:
+    
+    ```bash
+    pnpm dev
+    ```
+    
+    The application will be available at `http://localhost:3000`
+  </Step>
+
+  <Step title="Log In to the Dashboard">
+    Open your browser and navigate to `http://localhost:3000`
+    
+    Use the admin credentials to log in:
+    - **Email**: `admin@beils.com`
+    - **Password**: `password123`
+    
+    You'll be redirected to the dashboard overview after successful authentication.
+  </Step>
+</Steps>
+
+## Your First Actions
+
+Now that you're logged in, here are some key actions to explore:
+
+### 1. View Clients
+
+Navigate to **Clientes** (Clients) from the sidebar to see the list of seeded clients.
+
+```typescript
+// The client management page uses Vue Query for data fetching
+const { data: clients } = useQuery({
+  queryKey: ['clients-list'],
+  queryFn: () => $fetch('/api/clients')
+})
+```
+
+<CardGroup cols={2}>
+  <Card title="Add a New Client" icon="user-plus">
+    Click the "Add Client" button to create a new client profile with:
+    - Personal information (name, email, phone)
+    - Address and demographics
+    - Document type (DNI, Passport, NIE)
+  </Card>
+  <Card title="View Client Details" icon="eye">
+    Click on any client to view their complete profile, including:
+    - Booking history
+    - Consent forms
+    - Questionnaires
+    - Debt status
+  </Card>
+</CardGroup>
+
+### 2. Manage Appointments
+
+Navigate to **Agenda** (Schedule) to view and manage appointments:
+
+- View upcoming and past bookings
+- Create new appointments with client and staff assignment
+- Update appointment status (pending, confirmed, completed, cancelled)
+- Add notes for each booking
+
+### 3. Browse the Product Catalog
+
+Explore the **Catálogo** section:
+
+<Tabs>
+  <Tab title="Products">
+    Manage your product inventory:
+    - Add products with SKU/barcode
+    - Set pricing and tax rates
+    - Track stock levels with minimum stock alerts
+    - Assign categories, subcategories, and brands
+  </Tab>
+  <Tab title="Brands">
+    View seeded brands:
+    - Masglo
+    - Bioline Jato
+    
+    Add your own brands for product organization.
+  </Tab>
+  <Tab title="Categories">
+    Organize products into categories and subcategories for easy navigation and filtering.
+  </Tab>
+</Tabs>
+
+### 4. Create a Sale
+
+Navigate to **TPV** (Point of Sale) to process transactions:
+
+```typescript
+// Cart management flow
+1. Select client
+2. Add items to cart (products, services, packs)
+3. Apply discounts or coupons
+4. Choose payment method (cash, card, transfer, mixed)
+5. Complete the sale
+```
+
+<Note>
+  The cart system automatically calculates subtotals, taxes, and final totals based on item prices and tax rates.
+</Note>
+
+## Available Scripts
+
+Here are all the npm scripts available in Beils Dashboard:
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server with hot reload |
+| `pnpm build` | Build for production |
+| `pnpm preview` | Preview production build locally |
+| `pnpm generate` | Generate static site (SSG) |
+| `pnpm postinstall` | Prepare Nuxt (runs automatically after install) |
+| `pnpm seed` | Seed database with sample data |
+| `pnpm prisma:generate` | Generate Prisma client |
+| `pnpm prisma:migrate` | Run database migrations |
+| `pnpm prisma:pull` | Pull schema from existing database |
+| `pnpm prisma:reset` | Reset database and re-run migrations |
+
+## Understanding the Authentication Flow
+
+Beils Dashboard uses JWT-based authentication:
+
+<Steps>
+  <Step title="User Login">
+    User submits email and password to `/api/auth/login`
+    
+    ```typescript
+    // server/api/auth/login.post.ts
+    const loginSchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(1),
+    })
+    ```
+  </Step>
+
+  <Step title="Credential Verification">
+    Server validates credentials:
+    - Checks if user exists
+    - Verifies user status is "ON"
+    - Compares password hash using bcrypt
+  </Step>
+
+  <Step title="Token Generation">
+    On success, server generates JWT token:
+    
+    ```typescript
+    const token = signToken({ 
+      userId: user.user_id, 
+      email: user.email, 
+      role: user.role 
+    })
+    ```
+    
+    Token expires after 24 hours by default.
+  </Step>
+
+  <Step title="Client Storage">
+    Frontend stores the token and uses it for authenticated requests:
+    
+    ```typescript
+    // Include token in API requests
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+    ```
+  </Step>
+</Steps>
+
+## API Endpoints Overview
+
+The platform exposes RESTful API endpoints organized by feature:
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user profile
+
+### Clients
+- `GET /api/clients` - List all clients (with search)
+- `POST /api/clients` - Create new client
+- `PUT /api/clients/[id]` - Update client
+- `DELETE /api/clients/[id]` - Delete client
+
+### Catalog
+- `GET /api/catalog/brands` - List brands
+- `POST /api/catalog/brands` - Create brand
+- `GET /api/catalog/categories` - List categories
+- `GET /api/catalog/products` - List products
+
+### Agenda
+- `GET /api/agenda/bookings` - List bookings
+- `POST /api/agenda/bookings` - Create booking
+- `PUT /api/agenda/bookings/[id]` - Update booking
+
+<Tip>
+  All API endpoints use Zod schemas for request validation, ensuring type safety and data integrity.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Installation Guide" icon="download" href="/installation">
+    Learn about production deployment, environment variables, and advanced configuration
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/authentication/login">
+    Explore detailed API documentation for all endpoints
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Database connection fails">
+    - Verify MariaDB/MySQL is running: `sudo systemctl status mariadb`
+    - Check database credentials in `.env`
+    - Ensure database exists: `SHOW DATABASES;`
+    - Check port is not blocked: `netstat -tuln | grep 3306`
+  </Accordion>
+  
+  <Accordion title="Prisma client errors">
+    - Regenerate Prisma client: `pnpm prisma:generate`
+    - Clear node_modules and reinstall: `rm -rf node_modules && pnpm install`
+    - Check schema.prisma syntax for errors
+  </Accordion>
+  
+  <Accordion title="Port 3000 already in use">
+    - Change port in nuxt.config.ts:
+    ```typescript
+    export default defineNuxtConfig({
+      devServer: { port: 3001 }
+    })
+    ```
+    - Or kill existing process: `lsof -ti:3000 | xargs kill`
+  </Accordion>
+  
+  <Accordion title="Login fails with correct credentials">
+    - Check JWT_SECRET is set in .env
+    - Verify user status is "ON" in database
+    - Check browser console for CORS or network errors
+    - Ensure seed script completed successfully
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+  If you encounter build errors, check the TypeScript configuration and ensure all dependencies are properly installed.
+</Warning>

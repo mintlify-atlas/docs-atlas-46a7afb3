@@ -1,0 +1,427 @@
+---
+title: "Roles & Permissions"
+description: "Understanding role-based access control and permission management in Beils Dashboard"
+---
+
+## Overview
+
+Beils Dashboard implements a role-based access control (RBAC) system to secure features and data based on user roles. This ensures that users only have access to the features they need for their job responsibilities.
+
+## Role Structure
+
+The system uses a simple two-tier role hierarchy defined in the Prisma schema:
+
+```prisma
+enum Role {
+  ADMIN
+  USER
+}
+```
+
+All user accounts must have one of these roles assigned.
+
+## Administrator (ADMIN)
+
+The ADMIN role has unrestricted access to all system features and data.
+
+### Permissions
+
+<AccordionGroup>
+  <Accordion title="User Management" icon="users">
+    - Create new user accounts
+    - Edit any user account
+    - Delete user accounts
+    - Toggle user status (activate/deactivate)
+    - View all users in the system
+    - Assign roles to users
+  </Accordion>
+  
+  <Accordion title="Client Management" icon="user-group">
+    - View all clients
+    - Create and edit client records
+    - Delete clients
+    - Access client consents and questionnaires
+    - Manage client revocations
+  </Accordion>
+  
+  <Accordion title="Catalog Management" icon="box">
+    - Manage products, services, and packs
+    - Create and edit categories, subcategories, and brands
+    - Manage tags for products
+    - Update pricing and tax rates
+    - Control inventory levels
+  </Accordion>
+  
+  <Accordion title="Sales & Point of Sale" icon="cash-register">
+    - Process all sales transactions
+    - Manage shopping carts
+    - Handle payments and refunds
+    - Override prices if needed
+    - View all transaction history
+  </Accordion>
+  
+  <Accordion title="Marketing" icon="bullhorn">
+    - Create and manage coupons
+    - Configure bonus programs
+    - Issue and manage gift cards
+    - View marketing performance metrics
+  </Accordion>
+  
+  <Accordion title="Financial Management" icon="dollar-sign">
+    - View all financial data
+    - Manage client debts
+    - Generate financial reports
+    - Access payment history
+  </Accordion>
+  
+  <Accordion title="Appointments" icon="calendar">
+    - View all bookings across all staff
+    - Create appointments for any client
+    - Assign appointments to staff members
+    - Cancel or reschedule any booking
+  </Accordion>
+  
+  <Accordion title="Reports & Analytics" icon="chart-line">
+    - Access all reports and dashboards
+    - View sales analytics
+    - Generate custom reports
+    - Export data for analysis
+  </Accordion>
+  
+  <Accordion title="System Configuration" icon="gear">
+    - Configure system settings
+    - Manage business hours and preferences
+    - Configure tax rates
+    - Set up payment methods
+    - Access audit logs
+  </Accordion>
+</AccordionGroup>
+
+### Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Business Owner" icon="building">
+    Full oversight of business operations, financial data, and strategic decisions
+  </Card>
+  <Card title="Manager" icon="user-tie">
+    Supervise staff, manage inventory, handle administrative tasks
+  </Card>
+</CardGroup>
+
+## Standard User (USER)
+
+The USER role is designed for staff members who need access to daily operational features without administrative capabilities.
+
+### Permissions
+
+<AccordionGroup>
+  <Accordion title="Client Management" icon="user-group">
+    ✅ View all clients
+    ✅ Create new client records
+    ✅ Edit client information
+    ❌ Delete clients
+    ✅ Manage client consents and questionnaires
+  </Accordion>
+  
+  <Accordion title="Catalog Management" icon="box">
+    ✅ View products, services, and packs
+    ✅ Search and filter catalog items
+    ❌ Create or edit products (typically restricted)
+    ❌ Delete catalog items
+    ❌ Modify pricing or tax rates
+  </Accordion>
+  
+  <Accordion title="Sales & Point of Sale" icon="cash-register">
+    ✅ Process sales transactions
+    ✅ Manage shopping carts
+    ✅ Accept payments
+    ✅ View own transaction history
+    ❌ Override prices
+    ❌ Issue refunds without approval
+  </Accordion>
+  
+  <Accordion title="Marketing" icon="bullhorn">
+    ✅ Apply coupons to transactions
+    ✅ Use gift cards for payments
+    ✅ View active promotions
+    ❌ Create or modify marketing campaigns
+  </Accordion>
+  
+  <Accordion title="Appointments" icon="calendar">
+    ✅ View all bookings
+    ✅ Create appointments
+    ✅ Manage own assigned appointments
+    ✅ Update appointment status
+    ❌ Cancel appointments assigned to other staff
+  </Accordion>
+  
+  <Accordion title="Reports" icon="chart-simple">
+    ✅ View basic dashboards
+    ✅ Access personal performance metrics
+    ❌ View financial reports
+    ❌ Export sensitive data
+  </Accordion>
+  
+  <Accordion title="Administration" icon="lock">
+    ❌ No access to user management
+    ❌ Cannot modify system settings
+    ❌ Cannot access audit logs
+    ❌ Cannot manage other users
+  </Accordion>
+</AccordionGroup>
+
+### Use Cases
+
+<CardGroup cols={3}>
+  <Card title="Beautician" icon="hand-sparkles">
+    Book and manage client appointments, update client records
+  </Card>
+  <Card title="Receptionist" icon="desktop">
+    Handle check-ins, process sales, manage the schedule
+  </Card>
+  <Card title="Sales Staff" icon="bag-shopping">
+    Process transactions, apply promotions, manage inventory
+  </Card>
+</CardGroup>
+
+## Permission Enforcement
+
+Beils Dashboard enforces role-based permissions at multiple levels:
+
+### Server-Side Middleware
+
+The authentication middleware (`server/middleware/auth.ts`) validates all API requests:
+
+```typescript
+// Protected routes require valid JWT token
+const PROTECTED_PREFIX = '/api/'
+const PUBLIC_ROUTES = ['/api/auth/login', '/api/hello']
+
+// All other /api/* routes require authentication
+```
+
+<Steps>
+  <Step title="Token Verification">
+    Extract JWT token from Authorization header or auth_token cookie
+  </Step>
+  <Step title="Token Validation">
+    Verify token signature and expiration using JWT secret
+  </Step>
+  <Step title="User Context">
+    Attach decoded user info (userId, email, role) to request context
+  </Step>
+  <Step title="Status Check">
+    Ensure user status is ON (active)
+  </Step>
+</Steps>
+
+### API Endpoints
+
+While the middleware validates authentication, role-specific authorization should be implemented at the endpoint level:
+
+```typescript
+// Example: Admin-only endpoint pattern
+export default defineEventHandler(async (event) => {
+  const user = event.context.user
+  
+  // Check if user has ADMIN role
+  if (user.role !== 'ADMIN') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Forbidden: Admin access required'
+    })
+  }
+  
+  // Admin-only logic here
+})
+```
+
+<Note>
+  Currently, most endpoints do not enforce role-level authorization beyond authentication. You may need to implement additional role checks for sensitive operations.
+</Note>
+
+### Client-Side Guards
+
+The frontend uses Vue Router navigation guards and Pinia stores to control UI access:
+
+```typescript
+// Auth store tracks authenticated user
+const authStore = useAuthStore()
+const isAuthenticated = authStore.isAuthenticated
+const userRole = authStore.user?.role
+
+// Check role before showing admin features
+if (userRole === 'ADMIN') {
+  // Show admin options
+}
+```
+
+<Warning>
+  Client-side guards are for UX only. Always enforce permissions on the server-side to prevent unauthorized access.
+</Warning>
+
+## Assigning Roles
+
+Roles are assigned during user creation or can be updated later:
+
+### During User Creation
+
+1. Open the **Create User** form
+2. Select role from dropdown (defaults to USER)
+3. Save the new user
+
+### Updating Existing User Role
+
+1. Navigate to **Users** management
+2. Click **Edit** on the user account
+3. Change the **Role** field to ADMIN or USER
+4. Click **Update**
+
+<Info>
+  Role changes take effect immediately. The user will have new permissions on their next action or page refresh.
+</Info>
+
+## Default Role
+
+When creating users via API without specifying a role:
+
+```typescript
+role: role || 'USER'  // Defaults to USER if not provided
+```
+
+This follows the principle of least privilege, ensuring new accounts have minimal permissions by default.
+
+## JWT Token Structure
+
+Authentication tokens contain the user's role:
+
+```typescript
+interface JwtPayload {
+  userId: string
+  email: string
+  role: string  // 'ADMIN' or 'USER'
+}
+
+const token = signToken({
+  userId: user.user_id,
+  email: user.email,
+  role: user.role
+})
+```
+
+This allows server-side code to check permissions without additional database queries.
+
+## Implementing Custom Permissions
+
+If you need more granular permissions beyond ADMIN/USER:
+
+### Option 1: Extend Role Enum
+
+Add new roles to the Prisma schema:
+
+```prisma
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+  USER
+}
+```
+
+Then run `prisma migrate` to update the database.
+
+### Option 2: Permission Flags
+
+Add boolean flags to the User model:
+
+```prisma
+model User {
+  // ... existing fields
+  can_delete_clients Boolean @default(false)
+  can_issue_refunds  Boolean @default(false)
+  can_view_reports   Boolean @default(false)
+}
+```
+
+### Option 3: Separate Permissions Table
+
+Create a many-to-many relationship:
+
+```prisma
+model Permission {
+  id          String   @id
+  name        String
+  description String?
+  users       User[]
+}
+
+model User {
+  // ... existing fields
+  permissions Permission[]
+}
+```
+
+<Tip>
+  For most beauty centers, the two-tier ADMIN/USER model provides sufficient access control without added complexity.
+</Tip>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Principle of Least Privilege" icon="shield">
+    Grant users only the minimum permissions needed for their role
+  </Card>
+  <Card title="Regular Audits" icon="clipboard-check">
+    Review user roles quarterly and adjust as job responsibilities change
+  </Card>
+  <Card title="Separation of Duties" icon="users-rectangle">
+    Avoid giving multiple ADMIN accounts when possible
+  </Card>
+  <Card title="Access Logging" icon="file-lines">
+    Monitor ADMIN actions for security and compliance
+  </Card>
+</CardGroup>
+
+## Common Scenarios
+
+### Promoting a User to Admin
+
+1. Verify the user needs full system access
+2. Edit their user account
+3. Change role from USER to ADMIN
+4. Notify the user of their new permissions
+
+### Temporarily Restricting Access
+
+Instead of changing roles, toggle the user's status:
+
+1. Locate user in user management
+2. Click **Toggle Status** to set status to OFF
+3. User cannot log in while status is OFF
+4. Re-enable when access should be restored
+
+### Handling User Transitions
+
+When staff members change positions:
+
+1. Review their new job responsibilities
+2. Adjust their role accordingly (ADMIN ↔ USER)
+3. If leaving the company, set status to OFF rather than deleting
+4. This preserves historical data integrity
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="User Management" icon="users" href="/admin/user-management">
+    Create and manage user accounts
+  </Card>
+  <Card title="Configuration" icon="gear" href="/admin/configuration">
+    Configure authentication settings
+  </Card>
+  <Card title="Authentication API" icon="key" href="/api/authentication/login">
+    API documentation for login and tokens
+  </Card>
+  <Card title="Data Management" icon="database" href="/admin/data-management">
+    Export and backup user data
+  </Card>
+</CardGroup>

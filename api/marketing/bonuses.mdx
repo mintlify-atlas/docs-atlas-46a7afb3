@@ -1,0 +1,383 @@
+---
+title: 'Bonuses'
+description: 'Manage service session bonuses and client purchases'
+icon: 'gift'
+---
+
+## Overview
+
+Bonuses are prepaid packages that allow clients to purchase multiple sessions of a specific service at a discounted rate. They consist of:
+
+- **Bonus**: The template defining the service, number of sessions, and price
+- **ClientBonus**: Individual instances purchased by clients, tracking remaining sessions
+
+## Bonus Model
+
+The Bonus model defines the package template that clients can purchase.
+
+<ResponseField name="bonus_id" type="string" required>
+  Unique identifier for the bonus (UUID)
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Name of the bonus package (e.g., "10-Session Massage Package")
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Detailed description of the bonus terms and conditions
+</ResponseField>
+
+<ResponseField name="total_sessions" type="integer" required>
+  Total number of sessions included in the bonus
+</ResponseField>
+
+<ResponseField name="price" type="number" required>
+  Total price for the bonus package
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Status of the bonus: `activo` (available for purchase) or `inactivo` (discontinued)
+</ResponseField>
+
+<ResponseField name="service_id" type="string">
+  Reference to the specific Service this bonus is for (optional)
+</ResponseField>
+
+<ResponseField name="service" type="object">
+  Service details when included in the response
+  <Expandable title="Service Object">
+    <ResponseField name="name" type="string">
+      Name of the service
+    </ResponseField>
+    <ResponseField name="price" type="number">
+      Regular price of a single session
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime" required>
+  Timestamp when the bonus was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime" required>
+  Timestamp when the bonus was last updated
+</ResponseField>
+
+## List Bonuses
+
+Retrieve all available bonus packages.
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/bonuses?search=massage" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Query Parameters
+
+<ParamField query="search" type="string">
+  Search bonuses by name or description
+</ParamField>
+
+### Response
+
+Returns an array of bonus objects with related service information included.
+
+## Create Bonus
+
+Create a new bonus package template.
+
+```bash
+curl -X POST "https://your-domain.com/api/marketing/bonuses" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "10-Session Facial Treatment Package",
+    "description": "Save 20% with this 10-session facial package. Valid for 6 months.",
+    "total_sessions": 10,
+    "price": 400,
+    "service_id": "abc123-service-uuid",
+    "status": "activo"
+  }'
+```
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Descriptive name for the bonus package
+</ParamField>
+
+<ParamField body="description" type="string">
+  Details about the bonus, terms, and conditions
+</ParamField>
+
+<ParamField body="total_sessions" type="integer" required>
+  Number of sessions included (must be positive)
+</ParamField>
+
+<ParamField body="price" type="number" required>
+  Total package price (typically less than service price × sessions)
+</ParamField>
+
+<ParamField body="service_id" type="string">
+  UUID of the service this bonus applies to
+</ParamField>
+
+<ParamField body="status" type="string" default="activo">
+  Initial status: `activo` or `inactivo`
+</ParamField>
+
+### Response
+
+Returns the created bonus object with related service information.
+
+## Get Bonus
+
+Retrieve a specific bonus by ID.
+
+```bash
+curl -X GET "https://your-domain.com/api/marketing/bonuses/{bonus_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="bonus_id" type="string" required>
+  The unique identifier of the bonus
+</ParamField>
+
+### Response
+
+Returns the bonus object with full service details (name and price).
+
+### Error Responses
+
+<ResponseField name="statusCode" type="integer">
+  HTTP status code
+  - `400`: Bonus ID is required
+  - `404`: Bonus not found
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  Error message describing the issue
+</ResponseField>
+
+## Update Bonus
+
+Update an existing bonus package.
+
+```bash
+curl -X PUT "https://your-domain.com/api/marketing/bonuses/{bonus_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price": 380,
+    "status": "activo"
+  }'
+```
+
+### Path Parameters
+
+<ParamField path="bonus_id" type="string" required>
+  The unique identifier of the bonus to update
+</ParamField>
+
+### Request Body
+
+All fields are optional. Only include fields you want to update.
+
+<ParamField body="name" type="string">
+  Update the bonus name
+</ParamField>
+
+<ParamField body="description" type="string">
+  Update the description
+</ParamField>
+
+<ParamField body="total_sessions" type="integer">
+  Update the number of sessions
+</ParamField>
+
+<ParamField body="price" type="number">
+  Update the package price
+</ParamField>
+
+<ParamField body="service_id" type="string">
+  Change the associated service
+</ParamField>
+
+<ParamField body="status" type="string">
+  Update the status
+</ParamField>
+
+### Response
+
+Returns the updated bonus object with service information.
+
+## Delete Bonus
+
+Permanently delete a bonus template.
+
+```bash
+curl -X DELETE "https://your-domain.com/api/marketing/bonuses/{bonus_id}" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Path Parameters
+
+<ParamField path="bonus_id" type="string" required>
+  The unique identifier of the bonus to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Returns `true` if the deletion was successful
+</ResponseField>
+
+<Warning>
+  Deleting a bonus will cascade to all associated ClientBonus records. Consider setting status to `inactivo` instead to preserve purchase history.
+</Warning>
+
+## Client Bonus Model
+
+When a client purchases a bonus, a ClientBonus record is created to track their usage.
+
+<ResponseField name="client_bonus_id" type="string" required>
+  Unique identifier for the client's bonus purchase (UUID)
+</ResponseField>
+
+<ResponseField name="client_id" type="string" required>
+  UUID of the client who purchased the bonus
+</ResponseField>
+
+<ResponseField name="bonus_id" type="string" required>
+  Reference to the bonus template that was purchased
+</ResponseField>
+
+<ResponseField name="bonus" type="object">
+  Related bonus details
+  <Expandable title="Bonus Object">
+    <ResponseField name="name" type="string">
+      Name of the bonus package
+    </ResponseField>
+    <ResponseField name="total_sessions" type="integer">
+      Original total sessions in the package
+    </ResponseField>
+    <ResponseField name="service_id" type="string">
+      Associated service UUID
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="remaining_sessions" type="integer" required>
+  Number of sessions remaining for the client to use
+</ResponseField>
+
+<ResponseField name="purchase_date" type="datetime" required>
+  When the client purchased this bonus
+</ResponseField>
+
+<ResponseField name="expiration_date" type="datetime">
+  When the bonus expires (if applicable)
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Status: `activo` (can be used), `completado` (all sessions used), or `expirado` (expired)
+</ResponseField>
+
+<ResponseField name="created_at" type="datetime" required>
+  Timestamp when the client bonus was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="datetime" required>
+  Timestamp when the client bonus was last updated
+</ResponseField>
+
+## Business Logic
+
+### Pricing Strategy
+
+Bonuses typically offer a discounted rate compared to purchasing individual sessions:
+
+```javascript
+// Example calculation
+const servicePrice = 50; // Regular price per session
+const totalSessions = 10;
+const regularTotal = servicePrice * totalSessions; // €500
+const bonusPrice = 400; // 20% discount
+const savings = regularTotal - bonusPrice; // €100
+```
+
+### Session Tracking
+
+- `remaining_sessions` starts equal to `total_sessions` at purchase
+- Each time a client books using their bonus, `remaining_sessions` decrements by 1
+- When `remaining_sessions` reaches 0, status should be updated to `completado`
+- Clients can have multiple active bonuses simultaneously
+
+### Expiration Management
+
+- Set `expiration_date` at purchase time (e.g., 6 months from purchase)
+- Expired bonuses cannot be used for new bookings
+- Update status to `expirado` when `expiration_date` is passed
+- Consider notification systems to alert clients before expiration
+
+### Cart Integration
+
+Bonuses are sold as items in the cart:
+
+```json
+{
+  "item_type": "bonus",
+  "item_id": "bonus-uuid",
+  "name": "10-Session Facial Treatment Package",
+  "quantity": 1,
+  "unit_price": 400,
+  "tax_rate": 21.0
+}
+```
+
+After cart checkout, create a ClientBonus record:
+
+```json
+{
+  "client_id": "client-uuid",
+  "bonus_id": "bonus-uuid",
+  "remaining_sessions": 10,
+  "purchase_date": "2026-03-05T10:00:00Z",
+  "expiration_date": "2026-09-05T23:59:59Z",
+  "status": "activo"
+}
+```
+
+### Booking Integration
+
+When a client books an appointment using a bonus session:
+
+1. Verify client has an active ClientBonus with `remaining_sessions > 0`
+2. Create the booking as normal
+3. Decrement `remaining_sessions` by 1
+4. If `remaining_sessions` becomes 0, update status to `completado`
+5. Link the booking to the ClientBonus for tracking
+
+## Validation Rules
+
+### Session Count
+- `total_sessions` must be a positive integer
+- Cannot be zero or negative
+- Typically ranges from 5 to 20 sessions
+
+### Pricing
+- `price` must be positive
+- Should be less than `service.price × total_sessions` for a real discount
+- Consider minimum discount thresholds (e.g., at least 10% off)
+
+### Service Association
+- `service_id` must reference an existing, active service
+- If service is deleted or deactivated, bonuses should be handled appropriately
+- Some bonuses might be service-agnostic (general credit)
+
+### Status Management
+- Only `activo` bonuses appear in purchase lists
+- Setting to `inactivo` prevents new purchases but doesn't affect existing ClientBonuses
+- Existing ClientBonus records remain valid regardless of bonus template status

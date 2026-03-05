@@ -1,0 +1,327 @@
+---
+title: 'Get Client Reports'
+api: 'GET /api/clients'
+description: 'Retrieve detailed client analytics with search capabilities and relationship counts'
+---
+
+## Overview
+
+The client reports endpoint provides comprehensive client data for analytics and reporting. It retrieves all users with the `USER` role (customers/clients) along with aggregated counts of their bookings, consents, and debts. This endpoint supports search functionality to filter clients.
+
+<Info>
+This endpoint automatically excludes password information from responses for security purposes.
+</Info>
+
+## Authentication
+
+This endpoint requires authentication. Include a valid Bearer token in the Authorization header.
+
+```bash
+Authorization: Bearer YOUR_TOKEN
+```
+
+## Request
+
+### Query Parameters
+
+<ParamField query="search" type="string" optional>
+  Search clients by name, surname, email, or phone number. The search performs a partial match (contains) across these fields.
+  
+  Example: `?search=maria` will match clients with "Maria" in their name, surname, email, or phone.
+</ParamField>
+
+### Example Requests
+
+<CodeGroup>
+
+```bash Get All Clients
+curl --request GET \
+  --url https://your-domain.com/api/clients \
+  --header 'Authorization: Bearer YOUR_TOKEN'
+```
+
+```bash Search Clients
+curl --request GET \
+  --url 'https://your-domain.com/api/clients?search=maria' \
+  --header 'Authorization: Bearer YOUR_TOKEN'
+```
+
+```javascript JavaScript - Search by Name
+const response = await fetch(
+  'https://your-domain.com/api/clients?search=garcia',
+  {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer YOUR_TOKEN'
+    }
+  }
+);
+
+const clients = await response.json();
+console.log(clients);
+```
+
+```python Python - Search by Email
+import requests
+
+url = "https://your-domain.com/api/clients"
+params = {"search": "@gmail.com"}
+headers = {"Authorization": "Bearer YOUR_TOKEN"}
+
+response = requests.get(url, params=params, headers=headers)
+clients = response.json()
+print(clients)
+```
+
+</CodeGroup>
+
+## Response
+
+Returns an array of client objects ordered by creation date (most recent first). Each client includes their personal information and aggregated relationship counts.
+
+<ResponseField name="clients" type="array">
+  Array of client objects
+  
+  <Expandable title="Client Object">
+    <ResponseField name="user_id" type="string">
+      Unique identifier for the client (UUID format)
+    </ResponseField>
+    
+    <ResponseField name="email" type="string">
+      Client's email address (unique)
+    </ResponseField>
+    
+    <ResponseField name="name" type="string">
+      Client's first name
+    </ResponseField>
+    
+    <ResponseField name="surname" type="string">
+      Client's last name
+    </ResponseField>
+    
+    <ResponseField name="phone" type="string">
+      Client's phone number
+    </ResponseField>
+    
+    <ResponseField name="address" type="string">
+      Client's street address
+    </ResponseField>
+    
+    <ResponseField name="city" type="string">
+      Client's city
+    </ResponseField>
+    
+    <ResponseField name="country" type="string">
+      Client's country
+    </ResponseField>
+    
+    <ResponseField name="postal_code" type="string">
+      Client's postal/zip code
+    </ResponseField>
+    
+    <ResponseField name="gender" type="string">
+      Client's gender
+    </ResponseField>
+    
+    <ResponseField name="birth_date" type="string">
+      Client's date of birth (ISO 8601 date format)
+    </ResponseField>
+    
+    <ResponseField name="role" type="string">
+      User role - always `USER` for clients
+    </ResponseField>
+    
+    <ResponseField name="status" type="string">
+      Account status: `ON` (active) or `OFF` (inactive)
+    </ResponseField>
+    
+    <ResponseField name="avatar" type="string">
+      URL to client's avatar image
+    </ResponseField>
+    
+    <ResponseField name="document_type" type="string">
+      Type of identification document: `DNI`, `PASSPORT`, or `NIE`
+    </ResponseField>
+    
+    <ResponseField name="document_number" type="string">
+      Client's identification document number
+    </ResponseField>
+    
+    <ResponseField name="refresh_token" type="string" optional>
+      OAuth refresh token (may be null)
+    </ResponseField>
+    
+    <ResponseField name="created_at" type="string">
+      Timestamp when the client was created (ISO 8601 format)
+    </ResponseField>
+    
+    <ResponseField name="updated_at" type="string">
+      Timestamp when the client was last updated (ISO 8601 format)
+    </ResponseField>
+    
+    <ResponseField name="_count" type="object">
+      Aggregated counts of related records
+      
+      <Expandable title="Count Object">
+        <ResponseField name="client_bookings" type="number">
+          Total number of appointments/bookings made by this client
+        </ResponseField>
+        
+        <ResponseField name="consents" type="number">
+          Total number of consent documents signed by this client
+        </ResponseField>
+        
+        <ResponseField name="debts" type="number">
+          Total number of debt records associated with this client
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example Response
+
+```json
+[
+  {
+    "user_id": "u1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "email": "maria.garcia@example.com",
+    "name": "María",
+    "surname": "García López",
+    "phone": "+34 612 345 678",
+    "address": "Calle Mayor 123",
+    "city": "Madrid",
+    "country": "España",
+    "postal_code": "28013",
+    "gender": "female",
+    "birth_date": "1990-05-15",
+    "role": "USER",
+    "status": "ON",
+    "avatar": "https://example.com/avatars/maria-garcia.jpg",
+    "document_type": "DNI",
+    "document_number": "12345678A",
+    "refresh_token": null,
+    "created_at": "2025-01-15T09:30:00.000Z",
+    "updated_at": "2026-03-05T14:20:00.000Z",
+    "_count": {
+      "client_bookings": 24,
+      "consents": 3,
+      "debts": 1
+    }
+  },
+  {
+    "user_id": "u2b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "email": "juan.martinez@example.com",
+    "name": "Juan",
+    "surname": "Martínez Ruiz",
+    "phone": "+34 623 456 789",
+    "address": "Avenida de la Constitución 45",
+    "city": "Barcelona",
+    "country": "España",
+    "postal_code": "08001",
+    "gender": "male",
+    "birth_date": "1985-08-22",
+    "role": "USER",
+    "status": "ON",
+    "avatar": "https://example.com/avatars/juan-martinez.jpg",
+    "document_type": "DNI",
+    "document_number": "87654321B",
+    "refresh_token": null,
+    "created_at": "2025-02-20T11:15:00.000Z",
+    "updated_at": "2026-03-04T16:45:00.000Z",
+    "_count": {
+      "client_bookings": 18,
+      "consents": 2,
+      "debts": 0
+    }
+  }
+]
+```
+
+## Client Analytics
+
+### Key Metrics
+
+Use the response data to calculate important client metrics:
+
+- **Total Active Clients**: Count of clients with `status: "ON"`
+- **Client Retention**: Analyze booking frequency and recency
+- **Average Bookings per Client**: Calculate from `_count.client_bookings`
+- **Clients with Outstanding Debts**: Filter by `_count.debts > 0`
+- **Most Engaged Clients**: Sort by `_count.client_bookings` descending
+
+### Search Capabilities
+
+The search parameter supports flexible client lookup:
+
+- **By Name**: `?search=maria` - Finds clients with "Maria" in name or surname
+- **By Email**: `?search=@gmail.com` - Finds all Gmail users
+- **By Phone**: `?search=612` - Finds clients with matching phone numbers
+- **Partial Match**: Search uses "contains" logic for flexible matching
+
+### Relationship Counts
+
+The `_count` object provides insights into client engagement:
+
+- **client_bookings**: Number of appointments scheduled (completed, pending, or cancelled)
+- **consents**: Number of signed consent documents (GDPR compliance tracking)
+- **debts**: Number of outstanding payment records
+
+## Use Cases
+
+### Client Segmentation
+Segment clients based on booking frequency, total visits, or outstanding debts for targeted marketing.
+
+### Customer Lifecycle Analysis
+Track client lifecycle from first visit (created_at) through booking history to identify retention patterns.
+
+### Debt Management
+Identify clients with outstanding debts for follow-up and payment collection.
+
+### Marketing Campaigns
+Use search and filtering to create targeted client lists for promotions and communications.
+
+### Compliance Reporting
+Monitor consent document status across your client base for GDPR compliance.
+
+### VIP Client Identification
+Identify high-value clients based on booking frequency and engagement metrics.
+
+## Error Handling
+
+### Error Responses
+
+<ResponseField name="statusCode" type="number">
+  HTTP status code (500 for server errors)
+</ResponseField>
+
+<ResponseField name="statusMessage" type="string">
+  Error message in Spanish: "Error al obtener clientes"
+</ResponseField>
+
+### Example Error Response
+
+```json
+{
+  "statusCode": 500,
+  "statusMessage": "Error al obtener clientes"
+}
+```
+
+## Security
+
+<Warning>
+The password field is automatically excluded from all client responses for security. Never expose password hashes or tokens in API responses.
+</Warning>
+
+- Passwords are removed from the response before sending to clients
+- Only users with role `USER` are returned (admins excluded)
+- Authentication required for all requests
+- Refresh tokens may be included but should be handled securely
+
+## Related Endpoints
+
+- [Reports Overview](/api/reports/overview) - Overall business analytics including client count
+- [Sales Reports](/api/reports/sales) - Sales data with client information
+- [Get Client Details](/api/clients/get-client) - Individual client detailed view
+- [Create Client](/api/clients/create-client) - Add new clients to the system

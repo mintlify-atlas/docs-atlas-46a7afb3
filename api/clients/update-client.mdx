@@ -1,0 +1,334 @@
+---
+title: "Update Client"
+api: "PUT /api/clients/{id}"
+description: "Update an existing client's information"
+---
+
+## Overview
+
+Updates an existing client's information. All fields are optional - only include the fields you want to update. The endpoint validates input, checks for email uniqueness, and returns the updated client record.
+
+## Authentication
+
+This endpoint requires authentication. Include a valid session token in your request.
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier (UUID) of the client to update.
+</ParamField>
+
+## Request Body
+
+All fields are optional. Only include the fields you want to update.
+
+<ParamField body="email" type="string" optional>
+  Client's email address. Must be unique (not used by another client).
+  
+  **Validation**: Valid email format, max 50 characters
+</ParamField>
+
+<ParamField body="name" type="string" optional>
+  Client's first name.
+  
+  **Validation**: Minimum 2 characters, max 50 characters
+</ParamField>
+
+<ParamField body="surname" type="string" optional>
+  Client's last name.
+  
+  **Validation**: Minimum 2 characters, max 50 characters
+</ParamField>
+
+<ParamField body="phone" type="string" optional>
+  Client's phone number.
+  
+  **Validation**: Minimum 6 characters, max 20 characters
+</ParamField>
+
+<ParamField body="address" type="string" optional>
+  Street address.
+  
+  **Max length**: 255 characters
+</ParamField>
+
+<ParamField body="city" type="string" optional>
+  City name.
+  
+  **Max length**: 50 characters
+</ParamField>
+
+<ParamField body="country" type="string" optional>
+  Country name.
+  
+  **Max length**: 50 characters
+</ParamField>
+
+<ParamField body="postal_code" type="string" optional>
+  Postal/ZIP code.
+  
+  **Max length**: 20 characters
+</ParamField>
+
+<ParamField body="gender" type="string" optional>
+  Gender identifier.
+  
+  **Max length**: 10 characters
+</ParamField>
+
+<ParamField body="birth_date" type="string" optional>
+  Date of birth in ISO 8601 format.
+  
+  **Format**: ISO 8601 date string (e.g., "1990-05-15")
+</ParamField>
+
+<ParamField body="document_type" type="string" optional>
+  Type of identification document.
+  
+  **Allowed values**: `DNI`, `PASSPORT`, `NIE`
+</ParamField>
+
+<ParamField body="document_number" type="string" optional>
+  Identification document number.
+  
+  **Max length**: 20 characters
+</ParamField>
+
+<ParamField body="status" type="string" optional>
+  Account status.
+  
+  **Allowed values**: `ON`, `OFF`
+</ParamField>
+
+## Response
+
+Returns the updated client object. The password field is excluded from the response for security.
+
+<ResponseField name="user_id" type="string" required>
+  Unique identifier for the client (UUID format)
+</ResponseField>
+
+<ResponseField name="email" type="string" required>
+  Client's email address
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Client's first name
+</ResponseField>
+
+<ResponseField name="surname" type="string" required>
+  Client's last name
+</ResponseField>
+
+<ResponseField name="phone" type="string" required>
+  Client's phone number
+</ResponseField>
+
+<ResponseField name="address" type="string" required>
+  Street address
+</ResponseField>
+
+<ResponseField name="city" type="string" required>
+  City name
+</ResponseField>
+
+<ResponseField name="country" type="string" required>
+  Country name
+</ResponseField>
+
+<ResponseField name="postal_code" type="string" required>
+  Postal/ZIP code
+</ResponseField>
+
+<ResponseField name="gender" type="string" required>
+  Gender identifier
+</ResponseField>
+
+<ResponseField name="birth_date" type="string" required>
+  Date of birth in ISO 8601 date format
+</ResponseField>
+
+<ResponseField name="role" type="string" required>
+  User role - always `USER` for clients
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Account status (`ON` or `OFF`)
+</ResponseField>
+
+<ResponseField name="avatar" type="string" required>
+  URL to client's avatar image
+</ResponseField>
+
+<ResponseField name="document_type" type="string" required>
+  Type of identification document
+</ResponseField>
+
+<ResponseField name="document_number" type="string" required>
+  Identification document number
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  Timestamp when the client was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  Timestamp when the client was last updated
+</ResponseField>
+
+## Example Request
+
+```bash cURL - Update phone and address
+curl --request PUT \
+  --url 'https://your-domain.com/api/clients/550e8400-e29b-41d4-a716-446655440000' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: your-session-token' \
+  --data '{
+    "phone": "+34634567890",
+    "address": "Calle Nueva 456"
+  }'
+```
+
+```bash cURL - Update status
+curl --request PUT \
+  --url 'https://your-domain.com/api/clients/550e8400-e29b-41d4-a716-446655440000' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: your-session-token' \
+  --data '{
+    "status": "OFF"
+  }'
+```
+
+```bash cURL - Update multiple fields
+curl --request PUT \
+  --url 'https://your-domain.com/api/clients/550e8400-e29b-41d4-a716-446655440000' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: your-session-token' \
+  --data '{
+    "email": "maria.new@example.com",
+    "phone": "+34645678901",
+    "city": "Valencia",
+    "postal_code": "46001"
+  }'
+```
+
+## Example Response
+
+```json
+{
+  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+  "email": "maria.garcia@example.com",
+  "name": "Maria",
+  "surname": "Garcia",
+  "phone": "+34634567890",
+  "address": "Calle Nueva 456",
+  "city": "Madrid",
+  "country": "Spain",
+  "postal_code": "28013",
+  "gender": "female",
+  "birth_date": "1990-05-15",
+  "role": "USER",
+  "status": "ON",
+  "avatar": "",
+  "document_type": "DNI",
+  "document_number": "12345678A",
+  "created_at": "2024-01-15T10:30:00.000Z",
+  "updated_at": "2024-03-05T15:45:00.000Z"
+}
+```
+
+## Error Responses
+
+### 400 Bad Request - Missing ID
+
+```json
+{
+  "statusCode": 400,
+  "statusMessage": "ID requerido"
+}
+```
+
+### 400 Bad Request - Validation Error
+
+Returned when the request body fails validation.
+
+```json
+{
+  "statusCode": 400,
+  "statusMessage": "Email inválido"
+}
+```
+
+Common validation errors:
+- `Email inválido` - Invalid email format
+- `El nombre es obligatorio` - Name must be at least 2 characters
+- `El apellido es obligatorio` - Surname must be at least 2 characters
+- `El teléfono es obligatorio` - Phone must be at least 6 characters
+
+### 404 Not Found - Client Not Found
+
+Returned when no client exists with the specified ID or when the user is not a client (role is not `USER`). This is indicated by Prisma error code `P2025`.
+
+```json
+{
+  "statusCode": 404,
+  "statusMessage": "Cliente no encontrado"
+}
+```
+
+### 409 Conflict - Duplicate Email
+
+Returned when attempting to update to an email address that is already used by another client.
+
+```json
+{
+  "statusCode": 409,
+  "statusMessage": "El correo electrónico ya está en uso por otro cliente"
+}
+```
+
+## Implementation Details
+
+- All fields in the request body are optional
+- Only the provided fields will be updated; others remain unchanged
+- Email uniqueness is checked against other users (excluding the current client)
+- The update query verifies that `role: 'USER'` to ensure only clients can be updated via this endpoint
+- The `password` field is always excluded from responses
+- If `birth_date` is provided, it's converted to a Date object before storage
+- The `updated_at` timestamp is automatically updated by Prisma
+- Input validation is performed using Zod schemas
+- The endpoint uses Prisma's `update` method with a where clause that includes both `user_id` and `role`
+
+## Partial Updates
+
+This endpoint supports partial updates. You can update a single field:
+
+```json
+{
+  "status": "OFF"
+}
+```
+
+Or multiple fields at once:
+
+```json
+{
+  "phone": "+34612345678",
+  "address": "New Street 123",
+  "city": "Barcelona",
+  "postal_code": "08001"
+}
+```
+
+## Status Management
+
+The `status` field can be used to activate or deactivate client accounts:
+
+- `ON`: Active client account
+- `OFF`: Inactive client account (soft delete alternative)
+
+Setting status to `OFF` is recommended over deletion for maintaining historical records.
+
+## Source Reference
+
+Implemented in `server/api/clients/[id].put.ts`
