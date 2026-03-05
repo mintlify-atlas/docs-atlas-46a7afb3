@@ -1,0 +1,168 @@
+{
+  "projectType": "saas",
+  "projectName": "Beils Dashboard",
+  "projectDescription": "SaaS platform for managing beauty centers with client management, inventory, appointments, and real-time analytics.",
+  "theme": "almond",
+  "primaryColor": "#64748c",
+  "lightColor": "#04db83",
+  "darkColor": "#66e3b1",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "installation"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/client-management",
+              "features/appointments",
+              "features/catalog",
+              "features/point-of-sale",
+              "features/marketing",
+              "features/analytics"
+            ]
+          },
+          {
+            "group": "User Guides",
+            "pages": [
+              "guides/managing-clients",
+              "guides/scheduling-appointments",
+              "guides/managing-inventory",
+              "guides/processing-sales",
+              "guides/creating-promotions",
+              "guides/viewing-reports"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "admin/user-management",
+              "admin/roles-permissions",
+              "admin/configuration",
+              "admin/data-management"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Authentication",
+            "pages": [
+              "api/authentication/login",
+              "api/authentication/tokens"
+            ]
+          },
+          {
+            "group": "Clients",
+            "pages": [
+              "api/clients/list-clients",
+              "api/clients/create-client",
+              "api/clients/get-client",
+              "api/clients/update-client",
+              "api/clients/delete-client"
+            ]
+          },
+          {
+            "group": "Appointments",
+            "pages": [
+              "api/appointments/list-bookings",
+              "api/appointments/create-booking",
+              "api/appointments/update-booking",
+              "api/appointments/delete-booking"
+            ]
+          },
+          {
+            "group": "Catalog",
+            "pages": [
+              "api/catalog/products",
+              "api/catalog/services",
+              "api/catalog/categories",
+              "api/catalog/brands",
+              "api/catalog/packs"
+            ]
+          },
+          {
+            "group": "Sales",
+            "pages": [
+              "api/sales/carts",
+              "api/sales/cart-items",
+              "api/sales/payments"
+            ]
+          },
+          {
+            "group": "Marketing",
+            "pages": [
+              "api/marketing/coupons",
+              "api/marketing/bonuses",
+              "api/marketing/giftcards"
+            ]
+          },
+          {
+            "group": "Reports",
+            "pages": [
+              "api/reports/overview",
+              "api/reports/sales",
+              "api/reports/clients"
+            ]
+          },
+          {
+            "group": "Users",
+            "pages": [
+              "api/users/list-users",
+              "api/users/create-user",
+              "api/users/update-user",
+              "api/users/delete-user"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Client CRM with consent and questionnaire management",
+    "Appointment scheduling and calendar management",
+    "Product and service catalog with inventory tracking",
+    "Point of sale (TPV) with multiple payment methods",
+    "Marketing tools (coupons, bonuses, gift cards)",
+    "Financial management and debt tracking",
+    "Real-time analytics and reporting",
+    "Multi-user system with role-based access control"
+  ],
+  "publicApiSurface": [
+    "POST /api/auth/login",
+    "GET /api/auth/me",
+    "GET /api/clients",
+    "POST /api/clients",
+    "GET /api/clients/:id",
+    "PUT /api/clients/:id",
+    "DELETE /api/clients/:id",
+    "GET /api/agenda/bookings",
+    "POST /api/agenda/bookings",
+    "GET /api/catalog/products",
+    "POST /api/catalog/products",
+    "GET /api/catalog/services",
+    "POST /api/catalog/services",
+    "GET /api/catalog/brands",
+    "GET /api/catalog/categories",
+    "GET /api/catalog/packs",
+    "GET /api/sales/carts",
+    "POST /api/sales/carts",
+    "GET /api/marketing/coupons",
+    "POST /api/marketing/coupons",
+    "GET /api/marketing/bonuses",
+    "GET /api/marketing/giftcards",
+    "GET /api/reports/overview",
+    "GET /api/users",
+    "POST /api/users"
+  ]
+}
