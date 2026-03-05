@@ -104,7 +104,9 @@
               "api/catalog/products",
               "api/catalog/services",
               "api/catalog/categories",
+              "api/catalog/subcategories",
               "api/catalog/brands",
+              "api/catalog/tags",
               "api/catalog/packs"
             ]
           },
@@ -112,8 +114,7 @@
             "group": "Sales",
             "pages": [
               "api/sales/carts",
-              "api/sales/cart-items",
-              "api/sales/payments"
+              "api/sales/debts"
             ]
           },
           {
@@ -127,9 +128,7 @@
           {
             "group": "Reports",
             "pages": [
-              "api/reports/overview",
-              "api/reports/sales",
-              "api/reports/clients"
+              "api/reports/overview"
             ]
           },
           {

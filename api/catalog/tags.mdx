@@ -1,0 +1,245 @@
+---
+title: "Tags"
+api: "GET /api/catalog/tags"
+description: "Manage product tags for flexible categorization and filtering"
+---
+
+## Overview
+
+Tags provide a flexible way to categorize and filter products across different categories. Unlike categories and subcategories, tags can be applied to any product regardless of its category, enabling cross-category filtering and search.
+
+## Authentication
+
+All tag endpoints require authentication. Include a valid session token in your request.
+
+---
+
+## List Tags
+
+<api>GET /api/catalog/tags</api>
+
+Retrieves all tags ordered alphabetically by name.
+
+### Response
+
+<ResponseField name="tag_id" type="string">
+  Unique identifier (UUID) for the tag
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Name of the tag
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Last update timestamp
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://api.example.com/api/catalog/tags" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+[
+  {
+    "tag_id": "tag123",
+    "name": "Orgánico",
+    "created_at": "2024-01-15T10:00:00Z",
+    "updated_at": "2024-01-15T10:00:00Z"
+  },
+  {
+    "tag_id": "tag456",
+    "name": "Vegano",
+    "created_at": "2024-01-15T11:00:00Z",
+    "updated_at": "2024-01-15T11:00:00Z"
+  }
+]
+```
+
+---
+
+## Create Tag
+
+<api>POST /api/catalog/tags</api>
+
+Creates a new product tag.
+
+### Request Body
+
+<ParamField path="name" type="string" required>
+  Name of the tag (must be unique across all tags)
+</ParamField>
+
+### Response
+
+Returns the created tag object.
+
+### Example Request
+
+```bash
+curl -X POST "https://api.example.com/api/catalog/tags" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Orgánico"
+  }'
+```
+
+### Example Response
+
+```json
+{
+  "tag_id": "tag123",
+  "name": "Orgánico",
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}
+```
+
+### Error Responses
+
+- **400**: Tag name is required
+- **409**: A tag with this name already exists
+- **500**: Internal server error
+
+---
+
+## Update Tag
+
+<api>PUT /api/catalog/tags/{id}</api>
+
+Updates an existing tag's name.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the tag to update
+</ParamField>
+
+### Request Body
+
+<ParamField path="name" type="string" required>
+  New name for the tag
+</ParamField>
+
+### Response
+
+Returns the updated tag object.
+
+### Example Request
+
+```bash
+curl -X PUT "https://api.example.com/api/catalog/tags/tag123" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Certificado Orgánico"
+  }'
+```
+
+### Error Responses
+
+- **400**: ID required
+- **404**: Tag not found
+- **409**: Name already in use
+- **500**: Internal server error
+
+---
+
+## Delete Tag
+
+<api>DELETE /api/catalog/tags/{id}</api>
+
+Deletes a tag. This will also remove the tag association from all products.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the tag to delete
+</ParamField>
+
+### Response
+
+Returns the deleted tag object.
+
+### Example Request
+
+```bash
+curl -X DELETE "https://api.example.com/api/catalog/tags/tag123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Error Responses
+
+- **400**: ID required
+- **404**: Tag not found
+- **500**: Internal server error
+
+<Note>
+  Deleting a tag will automatically remove it from all associated products through cascade delete on the product_tags join table.
+</Note>
+
+---
+
+## Common Use Cases
+
+### Filtering Products
+
+Tags enable flexible product filtering in the UI:
+
+```javascript
+// Filter products by multiple tags
+const organicVeganProducts = products.filter(product => 
+  product.tags.some(tag => tag.name === "Orgánico") &&
+  product.tags.some(tag => tag.name === "Vegano")
+);
+```
+
+### Tag-Based Search
+
+Implement tag-based product search:
+
+```javascript
+// Search products by tag
+const searchByTag = async (tagName) => {
+  const products = await fetch('/api/catalog/products');
+  return products.filter(p => 
+    p.tags.some(tag => tag.name.toLowerCase().includes(tagName.toLowerCase()))
+  );
+};
+```
+
+### Popular Tags
+
+Display the most frequently used tags:
+
+```javascript
+// Count products per tag
+const tagCounts = tags.map(tag => ({
+  ...tag,
+  productCount: products.filter(p => 
+    p.tags.some(t => t.tag_id === tag.tag_id)
+  ).length
+})).sort((a, b) => b.productCount - a.productCount);
+```
+
+---
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Products" icon="box" href="/api/catalog/products">
+    Manage products and their tag associations
+  </Card>
+  <Card title="Categories" icon="folder" href="/api/catalog/categories">
+    Manage product categories
+  </Card>
+</CardGroup>

@@ -1,0 +1,226 @@
+---
+title: "Subcategories"
+api: "GET /api/catalog/subcategories"
+description: "Manage product subcategories within parent categories"
+---
+
+## Overview
+
+Subcategories allow you to organize products into more specific classifications within parent categories. Each subcategory must belong to a parent category, and the combination of name and category must be unique.
+
+## Authentication
+
+All subcategory endpoints require authentication. Include a valid session token in your request.
+
+---
+
+## List Subcategories
+
+<api>GET /api/catalog/subcategories</api>
+
+Retrieves all subcategories with their parent category information, ordered alphabetically by name.
+
+### Response
+
+<ResponseField name="subcategory_id" type="string">
+  Unique identifier (UUID) for the subcategory
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Name of the subcategory
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Optional description of the subcategory
+</ResponseField>
+
+<ResponseField name="category_id" type="string">
+  ID of the parent category
+</ResponseField>
+
+<ResponseField name="category" type="object">
+  Parent category information
+  <Expandable title="properties">
+    <ResponseField name="name" type="string">
+      Name of the parent category
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Last update timestamp
+</ResponseField>
+
+### Example Request
+
+```bash
+curl -X GET "https://api.example.com/api/catalog/subcategories" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+[
+  {
+    "subcategory_id": "abc123",
+    "name": "Cremas faciales",
+    "description": "Cremas y tratamientos para el rostro",
+    "category_id": "cat456",
+    "category": {
+      "name": "Cosméticos"
+    },
+    "created_at": "2024-01-15T10:00:00Z",
+    "updated_at": "2024-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+## Create Subcategory
+
+<api>POST /api/catalog/subcategories</api>
+
+Creates a new subcategory within a parent category.
+
+### Request Body
+
+<ParamField path="name" type="string" required>
+  Name of the subcategory (must be unique within the parent category)
+</ParamField>
+
+<ParamField path="category_id" type="string" required>
+  ID of the parent category
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional description of the subcategory
+</ParamField>
+
+### Response
+
+Returns the created subcategory object with parent category information.
+
+### Example Request
+
+```bash
+curl -X POST "https://api.example.com/api/catalog/subcategories" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Cremas faciales",
+    "description": "Cremas y tratamientos para el rostro",
+    "category_id": "cat456"
+  }'
+```
+
+### Error Responses
+
+- **400**: Name and category_id are required
+- **409**: A subcategory with this name already exists in this category
+- **500**: Internal server error
+
+---
+
+## Update Subcategory
+
+<api>PUT /api/catalog/subcategories/{id}</api>
+
+Updates an existing subcategory's information.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the subcategory to update
+</ParamField>
+
+### Request Body
+
+<ParamField path="name" type="string">
+  New name for the subcategory
+</ParamField>
+
+<ParamField path="description" type="string">
+  New description
+</ParamField>
+
+<ParamField path="category_id" type="string">
+  New parent category ID (to move the subcategory)
+</ParamField>
+
+### Response
+
+Returns the updated subcategory object with parent category information.
+
+### Example Request
+
+```bash
+curl -X PUT "https://api.example.com/api/catalog/subcategories/abc123" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Cremas faciales premium",
+    "description": "Cremas de alta gama para tratamiento facial"
+  }'
+```
+
+### Error Responses
+
+- **400**: ID required
+- **404**: Subcategory not found
+- **409**: Name already registered in this category
+- **500**: Internal server error
+
+---
+
+## Delete Subcategory
+
+<api>DELETE /api/catalog/subcategories/{id}</api>
+
+Deletes a subcategory. Note that this will fail if products are associated with this subcategory.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the subcategory to delete
+</ParamField>
+
+### Response
+
+Returns the deleted subcategory object.
+
+### Example Request
+
+```bash
+curl -X DELETE "https://api.example.com/api/catalog/subcategories/abc123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Error Responses
+
+- **400**: ID required
+- **404**: Subcategory not found
+- **409**: Cannot delete subcategory with associated products
+- **500**: Internal server error
+
+<Warning>
+  Deleting a subcategory will fail if there are products assigned to it. Reassign or delete those products first.
+</Warning>
+
+---
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Categories" icon="folder" href="/api/catalog/categories">
+    Manage parent categories
+  </Card>
+  <Card title="Products" icon="box" href="/api/catalog/products">
+    Manage products assigned to subcategories
+  </Card>
+</CardGroup>

@@ -1,0 +1,374 @@
+---
+title: "Debts"
+api: "GET /api/sales/debts"
+description: "Manage customer payment debts and installment plans"
+---
+
+## Overview
+
+The debts API allows you to track customer payment obligations when full payment cannot be collected at the time of sale. Debts can be associated with carts (sales transactions) and track partial payments over time.
+
+## Authentication
+
+All debt endpoints require authentication. Include a valid session token in your request.
+
+---
+
+## List Debts
+
+<api>GET /api/sales/debts</api>
+
+Retrieves all debts with customer and cart information, ordered by creation date (most recent first).
+
+### Query Parameters
+
+<ParamField query="status" type="string">
+  Filter by debt status:
+  - `pending` - Returns both 'pending' and 'partial' status debts
+  - `partial` - Returns debts with partial payments made
+  - `paid` - Returns fully paid debts
+</ParamField>
+
+### Response
+
+<ResponseField name="debt_id" type="string">
+  Unique identifier (UUID) for the debt
+</ResponseField>
+
+<ResponseField name="user_id" type="string">
+  ID of the customer who owes the debt
+</ResponseField>
+
+<ResponseField name="user" type="object">
+  Customer information
+  <Expandable title="properties">
+    <ResponseField name="name" type="string">
+      Customer's first name
+    </ResponseField>
+    <ResponseField name="surname" type="string">
+      Customer's last name
+    </ResponseField>
+    <ResponseField name="phone" type="string">
+      Customer's phone number
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="cart_id" type="string">
+  Optional ID of the associated cart/sale
+</ResponseField>
+
+<ResponseField name="cart" type="object">
+  Associated cart information (if applicable)
+  <Expandable title="properties">
+    <ResponseField name="total" type="number">
+      Total amount of the original sale
+    </ResponseField>
+    <ResponseField name="created_at" type="string">
+      Date of the original sale
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Original debt amount
+</ResponseField>
+
+<ResponseField name="remaining" type="number">
+  Remaining amount to be paid
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status: `pending`, `partial`, or `paid`
+</ResponseField>
+
+<ResponseField name="due_date" type="string">
+  Optional due date for payment
+</ResponseField>
+
+<ResponseField name="notes" type="string">
+  Optional notes about the debt
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Last update timestamp
+</ResponseField>
+
+### Example Request
+
+```bash
+# Get all pending debts
+curl -X GET "https://api.example.com/api/sales/debts?status=pending" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+[
+  {
+    "debt_id": "debt123",
+    "user_id": "user456",
+    "user": {
+      "name": "María",
+      "surname": "González",
+      "phone": "+34 612 345 678"
+    },
+    "cart_id": "cart789",
+    "cart": {
+      "total": 150.00,
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    "amount": 150.00,
+    "remaining": 100.00,
+    "status": "partial",
+    "due_date": "2024-02-15T00:00:00Z",
+    "notes": "Pago en 2 cuotas acordado",
+    "created_at": "2024-01-15T10:00:00Z",
+    "updated_at": "2024-01-20T14:30:00Z"
+  }
+]
+```
+
+---
+
+## Create Debt
+
+<api>POST /api/sales/debts</api>
+
+Creates a new debt record for a customer.
+
+### Request Body
+
+<ParamField path="user_id" type="string" required>
+  ID of the customer who owes the debt
+</ParamField>
+
+<ParamField path="amount" type="number" required>
+  Total debt amount
+</ParamField>
+
+<ParamField path="cart_id" type="string">
+  Optional ID of the associated cart/sale
+</ParamField>
+
+<ParamField path="due_date" type="string">
+  Optional due date in ISO 8601 format
+</ParamField>
+
+<ParamField path="notes" type="string">
+  Optional notes about the payment arrangement
+</ParamField>
+
+<Note>
+  The `remaining` field is automatically set to equal `amount` when creating a debt. The status defaults to `pending`.
+</Note>
+
+### Response
+
+Returns the created debt object with customer information.
+
+### Example Request
+
+```bash
+curl -X POST "https://api.example.com/api/sales/debts" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user456",
+    "cart_id": "cart789",
+    "amount": 150.00,
+    "due_date": "2024-02-15T00:00:00Z",
+    "notes": "Pago en 2 cuotas de 75€"
+  }'
+```
+
+---
+
+## Get Debt
+
+<api>GET /api/sales/debts/{id}</api>
+
+Retrieves detailed information about a specific debt.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the debt
+</ParamField>
+
+### Response
+
+Returns the debt object with full customer and cart details.
+
+### Example Request
+
+```bash
+curl -X GET "https://api.example.com/api/sales/debts/debt123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+---
+
+## Update Debt
+
+<api>PUT /api/sales/debts/{id}</api>
+
+Updates a debt record, typically to record a payment or change the status.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the debt to update
+</ParamField>
+
+### Request Body
+
+<ParamField path="remaining" type="number">
+  New remaining balance. If set to 0 or less, status is automatically set to `paid`
+</ParamField>
+
+<ParamField path="status" type="string">
+  New status: `pending`, `partial`, or `paid`
+</ParamField>
+
+<ParamField path="due_date" type="string">
+  New due date in ISO 8601 format
+</ParamField>
+
+<ParamField path="notes" type="string">
+  Updated notes
+</ParamField>
+
+### Response
+
+Returns the updated debt object.
+
+### Example Request - Record Payment
+
+```bash
+# Record a partial payment of 50€
+curl -X PUT "https://api.example.com/api/sales/debts/debt123" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "remaining": 50.00,
+    "status": "partial",
+    "notes": "Primera cuota de 50€ pagada el 20/01/2024"
+  }'
+```
+
+### Example Request - Mark as Paid
+
+```bash
+curl -X PUT "https://api.example.com/api/sales/debts/debt123" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "remaining": 0,
+    "notes": "Deuda saldada completamente"
+  }'
+```
+
+---
+
+## Delete Debt
+
+<api>DELETE /api/sales/debts/{id}</api>
+
+Deletes a debt record.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique identifier of the debt to delete
+</ParamField>
+
+### Response
+
+Returns a success confirmation.
+
+### Example Request
+
+```bash
+curl -X DELETE "https://api.example.com/api/sales/debts/debt123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Example Response
+
+```json
+{
+  "success": true
+}
+```
+
+<Warning>
+  Deleting a debt removes all payment history. Consider marking as paid instead if you need to maintain records.
+</Warning>
+
+---
+
+## Common Workflows
+
+### Recording Installment Payments
+
+```javascript
+// Record a payment installment
+const recordPayment = async (debtId, paymentAmount) => {
+  const debt = await fetch(`/api/sales/debts/${debtId}`).then(r => r.json());
+  const newRemaining = debt.remaining - paymentAmount;
+  
+  await fetch(`/api/sales/debts/${debtId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      remaining: newRemaining,
+      status: newRemaining > 0 ? 'partial' : 'paid',
+      notes: `Pago de ${paymentAmount}€ recibido. ${debt.notes || ''}`
+    })
+  });
+};
+```
+
+### Tracking Overdue Debts
+
+```javascript
+// Get overdue debts
+const overdueDebts = debts.filter(debt => {
+  if (!debt.due_date || debt.status === 'paid') return false;
+  return new Date(debt.due_date) < new Date();
+});
+```
+
+### Debt Summary Report
+
+```javascript
+// Calculate debt statistics
+const debtSummary = {
+  totalOutstanding: debts
+    .filter(d => d.status !== 'paid')
+    .reduce((sum, d) => sum + d.remaining, 0),
+  totalDebts: debts.length,
+  paidDebts: debts.filter(d => d.status === 'paid').length,
+  pendingDebts: debts.filter(d => d.status === 'pending').length,
+  partialDebts: debts.filter(d => d.status === 'partial').length
+};
+```
+
+---
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Carts" icon="shopping-cart" href="/api/sales/carts">
+    Manage sales transactions that can create debts
+  </Card>
+  <Card title="Clients" icon="users" href="/api/clients/list-clients">
+    Manage customer information
+  </Card>
+</CardGroup>
